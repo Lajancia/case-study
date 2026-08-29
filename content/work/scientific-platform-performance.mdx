@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "Cutting a Scientific 3D Platform's Main Bundle by 80%",
+  description:
+    "How route-scoped loading and runtime rendering changes cut a scientific React platform's main bundle from 32MB to 6.5MB.",
+  slug: "scientific-platform-performance",
+  publishedAt: "2026-10-XX",
+  role: "Frontend Developer (sole frontend owner)",
+  timeline: "Mar 2025 – present",
+  industry: "Biotech / AI drug discovery",
+  stack: ["React", "Vite", "Molstar", "RDKit", "Plotly", "MUI"],
+  outcomes: [
+    { label: "Main bundle", before: "32MB", after: "6.5MB", change: "−80%" },
+    { label: "Lighthouse Performance", before: "29", after: "78", change: "+49" },
+  ],
+  draft: true,
+}
+
+## Context
+
+The product serves computational biologists and medicinal chemists investigating protein–ligand interactions. Scientists rely on heavyweight domain tools — 3D molecular viewers, structural chemistry libraries, and interactive charting — to explore and validate hypotheses in the browser.
+
+## Problem
+
+The main JavaScript bundle weighed **32MB**. Lighthouse Performance scored **29** on production builds. A `rollup-plugin-visualizer` treemap revealed that **RDKit and Molstar occupied more than 50% of the bundle on routes where neither was used** — every page paid the full cost of scientific libraries the user might never touch on that route.
+
+## What I did
+
+### 1. Measure
+
+I ran `rollup-plugin-visualizer` against the production build to identify the worst offenders. The treemap confirmed what load-time profiling suggested: RDKit (structural chemistry) and Molstar (3D molecular viewer) dominated the bundle regardless of the current route.
+
+### 2. Reject insufficient approaches
+
+Global compression (`brotli` / `gzip`) treats the symptom, not the cause — a compressed 32MB bundle still decompresses to 32MB. Indiscriminate lazy loading via `React.lazy` on every heavy import shifts the problem downstream without addressing the underlying architecture. Neither approach was sufficient.
+
+### 3. Route-scoped Molstar/RDKit chunks
+
+I restructured the bundling strategy so that Molstar and RDKit are loaded only on the routes that actually render 3D or structural chemistry views. Routes that serve table-heavy, form-heavy, or dashboard views no longer include these libraries in their main chunk.
+
+### 4. Selective RDKit bundle imports
+
+RDKit ships a monolithic JavaScript port of its C++ cheminformatics library. I replaced full-library imports with targeted, tree-shakeable entry points — importing only the molecular operations each route needed.
+
+### 5. Lazy react-plotly.js
+
+The interactive plotting library was being eagerly bundled into every route. I deferred it with route-level dynamic imports so that it loads only on the specific analysis views that use it.
+
+### 6. Compound Designer — the critical path
+
+The Compound Designer route renders an interactive workspace with **150+ React nodes**: molecule viewers, property tables, filter panels, similarity search results, and parallel coordinate plots. The bottlenecks were:
+
+- **Viewport loading**: Only nodes visible in the current viewport are rendered. As the user scrolls or pans, remaining nodes hydrate on demand.
+- **Parallel rendering**: Independent node trees render concurrently instead of serially.
+- **Corrected `useEffect` dependencies**: Several effects were re-running on every render because of missing or stale dependency arrays. Fixing these eliminated thousands of unnecessary re-renders per interaction.
+- **Memoization**: Expensive computations — fingerprint generation, similarity scoring, property calculation — are cached with `useMemo` keyed on stable inputs.
+
+### 7. CLS regression
+
+During rollout, a Cumulative Layout Shift regression was detected: dynamic content loading caused layout jumps on the Compound Designer route. The root cause — an unstyled loading container collapsing to zero height — was identified and resolved before the changes reached production.
+
+## Results
+
+| Metric | Before | After | Change |
+|--------|--------|-------|--------|
+| Main bundle | 32MB | 6.5MB | −80% |
+| Lighthouse Performance | 29 | 78 | +49 |
+
+*Measured in Chrome DevTools Lighthouse against a production build under the same test setup before and after.*
+
+The 6.5MB main bundle loads in under three seconds on a typical office connection. Subsequent route transitions add only the route-specific chunk.
+
+## Anonymized technical illustration
+
+![Route-to-chunk diagram before and after](/work/scientific-platform-performance/route-chunks.svg)
+
+*Simplified reconstruction; not a production screenshot.*
+
+The diagram shows a representative selection of routes. Before the change, every route included the full scientific library chunk. After the change, each route loads only its required subset.
+
+## Interested in a frontend performance audit?
+
+One-week fixed-scope audit for your React/Next.js product. You get a prioritized action plan with measurable targets.
