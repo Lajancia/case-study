@@ -26,44 +26,48 @@ export default function MolecularViewer() {
   useEffect(() => {
     if (!mounted) return
 
-    // Check if already loaded + initialized
     const w = window as any
-    if (w.RDKit?.Module) {
-      renderRdkItSvg()
+
+    // Already loaded + initialized
+    if (w.RDKitModule) {
+      renderRdkItSvg(w.RDKitModule)
       return
     }
 
-    // Script loaded but WASM not yet initialized
-    if (w.RDKit?.initRDKitModule) {
-      w.RDKit.initRDKitModule().then(() => {
-        renderRdkItSvg()
+    // Script loaded but WASM not yet initialized — Module is the promise
+    if (typeof w.initRDKitModule === 'function' && !w._rdkitLoading) {
+      w._rdkitLoading = true
+      w.initRDKitModule().then((Module: any) => {
+        w.RDKitModule = Module
+        renderRdkItSvg(Module)
       }).catch(() => setRdkitStatus('error'))
       return
     }
 
-    // Load from CDN
-    const script = document.createElement('script')
-    script.src = 'https://unpkg.com/@rdkit/rdkit@2023.9.5/dist/RDKit_minimal.js'
-    script.async = true
-    script.onload = () => {
-      const RDKit = (window as any).RDKit
-      if (RDKit?.initRDKitModule) {
-        RDKit.initRDKitModule().then(() => {
-          renderRdkItSvg()
-        }).catch(() => setRdkitStatus('error'))
-      } else {
-        setRdkitStatus('error')
+    // Not loaded yet — fetch CDN script
+    if (!w._rdkitLoading) {
+      w._rdkitLoading = true
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/@rdkit/rdkit@latest/dist/RDKit_minimal.js'
+      script.async = true
+      script.onload = () => {
+        if (typeof w.initRDKitModule === 'function') {
+          w.initRDKitModule().then((Module: any) => {
+            w.RDKitModule = Module
+            renderRdkItSvg(Module)
+          }).catch(() => setRdkitStatus('error'))
+        } else {
+          setRdkitStatus('error')
+        }
       }
+      script.onerror = () => setRdkitStatus('error')
+      document.head.appendChild(script)
     }
-    script.onerror = () => setRdkitStatus('error')
-    document.head.appendChild(script)
 
-    function renderRdkItSvg() {
+    function renderRdkItSvg(Module: any) {
       try {
-        const RDKit = (window as any).RDKit
-        if (!rdkitSvgRef.current || !RDKit?.Module) return
-
-        const mol = RDKit.get_mol(DEMO_LIGAND_SMILES)
+        if (!rdkitSvgRef.current) return
+        const mol = Module.get_mol(DEMO_LIGAND_SMILES)
         if (mol) {
           const svg = mol.get_svg({ width: 300, height: 220 })
           rdkitSvgRef.current.innerHTML = svg
