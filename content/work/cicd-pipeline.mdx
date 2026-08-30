@@ -149,12 +149,37 @@ Each node is clickable with detailed descriptions of its role.
 
 ## Results
 
-| Metric | Before | After |
-|--------|--------|-------|
-| Deployment method | Manual SSH | GitOps (fully automated) |
-| Deployment time | ~20 min | < 5 min |
-| Rollback | Manual | `git revert` + push |
-| Access | Public ports | Tailscale VPN + Nginx |
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Before</th>
+      <th>After</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Deployment method</td>
+      <td>Manual SSH</td>
+      <td>GitOps (fully automated)</td>
+    </tr>
+    <tr>
+      <td>Deployment time</td>
+      <td>~20 min</td>
+      <td>&lt; 5 min</td>
+    </tr>
+    <tr>
+      <td>Rollback</td>
+      <td>Manual</td>
+      <td><code>git revert</code> + push</td>
+    </tr>
+    <tr>
+      <td>Access</td>
+      <td>Public ports</td>
+      <td>Tailscale VPN + Nginx</td>
+    </tr>
+  </tbody>
+</table>
 
 ## How to verify
 
