@@ -1,11 +1,11 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { siteMetrics } from '@/lib/metrics'
 
 /**
  * ApexCharts loaded DYNAMICALLY — zero bytes on pages without this component.
- * See the code snippet below for the exact import pattern.
  */
 const Chart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -18,9 +18,11 @@ const Chart = dynamic(() => import('react-apexcharts'), {
 })
 
 export default function PerformanceDashboard() {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
   const { comparisons, currentSiteBundle, docker } = siteMetrics
 
-  // ── Before/after grouped bar chart data ──
   const compLabels = comparisons.map((c) => c.label.split('(')[0].trim())
   const beforeValues = comparisons.map((c) => c.beforeValue)
   const afterValues = comparisons.map((c) => c.afterValue)
@@ -46,7 +48,7 @@ export default function PerformanceDashboard() {
           The &ldquo;before&rdquo; state recreates the AD3 anti-pattern: an eager 3D library import on every route
           plus a non-standalone Docker build. Measured from the <code>perf/before-optimization</code> branch.
         </p>
-        {typeof window !== 'undefined' && (
+        {mounted && (
           <Chart
             type="bar"
             options={{
@@ -86,7 +88,6 @@ export default function PerformanceDashboard() {
 
       {/* KPI cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Bundle */}
         <div className="border border-gray-200 rounded-lg p-5">
           <h4 className="text-sm font-medium text-gray-700 mb-3">Main bundle</h4>
           <div className="text-3xl font-bold text-gray-900">
@@ -97,7 +98,6 @@ export default function PerformanceDashboard() {
           <p className="text-xs text-gray-400">{currentSiteBundle.totalKb} KB uncompressed</p>
         </div>
 
-        {/* Docker */}
         <div className="border border-gray-200 rounded-lg p-5">
           <h4 className="text-sm font-medium text-gray-700 mb-3">Docker image (runner stage)</h4>
           <div className="text-3xl font-bold text-gray-900">
