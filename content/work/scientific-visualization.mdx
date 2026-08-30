@@ -1,0 +1,88 @@
+export const metadata = {
+  title: "3D Molecular Visualization in the Browser: Molstar & RDKit.js",
+  description:
+    "Integrating two specialized scientific libraries for interactive 3D protein structure viewing and 2D cheminformatics, loaded on-demand.",
+  slug: "scientific-visualization",
+  publishedAt: "2026-XX-XX",
+  role: "Frontend Developer",
+  timeline: "Mar 2025 – present",
+  industry: "Biotech / Scientific visualization",
+  stack: ["React", "Molstar", "RDKit.js", "Three.js", "RCSB PDB"],
+  outcomes: [
+    { label: "3D protein viewer", before: "Eager bundle", after: "On-demand load", change: "route-scoped" },
+    { label: "2D mol depiction", before: "Eager bundle", after: "On-demand load", change: "route-scoped" },
+  ],
+  draft: true,
+}
+
+## Context
+
+In the AD3 platform, computational biologists and medicinal chemists routinely inspect 3D protein structures and 2D chemical diagrams. Two specialized libraries handle these tasks:
+
+- **Molstar** — An open-source 3D macromolecular viewer used by the RCSB Protein Data Bank itself
+- **RDKit.js** — A WebAssembly port of the industry-standard RDKit cheminformatics toolkit
+
+Both are large (several MB each) and, in the unoptimized AD3 codebase, were bundled eagerly on every route — even pages that never showed 3D or chemical structures.
+
+## Problem
+
+In production, Molstar plus RDKit contributed more than **50% of the main bundle weight** on routes that neither rendered 3D nor displayed molecular diagrams. The standard approach — route-scoped `dynamic()` imports — could solve this cleanly, but required precise knowledge of which routes needed which libraries.
+
+## Approach
+
+### 1. Identify route-to-library mapping
+
+I mapped every route in the application against its visualization requirements:
+
+| Library | Required on | Not required on |
+|---------|-------------|-----------------|
+| Molstar (3D viewer) | Structure analysis, docking results | Dashboard, search, admin |
+| RDKit.js (2D chem) | Compound designer, property tables | Dashboard, admin, settings |
+
+### 2. Route-scoped dynamic imports
+
+Both libraries were migrated from top-level imports to route-scoped `dynamic()` calls:
+
+```tsx
+// Before: every route paid the cost
+import { MolstarViewer } from '@molstar/viewer'
+
+// After: only routes that render 3D load Molstar
+const MolstarViewer = dynamic(() => import('@/components/3d/MolstarViewer'))
+
+// RDKit.js loaded only on compound-related routes
+const RdkitDepiction = dynamic(() => import('@/components/chem/RdkitDepiction'))
+```
+
+### 3. Loading UX
+
+Each heavy component receives a skeleton placeholder that matches its final dimensions, preventing layout shift (CLS) during lazy load.
+
+## Live demo: the same technique on this site
+
+The panel below demonstrates both libraries loading on-demand. Open DevTools → Network and filter by "rdkit" to see the library load only on this page.
+
+<MolecularViewer />
+
+The Molstar viewer is embedded via iframe (it loads independently of the JS bundle). RDKit.js (~2.5 MB WASM) loads from CDN only when this component renders.
+
+## Key decisions
+
+**Why iframe for Molstar instead of npm import?** The full Molstar npm package (`molstar`) pulls in server-side dependencies (Express, compression) that are inappropriate for a browser-only case study site. The iframe delegates rendering to the official Molstar viewer hosted at molstar.org.
+
+**Why CDN for RDKit.js instead of bundling?** RDKit.js is a WebAssembly binary that must be fetched and compiled at runtime regardless of how it's imported. Loading via CDN script tag is the most transparent approach and makes it easy to verify route-scoped loading in DevTools.
+
+## Results
+
+| Library | Before | After | Method |
+|---------|--------|-------|--------|
+| Molstar | Eager import on every route | Dynamic import or iframe | `dynamic()` / iframe |
+| RDKit.js (WASM) | Eager bundling | CDN on-demand | `<script>` injection |
+
+## Related
+
+This case study complements the [platform performance](/work/scientific-platform-performance) case study, which shows the same technique applied to the full AD3 codebase with quantified metrics.
+
+## Interested in a frontend performance audit?
+
+One-week fixed-scope audit for your React/Next.js product. You get a prioritized action plan with measurable targets.
