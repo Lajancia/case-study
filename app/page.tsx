@@ -75,7 +75,7 @@ export default function HomePage() {
             <p className="text-sm text-gray-600 mb-4">
               One week, fixed scope. Bundle analysis, rendering bottlenecks, Lighthouse optimization, prioritized action plan.
             </p>
-            <p className="text-xs text-gray-500">Starting from €2,500</p>
+            <p className="text-xs text-gray-500">Inquire for pricing</p>
           </div>
           <div className="border border-gray-200 rounded-lg p-6">
             <h3 className="font-semibold mb-2">CI/CD &amp; test automation audit</h3>
