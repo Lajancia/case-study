@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { DEMO_PDB, DEMO_LIGAND_SMILES } from '@/lib/molecular-demo'
 
 const RDKIT_CDN = 'https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2025.3.4-1.0.0/dist/RDKit_minimal.js'
+const RDKIT_BASE = 'https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2025.3.4-1.0.0/dist'
 
 /**
  * RDKit 2D chemical structure viewer — loaded from CDN on demand.
@@ -37,10 +38,10 @@ export default function MolecularViewer() {
       return
     }
 
-    // Script loaded but WASM init already in progress (Module is the promise)
+    // Script loaded but WASM init already in progress
     if (typeof w.initRDKitModule === 'function' && !w._rdkitLoading) {
       w._rdkitLoading = true
-      w.initRDKitModule().then((Module: any) => {
+      w.initRDKitModule({ locateFile: (path: string) => `${RDKIT_BASE}/${path}` }).then((Module: any) => {
         w.RDKitModule = Module
         renderRdkItSvg(Module)
       }).catch((e: any) => {
@@ -59,7 +60,7 @@ export default function MolecularViewer() {
       script.onload = () => {
         // initRDKitModule is a global async function that returns the Module
         if (typeof w.initRDKitModule === 'function') {
-          w.initRDKitModule().then((Module: any) => {
+          w.initRDKitModule({ locateFile: (path: string) => `${RDKIT_BASE}/${path}` }).then((Module: any) => {
             w.RDKitModule = Module
             renderRdkItSvg(Module)
           }).catch((e: any) => {
@@ -101,7 +102,7 @@ export default function MolecularViewer() {
 
   if (!mounted) return null
 
-  const molstarUrl = `https://molstar.org/viewer/?pdb=${DEMO_PDB}`
+  const molstarUrl = `https://molstar.org/viewer/?pdb=${DEMO_PDB}&hide-controls=1`
 
   return (
     <div className="not-prose my-10 space-y-8">
