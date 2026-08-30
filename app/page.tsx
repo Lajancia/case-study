@@ -66,23 +66,24 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* Service offers */}
+      {/* Engagement types */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-6">Services</h2>
+        <h2 className="text-2xl font-bold mb-2">How we can work together</h2>
+        <p className="text-sm text-gray-500 mb-6">B2B contract engagements — monthly, sprint-based, or project-scoped.</p>
         <div className="grid sm:grid-cols-2 gap-6">
           <div className="border border-gray-200 rounded-lg p-6">
-            <h3 className="font-semibold mb-2">Frontend performance audit</h3>
+            <h3 className="font-semibold mb-2">Frontend development</h3>
             <p className="text-sm text-gray-600 mb-4">
-              One week, fixed scope. Bundle analysis, rendering bottlenecks, Lighthouse optimization, prioritized action plan.
+              React / Next.js product development for data-intensive applications — dashboards, scientific tools, 3D visualization interfaces, and design-system work.
             </p>
-            <p className="text-xs text-gray-500">Inquire for pricing</p>
+            <p className="text-xs text-gray-500">B2B contract &middot; monthly or sprint-based</p>
           </div>
           <div className="border border-gray-200 rounded-lg p-6">
-            <h3 className="font-semibold mb-2">CI/CD &amp; test automation audit</h3>
+            <h3 className="font-semibold mb-2">Performance &amp; delivery quality</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Pipeline optimization, test coverage strategy, Playwright/Cypress setup, Docker/DevSecOps hardening.
+              Bundle optimization, Lighthouse improvements, test automation, and CI/CD hardening — embedded in ongoing development or as a focused workstream.
             </p>
-            <p className="text-xs text-gray-500">Coming soon — inquire for details</p>
+            <p className="text-xs text-gray-500">Part of dev engagements &middot; or standalone workstream</p>
           </div>
         </div>
       </section>
