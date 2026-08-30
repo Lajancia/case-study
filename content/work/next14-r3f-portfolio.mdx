@@ -1,0 +1,99 @@
+export const metadata = {
+  title: "Building an Immersive 3D Portfolio: Next.js 14 + React Three Fiber",
+  description:
+    "A bilingual 3D portfolio site with interactive WebGL scenes, macro keyboard controls, Panda CSS, and a full CI/CD pipeline from Jenkins to K3s.",
+  slug: "next14-r3f-portfolio",
+  publishedAt: "2026-XX-XX",
+  role: "Frontend Developer (solo)",
+  timeline: "Dec 2023 – present",
+  industry: "Personal portfolio / 3D web",
+  stack: ["Next.js 14", "React Three Fiber", "Three.js", "Panda CSS", "i18next", "Framer Motion", "Docker", "Jenkins"],
+  outcomes: [
+    { label: "3D scenes", before: "0", after: "5+ scenes", change: "interactive WebGL" },
+    { label: "Deployment", before: "Manual SSH", after: "Jenkins → K3s auto", change: "fully automated" },
+  ],
+  draft: true,
+}
+
+## Context
+
+A personal portfolio site that doubles as a technical showcase. Instead of a conventional static portfolio, I built an immersive 3D experience using React Three Fiber (R3F) — demonstrating not just frontend development but 3D graphics, internationalization, and DevOps integration in a single project.
+
+**GitHub:** [Lajancia/Next14-R3F](https://github.com/Lajancia/Next14-R3F)
+
+## Technical highlights
+
+### 1. 3D scene composition with React Three Fiber
+
+The site features multiple interactive 3D scenes:
+
+- **Macro Keyboard** — The homepage hero: a detailed keyboard model (`.glb`) with keycaps, rendered with custom lighting and post-processing effects
+- **Astronaut** — Animated character with GLTF skeletal animation, embedded in a space scene
+- **Bike** — Interactive 3D bicycle model with orbit controls
+- **Boxes** — Particle-based visual effect demonstrating instanced meshes
+- **Gallery** — 3D image gallery with transitions
+
+Each scene is a self-contained R3F component:
+
+```tsx
+// Example: 3D keyboard scene component structure
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Environment, useGLTF } from '@react-three/drei'
+
+function KeyboardScene() {
+  const { nodes, materials } = useGLTF('/keyboard.glb')
+  return (
+    <group>
+      {Object.values(nodes).map((node, i) => (
+        <mesh key={i} geometry={node.geometry} material={materials[node.name]} />
+      ))}
+    </group>
+  )
+}
+```
+
+### 2. Bilingual support with i18next
+
+Full Korean and English localization using `i18next` with:
+- Dynamic route-based language detection (`/en/pipeline`, `/ko/pipeline`)
+- Server-side language negotiation via `accept-language` header
+- Namespaced translation files per page component
+
+### 3. Panda CSS for styling
+
+Styling is handled by **Panda CSS** — a modern CSS-in-JS framework with:
+- Type-safe design tokens
+- Zero-runtime CSS generation at build time
+- Responsive variants without media query boilerplate
+
+### 4. Infrastructure timeline
+
+A dedicated Pipeline page visualizes the full CI/CD infrastructure as an interactive timeline diagram — from user → Nginx → Next.js → Jenkins → K3s → GitHub → Tailscale — with animated signal packets flowing between nodes.
+
+## CI/CD pipeline
+
+The project includes a complete DevOps pipeline:
+
+- **`dockerfile`** — Multi-stage build (deps → builder → runner) with pnpm
+- **`docker-compose.yml`** — Local deployment configuration
+- **`Jenkinsfile`** — Automated build, push to GHCR, GitOps repo update
+- **`ecosystem.config.js`** — PM2 process management for production
+
+## Key decisions
+
+**Why Panda CSS over Tailwind?** Panda CSS generates type-safe atomic styles at build time, providing the developer experience of Tailwind with the type safety of CSS-in-JS libraries. It also supports configurable design tokens that can be shared across the application.
+
+**Why separate CI/CD case study?** The Next14-R3F project originally contained both the 3D portfolio and the Jenkins/K3s pipeline. I've documented them separately because each addresses a different engineering concern — visualization and infrastructure.
+
+## Results
+
+| Aspect | Detail |
+|--------|--------|
+| 3D scenes | 5+ interactive WebGL scenes with GLTF models |
+| i18n | Korean + English, route-based detection |
+| Styling | Panda CSS with typed design tokens |
+| CI/CD | Jenkins → GHCR → K3s (see dedicated case study) |
+
+## Related
+
+See the [CI/CD Pipeline](/work/cicd-pipeline) case study for the full Jenkins + K3s + ArgoCD setup that powers this project's deployment.

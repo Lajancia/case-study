@@ -1,0 +1,171 @@
+export const metadata = {
+  title: "From Commit to Production: Jenkins + K3s + ArgoCD GitOps Pipeline",
+  description:
+    "A fully automated CI/CD pipeline: GitHub → Jenkins build → GHCR push → GitOps repo update → K3s cluster via ArgoCD.",
+  slug: "cicd-pipeline",
+  publishedAt: "2026-XX-XX",
+  role: "DevOps Engineer (solo)",
+  timeline: "Jan 2024 – present",
+  industry: "DevOps / Cloud infrastructure",
+  stack: ["Jenkins", "Docker", "GHCR", "K3s", "ArgoCD", "Nginx", "Tailscale", "GitOps"],
+  outcomes: [
+    { label: "Deployment", before: "Manual SSH + build", after: "< 5 min auto", change: "fully automated" },
+    { label: "Infrastructure", before: "Single VPS", after: "K3s cluster", change: "high availability" },
+  ],
+  draft: true,
+}
+
+## Context
+
+The Next14-R3F portfolio project (see separate case study) needed a production-grade deployment pipeline. Instead of the typical "SSH in, pull, build, restart" cycle, I built a complete GitOps pipeline:
+
+```
+Developer push → GitHub → Jenkins build & push → GitOps repo update → ArgoCD sync → K3s cluster
+```
+
+**GitHub:** [Lajancia/Next14-R3F](https://github.com/Lajancia/Next14-R3F) (contains Jenkinsfile)
+
+## Pipeline architecture
+
+### GitHub → Jenkins trigger
+
+A webhook configured in GitHub sends push events to the Jenkins server. Upon receiving a push to the `main` branch, the pipeline starts automatically.
+
+### Stage 1: Checkout
+
+Jenkins checks out the repository at the pushed commit, ensuring the build matches exactly what the developer intended.
+
+### Stage 2: Docker build & push
+
+```groovy
+stage('Docker Build & Push') {
+    steps {
+        script {
+            def shortCommit = sh(returnStdout: true,
+              script: 'git rev-parse --short HEAD').trim()
+            sh "docker build -f dockerfile -t ${GHCR_IMAGE}:${shortCommit} ."
+            sh "docker tag ${GHCR_IMAGE}:${shortCommit} ${GHCR_IMAGE}:latest"
+            sh "docker push ${GHCR_IMAGE}:${shortCommit}"
+            sh "docker push ${GHCR_IMAGE}:latest"
+        }
+    }
+}
+```
+
+The multi-stage Docker build uses pnpm for dependency management:
+
+```dockerfile
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@9.11.0 --activate
+
+FROM base AS deps
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --no-frozen-lockfile
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN pnpm panda && pnpm build
+
+FROM base AS runner
+WORKDIR /app
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+```
+
+Key optimizations:
+- **pnpm** for faster installs and disk efficiency vs npm
+- **`output: 'standalone'`** for minimal Docker image (~110 MB runner stage)
+- **Multi-stage build** — deps cache layer prevents reinstall on code-only changes
+
+### Stage 3: GitOps repo update
+
+Instead of SSH-ing into the server, Jenkins updates a separate **GitOps repository**:
+
+```groovy
+stage('Update GitOps Repo') {
+    steps {
+        script {
+            def shortCommit = sh(...)
+            sh """
+                git clone https://github.com/g3941813-svg/next-r3f-ops.git
+                sed -i 's|image: ...|image: ${GHCR_IMAGE}:${shortCommit}|' next-r3f.yaml
+                git commit -m "chore: update image tag to ${shortCommit}"
+                git push
+            """
+        }
+    }
+}
+```
+
+The GitOps repo contains a single Kubernetes manifest (`next-r3f.yaml`) that ArgoCD watches.
+
+### Stage 4: ArgoCD sync
+
+ArgoCD, running on the K3s cluster, polls the GitOps repository every 3 minutes. When it detects a change to the image tag, it automatically syncs the new manifest to the cluster — rolling update with zero downtime.
+
+## Infrastructure diagram
+
+The pipeline page on the portfolio site visualizes this architecture as an interactive timeline:
+
+```
+User → Nginx (proxy + SSL) → Next.js (R3F portfolio) → Jenkins (CI pipeline)
+                                                              ↓
+                                                        GHCR (image registry)
+                                                              ↓
+                                                        GitOps repo (manifests)
+                                                              ↓
+                                                        ArgoCD (auto-sync)
+                                                              ↓
+                                                        K3s cluster (production)
+                                                              ↓
+                                                        Tailscale (secure VPN access)
+```
+
+Each node is clickable with detailed descriptions of its role.
+
+## Infrastructure details
+
+### K3s cluster
+
+- Lightweight Kubernetes distribution ideal for single-VPS deployments
+- Runs on a VPS behind Nginx reverse proxy
+- Services exposed via Tailscale VPN for secure administrative access
+
+### Nginx
+
+- Reverse proxy handling SSL termination (Let's Encrypt)
+- Routes traffic to the Next.js application running on K3s
+- Static asset caching headers configured for performance
+
+### Tailscale
+
+- WireGuard-based mesh VPN for secure cluster access
+- No open ports on the K3s nodes — all traffic through Tailscale
+- Administrative dashboard and monitoring accessible only via VPN
+
+## Results
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Deployment method | Manual SSH | GitOps (fully automated) |
+| Deployment time | ~20 min | < 5 min |
+| Rollback | Manual | `git revert` + push |
+| Access | Public ports | Tailscale VPN + Nginx |
+
+## How to verify
+
+1. **Check the Jenkinsfile:** [Lajancia/Next14-R3F/blob/main/Jenkinsfile](https://github.com/Lajancia/Next14-R3F/blob/main/Jenkinsfile)
+2. **View the Docker multi-stage build:** [Lajancia/Next14-R3F/blob/main/dockerfile](https://github.com/Lajancia/Next14-R3F/blob/main/dockerfile)
+3. **GitOps repo** (private): `github.com/g3941813-svg/next-r3f-ops`
+
+## Related
+
+See the [3D Portfolio](/work/next14-r3f-portfolio) case study for the application this pipeline deploys.
+
+## Interested in a DevOps audit / CI/CD setup?
+
+Fixed-scope engagement to audit or build your deployment pipeline. Inquire for details.
