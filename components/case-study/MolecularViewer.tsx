@@ -84,7 +84,7 @@ export default function MolecularViewer() {
         if (!rdkitSvgRef.current) return
         const mol = Module.get_mol(DEMO_LIGAND_SMILES)
         if (mol) {
-          const svg = mol.get_svg({ width: 400, height: 280 })
+          const svg = mol.get_svg(400, 280)
           rdkitSvgRef.current.innerHTML = svg
           mol.delete()
           setRdkitStatus('ready')
@@ -159,12 +159,10 @@ export default function MolecularViewer() {
               <p className="text-xs mt-2">This library loads on-demand — zero bytes on other pages.</p>
             </div>
           )}
-          {rdkitStatus === 'ready' && (
-            <div
-              ref={rdkitSvgRef}
-              className="flex items-center justify-center p-6 w-full"
-            />
-          )}
+          <div
+            ref={rdkitSvgRef}
+            className={`items-center justify-center p-6 w-full ${rdkitStatus === 'ready' ? 'flex' : 'hidden'}`}
+          />
           {rdkitStatus === 'error' && (
             <div className="text-red-500 text-sm text-center p-4">
               <p>Failed to load RDKit.js</p>
