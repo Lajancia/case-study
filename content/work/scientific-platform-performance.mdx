@@ -160,6 +160,18 @@ The key line is `COPY --from=builder /app/.next/standalone ./`. Next.js's standa
 
 ---
 
+## Live demo: Molstar &amp; RDKit Viewer
+
+Below is a live, interactive demo of the same libraries used in the AD3 platform — **loaded on demand only on this page**.
+
+<MolecularViewer />
+
+The Molstar 3D viewer and RDKit.js WASM module (together ~3.7 MB) do not affect any other route. Open DevTools &rarr; Network and filter by &quot;molstar&quot; or &quot;rdkit&quot; to confirm.
+
+This is the same `dynamic()` import pattern described in sections 3–5 above, running on this page in real time.
+
+---
+
 ## How to verify these claims
 
 1. **Clone this repo:** `git clone https://github.com/Lajancia/case-study`
