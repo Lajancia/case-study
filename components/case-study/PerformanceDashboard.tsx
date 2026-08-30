@@ -18,7 +18,7 @@ const Chart = dynamic(() => import('react-apexcharts'), {
 })
 
 export default function PerformanceDashboard() {
-  const { comparisons, currentSiteBundle, docker, lighthouse } = siteMetrics
+  const { comparisons, currentSiteBundle, docker } = siteMetrics
 
   // ── Before/after grouped bar chart data ──
   const compLabels = comparisons.map((c) => c.label.split('(')[0].trim())
@@ -30,12 +30,6 @@ export default function PerformanceDashboard() {
     { name: 'Before (unoptimized)', data: beforeValues },
     { name: 'After (optimized)', data: afterValues },
   ]
-
-  // ── Lighthouse ──
-  const lighthouseSeries = [{
-    name: 'Score',
-    data: [lighthouse.performance, lighthouse.accessibility, lighthouse.bestPractices, lighthouse.seo],
-  }]
 
   return (
     <div className="not-prose my-10 space-y-8">
@@ -91,7 +85,7 @@ export default function PerformanceDashboard() {
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Bundle */}
         <div className="border border-gray-200 rounded-lg p-5">
           <h4 className="text-sm font-medium text-gray-700 mb-3">Main bundle</h4>
@@ -103,21 +97,9 @@ export default function PerformanceDashboard() {
           <p className="text-xs text-gray-400">{currentSiteBundle.totalKb} KB uncompressed</p>
         </div>
 
-        {/* Lighthouse */}
-        <div className="border border-gray-200 rounded-lg p-5">
-          <h4 className="text-sm font-medium text-gray-700 mb-3">Lighthouse</h4>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-green-600">{lighthouse.performance}</span>
-            <span className="text-sm text-gray-500">/ 100</span>
-          </div>
-          <p className="text-xs text-gray-400 mt-1">
-            A: {lighthouse.accessibility} &middot; BP: {lighthouse.bestPractices} &middot; SEO: {lighthouse.seo}
-          </p>
-        </div>
-
         {/* Docker */}
         <div className="border border-gray-200 rounded-lg p-5">
-          <h4 className="text-sm font-medium text-gray-700 mb-3">Docker image</h4>
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Docker image (runner stage)</h4>
           <div className="text-3xl font-bold text-gray-900">
             {docker.standaloneMb}
             <span className="text-lg text-gray-500"> MB</span>
@@ -125,6 +107,7 @@ export default function PerformanceDashboard() {
           <p className="text-xs text-gray-400 mt-1">
             {docker.reductionPercent}% smaller vs non-standalone
           </p>
+          <p className="text-xs text-gray-400">vs ~{docker.estimatedNonStandaloneMb} MB</p>
         </div>
       </div>
 

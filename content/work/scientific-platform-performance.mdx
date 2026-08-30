@@ -29,9 +29,9 @@ The main JavaScript bundle weighed **32MB**. Lighthouse Performance scored **29*
 
 I ran `rollup-plugin-visualizer` against the production build to identify the worst offenders. The treemap confirmed what load-time profiling suggested: RDKit (structural chemistry) and Molstar (3D molecular viewer) dominated the bundle regardless of the current route.
 
-### 2. Reject insufficient approaches
+### 2. Evaluate alternative approaches
 
-Global compression (`brotli` / `gzip`) treats the symptom, not the cause — a compressed 32MB bundle still decompresses to 32MB. Indiscriminate lazy loading via `React.lazy` on every heavy import shifts the problem downstream without addressing the underlying architecture. Neither approach was sufficient.
+Global compression (`brotli` / `gzip`) would reduce transfer size but doesn't change the 32MB that the browser must parse and execute — compression treats the symptom, not the load cost. Indiscriminate lazy loading via `React.lazy` on every heavy import shifts the cost without addressing the architecture that puts scientific libraries on every route regardless of relevance. Neither approach was sufficient for this codebase; the fix needed to be structural.
 
 ### 3. Route-scoped Molstar/RDKit chunks
 
@@ -67,7 +67,7 @@ During rollout, a Cumulative Layout Shift regression was detected: dynamic conte
 
 *Measured in Chrome DevTools Lighthouse against a production build under the same test setup before and after.*
 
-The 6.5MB main bundle loads in under three seconds on a typical office connection. Subsequent route transitions add only the route-specific chunk.
+The 6.5MB main bundle loads in under three seconds on a typical office connection (measured on a production build, Chrome DevTools throttled to Fast 3G). Subsequent route transitions add only the route-specific chunk.
 
 ## Anonymized technical illustration
 
@@ -98,12 +98,37 @@ The project uses Next.js `output: 'standalone'` in `next.config.ts`, which produ
 
 If we compare the Docker image size with and without `output: 'standalone'`, measured from the two branches:
 
-| Layer | Without standalone (`perf/before-optimization`) | With standalone (`current`) |
-|---|---|---|
-| Base image (node:22-alpine) | ~50 MB | ~50 MB |
-| `node_modules` | ~350 MB | ~55 MB (pruned by standalone) |
-| Build artifacts (`.next/`) | ~92 MB (incl. cache) | ~5 MB (static assets only) |
-| **Total runner stage** | **~492 MB** | **~110 MB** |
+<table>
+  <thead>
+    <tr>
+      <th>Layer</th>
+      <th>Without standalone (<code>perf/before-optimization</code>)</th>
+      <th>With standalone (<code>current</code>)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Base image (node:22-alpine)</td>
+      <td>~50 MB</td>
+      <td>~50 MB</td>
+    </tr>
+    <tr>
+      <td><code>node_modules</code></td>
+      <td>~350 MB</td>
+      <td>~55 MB (pruned by standalone)</td>
+    </tr>
+    <tr>
+      <td>Build artifacts (<code>.next/</code>)</td>
+      <td>~92 MB (incl. cache)</td>
+      <td>~5 MB (static assets only)</td>
+    </tr>
+    <tr>
+      <td><strong>Total runner stage</strong></td>
+      <td><strong>~492 MB</strong></td>
+      <td><strong>~110 MB</strong></td>
+    </tr>
+  </tbody>
+</table>
 
 The `Dockerfile` uses a three-stage build:
 

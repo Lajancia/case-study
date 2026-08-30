@@ -32,12 +32,6 @@ export interface SiteMetrics {
     estimatedNonStandaloneMb: number
     reductionPercent: number
   }
-  lighthouse: {
-    performance: number
-    accessibility: number
-    bestPractices: number
-    seo: number
-  }
 }
 
 export const siteMetrics: SiteMetrics = {
@@ -53,13 +47,13 @@ export const siteMetrics: SiteMetrics = {
       change: '−100%',
     },
     {
-      label: 'Docker production image',
-      before: '~300 MB',
-      after: '58 MB',
-      beforeValue: 300,
-      afterValue: 58,
+      label: 'Docker production image (runner stage)',
+      before: '~492 MB',
+      after: '~110 MB',
+      beforeValue: 492,
+      afterValue: 110,
       unit: 'MB',
-      change: '−81%',
+      change: '−78%',
     },
     {
       label: 'Main JS bundle',
@@ -86,14 +80,8 @@ export const siteMetrics: SiteMetrics = {
     chunkCount: 5,
   },
   docker: {
-    standaloneMb: 58,
-    estimatedNonStandaloneMb: 300,
-    reductionPercent: 81,
-  },
-  lighthouse: {
-    performance: 98,
-    accessibility: 96,
-    bestPractices: 100,
-    seo: 100,
+    standaloneMb: 110,
+    estimatedNonStandaloneMb: 492,
+    reductionPercent: 78,
   },
 }
