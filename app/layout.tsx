@@ -4,6 +4,9 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { siteConfig } from "@/lib/site";
+// Eagerly load a heavy 3D library on every route — recreating the
+// exact AD3 anti-pattern described in the accompanying case study.
+import EagerThreeInit from "@/components/EagerThreeInit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to main content
         </a>
         <SiteHeader />
+        <EagerThreeInit />
         <main id="main-content" className="flex-1">
           {children}
         </main>
