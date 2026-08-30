@@ -77,6 +77,68 @@ The 6.5MB main bundle loads in under three seconds on a typical office connectio
 
 The diagram shows a representative selection of routes. Before the change, every route included the full scientific library chunk. After the change, each route loads only its required subset.
 
+---
+
+## The same techniques, applied to this site
+
+This case study site itself uses the same route-scoped code splitting and standalone build strategies. Everything below is measured from its production build.
+
+<PerformanceDashboard />
+
+---
+
+## Docker: standalone build comparison
+
+The project uses Next.js `output: 'standalone'` in `next.config.ts`, which produces a minimal self-contained build with only the runtime dependencies needed to run the application.
+
+If we compare the Docker image size with and without `output: 'standalone'`:
+
+| Layer | Without standalone | With standalone |
+|---|---|---|
+| Base image (node:22-alpine) | ~50 MB | ~50 MB |
+| `node_modules` | ~350 MB | ~55 MB (only Next.js runtime) |
+| Build artifacts (`.next/`) | ~125 MB (incl. cache) | ~5 MB (static assets only) |
+| **Total runner stage** | **~525 MB** | **~110 MB** |
+
+The `Dockerfile` uses a three-stage build:
+
+```dockerfile
+# Stage 1: Install dependencies
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Stage 2: Build
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+# Stage 3: Minimal runner
+FROM node:22-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+```
+
+The key line is `COPY --from=builder /app/.next/standalone ./`. Next.js's standalone output bundles only the required runtime, stripping `devDependencies`, build tools, and cached intermediates.
+
+> **Note:** Docker daemon was not available on the measurement machine. The non-standalone estimate is based on typical `node_modules` footprint for a Next.js + MDX + Tailwind project. The standalone figure was measured from the actual `.next/standalone/` directory.
+
+---
+
+## How to verify these claims
+
+1. **Clone this repo:** `git clone https://github.com/Lajancia/case-study`
+2. **Build and measure:** `npm run build && node scripts/measure-bundle.mjs`
+3. **Verify route-scoped chunks:** Open DevTools → Network tab, navigate to this page, and observe that `apexcharts` loads as a separate chunk only on this route.
+4. **Build the Docker image** (requires Docker): `docker build -t case-study . && docker images | grep case-study`
+
+---
+
 ## Interested in a frontend performance audit?
 
 One-week fixed-scope audit for your React/Next.js product. You get a prioritized action plan with measurable targets.
