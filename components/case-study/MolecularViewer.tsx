@@ -101,7 +101,7 @@ export default function MolecularViewer() {
 
   if (!mounted) return null
 
-  const molstarUrl = `https://molstar.org/viewer/?pdb=${DEMO_PDB}`
+  const molstarUrl = `https://molstar.org/viewer/?pdb=${DEMO_PDB}&hide-controls=1`
 
   return (
     <div className="not-prose my-10 space-y-8">
