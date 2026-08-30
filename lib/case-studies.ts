@@ -62,14 +62,14 @@ export const caseStudies: CaseStudyMeta[] = [
     slug: 'next14-r3f-portfolio',
     title: 'Building an Immersive 3D Portfolio: Next.js 14 + React Three Fiber',
     description:
-      'A bilingual 3D portfolio site with interactive WebGL scenes, macro keyboard controls, Panda CSS styling, and a full CI/CD pipeline from Jenkins to K3s.',
+      'A bilingual 3D portfolio site with interactive WebGL scenes (keyboard, bicycle), Panda CSS styling, and a full CI/CD pipeline from Jenkins to K3s.',
     publishedAt: '2026-XX-XX',
     role: 'Frontend Developer (solo)',
     timeline: 'Dec 2023 – present',
     industry: 'Personal portfolio / 3D web',
     stack: ['Next.js 14', 'React Three Fiber', 'Three.js', 'Panda CSS', 'i18next', 'Framer Motion', 'Docker', 'Jenkins'],
     outcomes: [
-      { label: '3D scenes', before: '0', after: '5+ (keyboard, bike, astronaut, boxes, gallery)', change: 'interactive WebGL' },
+      { label: '3D scenes', before: '0', after: '2 (keyboard, bike)', change: 'interactive WebGL' },
       { label: 'Pipeline deployment', before: 'Manual', after: 'Jenkins → GHCR → K3s', change: 'fully automated' },
     ],
     capabilityTags: ['visualization', 'devops'],

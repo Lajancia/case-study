@@ -9,7 +9,7 @@ export const metadata = {
   industry: "Personal portfolio / 3D web",
   stack: ["Next.js 14", "React Three Fiber", "Three.js", "Panda CSS", "i18next", "Framer Motion", "Docker", "Jenkins"],
   outcomes: [
-    { label: "3D scenes", before: "0", after: "5+ scenes", change: "interactive WebGL" },
+    { label: "3D scenes", before: "0", after: "2 scenes", change: "interactive WebGL" },
     { label: "Deployment", before: "Manual SSH", after: "Jenkins → K3s auto", change: "fully automated" },
   ],
   draft: true,
@@ -28,10 +28,7 @@ A personal portfolio site that doubles as a technical showcase. Instead of a con
 The site features multiple interactive 3D scenes:
 
 - **Macro Keyboard** — The homepage hero: a detailed keyboard model (`.glb`) with keycaps, rendered with custom lighting and post-processing effects
-- **Astronaut** — Animated character with GLTF skeletal animation, embedded in a space scene
 - **Bike** — Interactive 3D bicycle model with orbit controls
-- **Boxes** — Particle-based visual effect demonstrating instanced meshes
-- **Gallery** — 3D image gallery with transitions
 
 Each scene is a self-contained R3F component:
 
@@ -87,12 +84,32 @@ The project includes a complete DevOps pipeline:
 
 ## Results
 
-| Aspect | Detail |
-|--------|--------|
-| 3D scenes | 5+ interactive WebGL scenes with GLTF models |
-| i18n | Korean + English, route-based detection |
-| Styling | Panda CSS with typed design tokens |
-| CI/CD | Jenkins → GHCR → K3s (see dedicated case study) |
+<table>
+  <thead>
+    <tr>
+      <th>Aspect</th>
+      <th>Detail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3D scenes</td>
+      <td>2 interactive WebGL scenes with GLTF models</td>
+    </tr>
+    <tr>
+      <td>i18n</td>
+      <td>Korean + English, route-based detection</td>
+    </tr>
+    <tr>
+      <td>Styling</td>
+      <td>Panda CSS with typed design tokens</td>
+    </tr>
+    <tr>
+      <td>CI/CD</td>
+      <td>Jenkins → GHCR → K3s (see dedicated case study)</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Related
 
