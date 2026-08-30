@@ -7,9 +7,9 @@ interface WorkCardProps {
 
 export function WorkCard({ study }: WorkCardProps) {
   return (
-    <article className="border border-gray-200 rounded-lg p-6 hover:border-gray-400 transition-colors">
-      <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{study.industry}</div>
-      <h2 className="text-xl font-semibold mb-2 leading-snug">{study.title}</h2>
+    <article className="border border-gray-200 rounded-lg p-6 hover:border-blue-400 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+      <div className="text-xs font-medium text-indigo-600 uppercase tracking-wider mb-2">{study.industry}</div>
+      <h2 className="text-xl font-semibold mb-2 leading-snug text-gray-900">{study.title}</h2>
       <p className="text-gray-600 text-sm mb-4 line-clamp-2">{study.description}</p>
       <div className="grid grid-cols-2 gap-4 mb-4">
         {study.outcomes.map((outcome) => (

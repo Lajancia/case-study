@@ -19,9 +19,7 @@ export default function WorkPage() {
           <WorkCard key={study.slug} study={study} />
         ))}
         {drafts.map((study) => (
-          <div key={study.slug} className="opacity-50">
-            <WorkCard study={study} />
-          </div>
+          <WorkCard key={study.slug} study={study} />
         ))}
       </div>
       {drafts.length > 0 && (
