@@ -34,10 +34,27 @@ In production, Molstar plus RDKit contributed more than **50% of the main bundle
 
 I mapped every route in the application against its visualization requirements:
 
-| Library | Required on | Not required on |
-|---------|-------------|-----------------|
-| Molstar (3D viewer) | Structure analysis, docking results | Dashboard, search, admin |
-| RDKit.js (2D chem) | Compound designer, property tables | Dashboard, admin, settings |
+<table>
+  <thead>
+    <tr>
+      <th>Library</th>
+      <th>Required on</th>
+      <th>Not required on</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Molstar (3D viewer)</td>
+      <td>Structure analysis, docking results</td>
+      <td>Dashboard, search, admin</td>
+    </tr>
+    <tr>
+      <td>RDKit.js (2D chem)</td>
+      <td>Compound designer, property tables</td>
+      <td>Dashboard, admin, settings</td>
+    </tr>
+  </tbody>
+</table>
 
 ### 2. Route-scoped dynamic imports
 
@@ -74,10 +91,30 @@ The Molstar viewer is embedded via iframe (it loads independently of the JS bund
 
 ## Results
 
-| Library | Before | After | Method |
-|---------|--------|-------|--------|
-| Molstar | Eager import on every route | Dynamic import or iframe | `dynamic()` / iframe |
-| RDKit.js (WASM) | Eager bundling | CDN on-demand | `<script>` injection |
+<table>
+  <thead>
+    <tr>
+      <th>Library</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Method</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Molstar</td>
+      <td>Eager import on every route</td>
+      <td>Dynamic import or iframe</td>
+      <td><code>dynamic()</code> / iframe</td>
+    </tr>
+    <tr>
+      <td>RDKit.js (WASM)</td>
+      <td>Eager bundling</td>
+      <td>CDN on-demand</td>
+      <td><code>&lt;script&gt;</code> injection</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Related
 
