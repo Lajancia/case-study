@@ -81,7 +81,12 @@ The diagram shows a representative selection of routes. Before the change, every
 
 ## The same techniques, applied to this site
 
-This case study site itself uses the same route-scoped code splitting and standalone build strategies. Everything below is measured from its production build.
+This case study site itself uses the same route-scoped code splitting and standalone build strategies. To prove the point, a dedicated `perf/before-optimization` branch recreates the exact AD3 anti-pattern on this site:
+
+- **Eager import:** `three.js` (99 KB) loaded on every route via `layout.tsx`
+- **Non-standalone build:** `output: 'standalone'` removed from `next.config.ts`
+
+The dashboard below compares the unoptimized branch against the current optimized state — directly on this site, not on AD3's closed-source codebase.
 
 <PerformanceDashboard />
 
@@ -91,14 +96,14 @@ This case study site itself uses the same route-scoped code splitting and standa
 
 The project uses Next.js `output: 'standalone'` in `next.config.ts`, which produces a minimal self-contained build with only the runtime dependencies needed to run the application.
 
-If we compare the Docker image size with and without `output: 'standalone'`:
+If we compare the Docker image size with and without `output: 'standalone'`, measured from the two branches:
 
-| Layer | Without standalone | With standalone |
+| Layer | Without standalone (`perf/before-optimization`) | With standalone (`current`) |
 |---|---|---|
 | Base image (node:22-alpine) | ~50 MB | ~50 MB |
-| `node_modules` | ~350 MB | ~55 MB (only Next.js runtime) |
-| Build artifacts (`.next/`) | ~125 MB (incl. cache) | ~5 MB (static assets only) |
-| **Total runner stage** | **~525 MB** | **~110 MB** |
+| `node_modules` | ~350 MB | ~55 MB (pruned by standalone) |
+| Build artifacts (`.next/`) | ~92 MB (incl. cache) | ~5 MB (static assets only) |
+| **Total runner stage** | **~492 MB** | **~110 MB** |
 
 The `Dockerfile` uses a three-stage build:
 
@@ -133,9 +138,10 @@ The key line is `COPY --from=builder /app/.next/standalone ./`. Next.js's standa
 ## How to verify these claims
 
 1. **Clone this repo:** `git clone https://github.com/Lajancia/case-study`
-2. **Build and measure:** `npm run build && node scripts/measure-bundle.mjs`
-3. **Verify route-scoped chunks:** Open DevTools → Network tab, navigate to this page, and observe that `apexcharts` loads as a separate chunk only on this route.
-4. **Build the Docker image** (requires Docker): `docker build -t case-study . && docker images | grep case-study`
+2. **Current build (optimized):** `git checkout main && npm run build && node scripts/measure-bundle.mjs`
+3. **Unoptimized build (before):** `git checkout perf/before-optimization && npm run build && node scripts/measure-before.mjs`
+4. **Compare the difference:** `git diff perf/before-optimization..main -- app/layout.tsx next.config.ts`
+5. **Verify route-scoped chunks:** Open DevTools → Network tab, navigate to this page, and observe that `apexcharts` loads as a separate chunk only on this route.
 
 ---
 
