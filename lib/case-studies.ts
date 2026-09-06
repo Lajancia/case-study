@@ -27,7 +27,7 @@ export const caseStudies: CaseStudyMeta[] = [
       'How route-scoped loading and runtime rendering changes cut a scientific React platform\'s main bundle from 32MB to 6.5MB.',
     publishedAt: '2026-08-XX',
     role: 'Frontend Developer (sole frontend owner)',
-    timeline: 'Mar 2025 – present',
+    timeline: 'Mar 2025 – Oct 2026',
     industry: 'Biotech / AI drug discovery',
     stack: ['React', 'Vite', 'Molstar', 'RDKit', 'Plotly', 'MUI'],
     outcomes: [
@@ -46,7 +46,7 @@ export const caseStudies: CaseStudyMeta[] = [
       'Integrating two specialized scientific libraries for interactive 3D protein structure viewing and 2D cheminformatics, loaded on-demand to prevent bundle bloat.',
     publishedAt: '2026-XX-XX',
     role: 'Frontend Developer',
-    timeline: 'Mar 2025 – present',
+    timeline: 'Mar 2025 – Oct 2026',
     industry: 'Biotech / Scientific visualization',
     stack: ['React', 'Molstar', 'RDKit.js', 'Three.js', 'RCSB PDB'],
     outcomes: [
@@ -65,7 +65,7 @@ export const caseStudies: CaseStudyMeta[] = [
       'A bilingual 3D portfolio site with interactive WebGL scenes, macro keyboard controls, Panda CSS styling, and a full CI/CD pipeline from Jenkins to K3s.',
     publishedAt: '2026-XX-XX',
     role: 'Frontend Developer (solo)',
-    timeline: 'Dec 2023 – present',
+    timeline: 'Dec 2023 – Oct 2026',
     industry: 'Personal portfolio / 3D web',
     stack: ['Next.js 14', 'React Three Fiber', 'Three.js', 'Panda CSS', 'i18next', 'Framer Motion', 'Docker', 'Jenkins'],
     outcomes: [
@@ -84,7 +84,7 @@ export const caseStudies: CaseStudyMeta[] = [
       'A fully automated CI/CD pipeline that takes code from GitHub, builds and pushes Docker images via Jenkins, and deploys to a K3s cluster using ArgoCD with GitOps principles.',
     publishedAt: '2026-XX-XX',
     role: 'DevOps Engineer (solo)',
-    timeline: 'Jan 2024 – present',
+    timeline: 'Jan 2024 – Oct 2026',
     industry: 'DevOps / Cloud infrastructure',
     stack: ['Jenkins', 'Docker', 'GitHub Container Registry', 'K3s', 'ArgoCD', 'GitOps', 'Nginx', 'Tailscale'],
     outcomes: [
