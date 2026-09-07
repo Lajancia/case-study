@@ -7,8 +7,19 @@ interface WorkCardProps {
 
 export function WorkCard({ study }: WorkCardProps) {
   return (
-    <article className="border border-gray-200 rounded-lg p-6 hover:border-blue-400 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-      <div className="text-xs font-medium text-indigo-600 uppercase tracking-wider mb-2">{study.industry}</div>
+    <article className={`border rounded-lg p-6 transition-all duration-200 ${
+      study.draft
+        ? 'border-yellow-200 bg-yellow-50/30 hover:border-yellow-400 hover:shadow-lg hover:-translate-y-0.5'
+        : 'border-gray-200 hover:border-blue-400 hover:shadow-lg hover:-translate-y-0.5'
+    }`}>
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="text-xs font-medium text-indigo-600 uppercase tracking-wider">{study.industry}</div>
+        {study.draft && (
+          <span className="shrink-0 text-xs font-semibold text-yellow-800 bg-yellow-100 border border-yellow-300 rounded-full px-2.5 py-0.5 leading-none">
+            Draft
+          </span>
+        )}
+      </div>
       <h2 className="text-xl font-semibold mb-2 leading-snug text-gray-900">{study.title}</h2>
       <p className="text-gray-600 text-sm mb-4 line-clamp-2">{study.description}</p>
       <div className="grid grid-cols-2 gap-4 mb-4">
