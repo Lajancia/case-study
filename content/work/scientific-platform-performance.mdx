@@ -1,83 +1,83 @@
 export const metadata = {
-  title: "Cutting a Scientific 3D Platform's Main Bundle by 80%",
+  title: "과학 3D 플랫폼 메인 번들 80% 축소",
   description:
-    "How route-scoped loading and runtime rendering changes cut a scientific React platform's main bundle from 32MB to 6.5MB.",
+    "라우트 기반 로딩 및 런타임 렌더링 변경을 통해 과학 React 플랫폼의 메인 번들을 32MB에서 6.5MB로 줄인 방법.",
   slug: "scientific-platform-performance",
   publishedAt: "2026-10-XX",
-  role: "Frontend Developer (sole frontend owner)",
-  timeline: "Mar 2025 – present",
-  industry: "Biotech / AI drug discovery",
+  role: "프런트엔드 개발자 (단독 프런트엔드 담당)",
+  timeline: "2025년 3월 – 현재",
+  industry: "생명공학 / AI 신약 개발",
   stack: ["React", "Vite", "Molstar", "RDKit", "Plotly", "MUI"],
   outcomes: [
-    { label: "Main bundle", before: "32MB", after: "6.5MB", change: "−80%" },
-    { label: "Lighthouse Performance", before: "29", after: "78", change: "+49" },
+    { label: "메인 번들", before: "32MB", after: "6.5MB", change: "−80%" },
+    { label: "Lighthouse 성능", before: "29", after: "78", change: "+49" },
   ],
   draft: true,
 }
 
-## Context
+## 배경
 
-The product serves computational biologists and medicinal chemists investigating protein–ligand interactions. Scientists rely on heavyweight domain tools — 3D molecular viewers, structural chemistry libraries, and interactive charting — to explore and validate hypotheses in the browser.
+이 제품은 단백질-리간드 상호작용을 연구하는 전산생물학자 및 의약화학자가 사용합니다. 연구자들은 3D 분자 뷰어, 구조화학 라이브러리, 인터랙티브 차트 등 무거운 도메인 도구를 브라우저에서 사용하여 가설을 탐색하고 검증합니다.
 
-## Problem
+## 문제
 
-The main JavaScript bundle weighed **32MB**. Lighthouse Performance scored **29** on production builds. A `rollup-plugin-visualizer` treemap revealed that **RDKit and Molstar occupied more than 50% of the bundle on routes where neither was used** — every page paid the full cost of scientific libraries the user might never touch on that route.
+메인 JavaScript 번들이 **32MB**였습니다. Lighthouse Performance 점수는 프로덕션 빌드에서 **29**에 불과했습니다. `rollup-plugin-visualizer` 트리맵 분석 결과, **RDKit과 Molstar가 사용되지 않는 라우트에서도 번들의 50% 이상을 차지**하고 있었습니다 — 사용자가 해당 라우트에서 절대 사용하지 않을 수도 있는 과학 라이브러리의 전체 비용을 모든 페이지가 부담하고 있었습니다.
 
-## What I did
+## 수행한 작업
 
-### 1. Measure
+### 1. 측정
 
-I ran `rollup-plugin-visualizer` against the production build to identify the worst offenders. The treemap confirmed what load-time profiling suggested: RDKit (structural chemistry) and Molstar (3D molecular viewer) dominated the bundle regardless of the current route.
+프로덕션 빌드에 `rollup-plugin-visualizer`를 실행하여 가장 심각한 원인을 식별했습니다. 트리맵은 로드 시간 프로파일링이 암시했던 바를 확인해주었습니다: RDKit(구조화학)과 Molstar(3D 분자 뷰어)가 현재 라우트와 관계없이 번들을 지배하고 있었습니다.
 
-### 2. Evaluate alternative approaches
+### 2. 대안 평가
 
-Global compression (`brotli` / `gzip`) would reduce transfer size but doesn't change the 32MB that the browser must parse and execute — compression treats the symptom, not the load cost. Indiscriminate lazy loading via `React.lazy` on every heavy import shifts the cost without addressing the architecture that puts scientific libraries on every route regardless of relevance. Neither approach was sufficient for this codebase; the fix needed to be structural.
+전역 압축(`brotli`/`gzip`)은 전송 크기를 줄여주지만, 브라우저가 파싱하고 실행해야 하는 32MB 자체는 줄여주지 못합니다 — 압축은 증상만 치료할 뿐 로드 비용 자체를 해결하지 않습니다. 무분별한 `React.lazy` 적용은 비용을 이동시킬 뿐, 관련 없는 라우트에도 과학 라이브러리를 포함시키는 아키텍처 자체는 개선하지 않습니다. 이 코드베이스에는 어느 접근법도 충분하지 않았고, 구조적인 수정이 필요했습니다.
 
-### 3. Route-scoped Molstar/RDKit chunks
+### 3. 라우트 스코프 Molstar/RDKit 청크
 
-I restructured the bundling strategy so that Molstar and RDKit are loaded only on the routes that actually render 3D or structural chemistry views. Routes that serve table-heavy, form-heavy, or dashboard views no longer include these libraries in their main chunk.
+Molstar와 RDKit이 실제로 3D 또는 구조화학 뷰를 렌더링하는 라우트에서만 로드되도록 번들링 전략을 재구성했습니다. 테이블 중심, 폼 중심, 대시보드 뷰를 제공하는 라우트는 더 이상 이러한 라이브러리를 메인 청크에 포함하지 않습니다.
 
-### 4. Selective RDKit bundle imports
+### 4. 선택적 RDKit 번들 임포트
 
-RDKit ships a monolithic JavaScript port of its C++ cheminformatics library. I replaced full-library imports with targeted, tree-shakeable entry points — importing only the molecular operations each route needed.
+RDKit은 C++ 화학정보학 라이브러리의 모놀리식 JavaScript 포트를 제공합니다. 전체 라이브러리 임포트를 대상별 트리-쉐이커블 진입점으로 대체하여, 각 라우트에 필요한 분자 연산만 임포트하도록 했습니다.
 
-### 5. Lazy react-plotly.js
+### 5. react-plotly.js 지연 로딩
 
-The interactive plotting library was being eagerly bundled into every route. I deferred it with route-level dynamic imports so that it loads only on the specific analysis views that use it.
+인터랙티브 플로팅 라이브러리가 모든 라우트에 eager 번들링되고 있었습니다. 라우트 레벨 동적 임포트로 지연시켜, 실제로 사용하는 특정 분석 뷰에서만 로드되도록 했습니다.
 
-### 6. Compound Designer — the critical path
+### 6. Compound Designer — 최적화 경로
 
-The Compound Designer route renders an interactive workspace with **150+ React nodes**: molecule viewers, property tables, filter panels, similarity search results, and parallel coordinate plots. The bottlenecks were:
+Compound Designer 라우트는 **150개 이상의 React 노드**로 구성된 인터랙티브 워크스페이스를 렌더링합니다: 분자 뷰어, 속성 테이블, 필터 패널, 유사성 검색 결과, 평행 좌표 플롯 등. 병목 지점은 다음과 같았습니다:
 
-- **Viewport loading**: Only nodes visible in the current viewport are rendered. As the user scrolls or pans, remaining nodes hydrate on demand.
-- **Parallel rendering**: Independent node trees render concurrently instead of serially.
-- **Corrected `useEffect` dependencies**: Several effects were re-running on every render because of missing or stale dependency arrays. Fixing these eliminated thousands of unnecessary re-renders per interaction.
-- **Memoization**: Expensive computations — fingerprint generation, similarity scoring, property calculation — are cached with `useMemo` keyed on stable inputs.
+- **뷰포트 로딩**: 현재 뷰포트에 보이는 노드만 렌더링됩니다. 사용자가 스크롤하거나 패닝하면 나머지 노드가 온디맨드로 활성화됩니다.
+- **병렬 렌더링**: 독립적인 노드 트리가 직렬이 아닌 동시에 렌더링됩니다.
+- **`useEffect` 의존성 배열 수정**: 여러 효과가 누락되거나 오래된 의존성 배열로 인해 매 렌더링마다 재실행되고 있었습니다. 이를 수정하여 상호작용당 수천 번의 불필요한 리렌더링을 제거했습니다.
+- **메모이제이션**: 지문 생성, 유사도 점수, 속성 계산 등 고비용 연산을 안정적인 입력에 키잉된 `useMemo`로 캐싱했습니다.
 
-### 7. CLS regression
+### 7. CLS 회귀 수정
 
-During rollout, a Cumulative Layout Shift regression was detected: dynamic content loading caused layout jumps on the Compound Designer route. The root cause — an unstyled loading container collapsing to zero height — was identified and resolved before the changes reached production.
+배포 과정에서 누적 레이아웃 시프트 회귀가 발견되었습니다: 동적 콘텐츠 로딩이 Compound Designer 라우트에서 레이아웃 점프를 유발했습니다. 원인 — 스타일이 없는 로딩 컨테이너가 높이 0으로 축소되는 현상 — 을 식별하고 프로덕션에 도달하기 전에 해결했습니다.
 
-## Results
+## 결과
 
 <table>
   <thead>
     <tr>
-      <th>Metric</th>
+      <th>측정 항목</th>
       <th>Before</th>
       <th>After</th>
-      <th>Change</th>
+      <th>변화</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Main bundle</td>
+      <td>메인 번들</td>
       <td>32MB</td>
       <td>6.5MB</td>
       <td>−80%</td>
     </tr>
     <tr>
-      <td>Lighthouse Performance</td>
+      <td>Lighthouse 성능</td>
       <td>29</td>
       <td>78</td>
       <td>+49</td>
@@ -85,45 +85,45 @@ During rollout, a Cumulative Layout Shift regression was detected: dynamic conte
   </tbody>
 </table>
 
-*Measured in Chrome DevTools Lighthouse against a production build under the same test setup before and after.*
+*Chrome DevTools Lighthouse로 동일한 테스트 환경에서 before/after 프로덕션 빌드를 각각 측정했습니다.*
 
-The 6.5MB main bundle loads in under three seconds on a typical office connection (measured on a production build, Chrome DevTools throttled to Fast 3G). Subsequent route transitions add only the route-specific chunk.
+6.5MB 메인 번들은 일반적인 오피스 연결 환경(Chrome DevTools Fast 3G 스로틀 기준)에서 3초 이내에 로드됩니다. 이후 라우트 전환은 해당 라우트별 청크만 추가로 로드합니다.
 
-## Anonymized technical illustration
+## 기술 일러스트레이션 (익명화)
 
-![Route-to-chunk diagram before and after](/work/scientific-platform-performance/route-chunks.svg)
+![라우트-청크 다이어그램 before/after](/work/scientific-platform-performance/route-chunks.svg)
 
-*Simplified reconstruction; not a production screenshot.*
+*프로덕션 스크린샷이 아닌 단순화된 재구성입니다.*
 
-The diagram shows a representative selection of routes. Before the change, every route included the full scientific library chunk. After the change, each route loads only its required subset.
+다이어그램은 대표적인 라우트 선택을 보여줍니다. 변경 전에는 모든 라우트가 전체 과학 라이브러리 청크를 포함했습니다. 변경 후에는 각 라우트가 필요한 하위 집합만 로드합니다.
 
 ---
 
-## The same techniques, applied to this site
+## 동일한 기법, 이 사이트에 적용
 
-This case study site itself uses the same route-scoped code splitting and standalone build strategies. To prove the point, a dedicated `perf/before-optimization` branch recreates the exact AD3 anti-pattern on this site:
+이 케이스 스터디 사이트 자체도 동일한 라우트 스코프 코드 스플리팅과 스탠드얼론 빌드 전략을 사용합니다. 이를 입증하기 위해 `perf/before-optimization` 브랜치에서 이 사이트에 AD3의 정확한 안티패턴을 재현했습니다:
 
-- **Eager import:** `three.js` (99 KB) loaded on every route via `layout.tsx`
-- **Non-standalone build:** `output: 'standalone'` removed from `next.config.ts`
+- **Eager import:** `three.js` (99 KB)가 `layout.tsx`를 통해 모든 라우트에서 로드됨
+- **비스탠드얼론 빌드:** `next.config.ts`에서 `output: 'standalone'` 제거
 
-The dashboard below compares the unoptimized branch against the current optimized state — directly on this site, not on AD3's closed-source codebase.
+아래 대시보드는 최적화 전 브랜치와 현재 최적화 상태를 이 사이트에서 직접 비교합니다 — AD3의 클로즈드소스 코드베이스가 아닙니다.
 
 <PerformanceDashboard />
 
 ---
 
-## Docker: standalone build comparison
+## Docker: 스탠드얼론 빌드 비교
 
-The project uses Next.js `output: 'standalone'` in `next.config.ts`, which produces a minimal self-contained build with only the runtime dependencies needed to run the application.
+이 프로젝트는 `next.config.ts`에 Next.js `output: 'standalone'`을 사용하여, 애플리케이션 실행에 필요한 런타임 의존성만 포함된 최소 자체 포함 빌드를 생성합니다.
 
-If we compare the Docker image size with and without `output: 'standalone'`, measured from the two branches:
+두 브랜치에서 `output: 'standalone'` 유무에 따른 Docker 이미지 크기를 비교하면:
 
 <table>
   <thead>
     <tr>
-      <th>Layer</th>
-      <th>Without standalone (<code>perf/before-optimization</code>)</th>
-      <th>With standalone (<code>current</code>)</th>
+      <th>레이어</th>
+      <th>Standalone 미사용 (<code>perf/before-optimization</code>)</th>
+      <th>Standalone 사용 (<code>current</code>)</th>
     </tr>
   </thead>
   <tbody>
@@ -135,38 +135,38 @@ If we compare the Docker image size with and without `output: 'standalone'`, mea
     <tr>
       <td><code>node_modules</code></td>
       <td>~350 MB</td>
-      <td>~55 MB (pruned by standalone)</td>
+      <td>~55 MB (standalone 정리됨)</td>
     </tr>
     <tr>
-      <td>Build artifacts (<code>.next/</code>)</td>
-      <td>~92 MB (incl. cache)</td>
-      <td>~5 MB (static assets only)</td>
+      <td>빌드 아티팩트 (<code>.next/</code>)</td>
+      <td>~92 MB (캐시 포함)</td>
+      <td>~5 MB (정적 자산만)</td>
     </tr>
     <tr>
-      <td><strong>Total runner stage</strong></td>
+      <td><strong>최종 runner 스테이지</strong></td>
       <td><strong>~492 MB</strong></td>
       <td><strong>~110 MB</strong></td>
     </tr>
   </tbody>
 </table>
 
-The `Dockerfile` uses a three-stage build:
+`Dockerfile`은 3단계 빌드를 사용합니다:
 
 ```dockerfile
-# Stage 1: Install dependencies
+# Stage 1: 의존성 설치
 FROM node:22-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# Stage 2: Build
+# Stage 2: 빌드
 FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY . ./
 RUN npm run build
 
-# Stage 3: Minimal runner
+# Stage 3: 최소 runner
 FROM node:22-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app/.next/standalone ./
@@ -174,22 +174,22 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 ```
 
-The key line is `COPY --from=builder /app/.next/standalone ./`. Next.js's standalone output bundles only the required runtime, stripping `devDependencies`, build tools, and cached intermediates.
+핵심은 `COPY --from=builder /app/.next/standalone ./`입니다. Next.js의 스탠드얼론 출력은 필요한 런타임만 번들링하여 `devDependencies`, 빌드 도구, 캐시 중간물을 제거합니다.
 
-> **Note:** Docker daemon was not available on the measurement machine. The non-standalone estimate is based on typical `node_modules` footprint for a Next.js + MDX + Tailwind project. The standalone figure was measured from the actual `.next/standalone/` directory.
-
----
-
-## How to verify these claims
-
-1. **Clone this repo:** `git clone https://github.com/Lajancia/case-study`
-2. **Current build (optimized):** `git checkout main && npm run build && node scripts/measure-bundle.mjs`
-3. **Unoptimized build (before):** `git checkout perf/before-optimization && npm run build && node scripts/measure-before.mjs`
-4. **Compare the difference:** `git diff perf/before-optimization..main -- app/layout.tsx next.config.ts`
-5. **Verify route-scoped chunks:** Open DevTools → Network tab, navigate to this page, and observe that `apexcharts` loads as a separate chunk only on this route.
+> **참고:** 측정 머신에서 Docker 데몬을 사용할 수 없었습니다. 비스탠드얼론 추정치는 일반적인 Next.js + MDX + Tailwind 프로젝트의 `node_modules` 크기를 기준으로 합니다. 스탠드얼론 수치는 실제 `.next/standalone/` 디렉토리에서 측정했습니다.
 
 ---
 
-## Interested in a frontend performance audit?
+## 검증 방법
 
-One-week fixed-scope audit for your React/Next.js product. You get a prioritized action plan with measurable targets.
+1. **저장소 클론:** `git clone https://github.com/Lajancia/case-study`
+2. **현재 빌드 (최적화):** `git checkout main && npm run build && node scripts/measure-bundle.mjs`
+3. **최적화 전 빌드:** `git checkout perf/before-optimization && npm run build && node scripts/measure-before.mjs`
+4. **차이 비교:** `git diff perf/before-optimization..main -- app/layout.tsx next.config.ts`
+5. **라우트 스코프 청크 확인:** DevTools → Network 탭을 열고 이 페이지로 이동하면 `apexcharts`가 이 라우트에서만 별도 청크로 로드되는 것을 확인할 수 있습니다.
+
+---
+
+## 프런트엔드 성능 감사에 관심이 있으신가요?
+
+React/Next.js 제품을 위한 1주 고정 범위 감사. 측정 가능한 목표와 우선순위 실행 계획을 제공합니다.

@@ -12,7 +12,7 @@ export default function HomePage() {
           {siteConfig.tagline}
         </h1>
         <p className="text-lg text-gray-600 max-w-xl mb-6">
-          Performance, scientific visualization, test automation, and delivery quality for data-intensive React products.
+          성능 최적화, 과학 시각화, 테스트 자동화, 배포 품질 — 데이터 중심 React 제품을 위한 모든 것.
         </p>
         <p className="text-sm text-gray-500 mb-8">{siteConfig.availability.status} — {siteConfig.availability.timezone}</p>
         <div className="flex flex-wrap gap-4">
@@ -68,22 +68,22 @@ export default function HomePage() {
 
       {/* Engagement types */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-2">How we can work together</h2>
-        <p className="text-sm text-gray-500 mb-6">B2B contract engagements — monthly, sprint-based, or project-scoped.</p>
+        <h2 className="text-2xl font-bold mb-2">협업 방식</h2>
+        <p className="text-sm text-gray-500 mb-6">월 단위, 스프린트, 또는 프로젝트 단위 B2B 계약.</p>
         <div className="grid sm:grid-cols-2 gap-6">
           <div className="border border-gray-200 rounded-lg p-6">
-            <h3 className="font-semibold mb-2">Frontend development</h3>
+            <h3 className="font-semibold mb-2">프런트엔드 개발</h3>
             <p className="text-sm text-gray-600 mb-4">
-              React / Next.js product development for data-intensive applications — dashboards, scientific tools, 3D visualization interfaces, and design-system work.
+              데이터 집약적 애플리케이션을 위한 React / Next.js 제품 개발 — 대시보드, 과학 도구, 3D 시각화 인터페이스, 디자인 시스템.
             </p>
-            <p className="text-xs text-gray-500">B2B contract &middot; monthly or sprint-based</p>
+            <p className="text-xs text-gray-500">B2B 계약 &middot; 월간 또는 스프린트 기준</p>
           </div>
           <div className="border border-gray-200 rounded-lg p-6">
-            <h3 className="font-semibold mb-2">Performance &amp; delivery quality</h3>
+            <h3 className="font-semibold mb-2">성능 및 배포 품질</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Bundle optimization, Lighthouse improvements, test automation, and CI/CD hardening — embedded in ongoing development or as a focused workstream.
+              번들 최적화, Lighthouse 개선, 테스트 자동화, CI/CD 강화 — 기존 개발에 통합하거나 집중 워크스트림으로 진행.
             </p>
-            <p className="text-xs text-gray-500">Part of dev engagements &middot; or standalone workstream</p>
+            <p className="text-xs text-gray-500">개발 계약의 일부 &middot; 또는 독립 워크스트림</p>
           </div>
         </div>
       </section>

@@ -1,125 +1,125 @@
 export const metadata = {
-  title: "3D Molecular Visualization in the Browser: Molstar & RDKit.js",
+  title: "브라우저에서의 3D 분자 시각화: Molstar & RDKit.js",
   description:
-    "Integrating two specialized scientific libraries for interactive 3D protein structure viewing and 2D cheminformatics, loaded on-demand.",
+    "두 가지 특수 과학 라이브러리를 통합하여 인터랙티브 3D 단백질 구조 뷰어와 2D 화학정보학을 온디맨드로 로드한 방법.",
   slug: "scientific-visualization",
   publishedAt: "2026-XX-XX",
-  role: "Frontend Developer",
-  timeline: "Mar 2025 – present",
-  industry: "Biotech / Scientific visualization",
+  role: "프런트엔드 개발자",
+  timeline: "2025년 3월 – 현재",
+  industry: "생명공학 / 과학 시각화",
   stack: ["React", "Molstar", "RDKit.js", "Three.js", "RCSB PDB"],
   outcomes: [
-    { label: "3D protein viewer", before: "Eager bundle", after: "On-demand load", change: "route-scoped" },
-    { label: "2D mol depiction", before: "Eager bundle", after: "On-demand load", change: "route-scoped" },
+    { label: "3D 단백질 뷰어", before: "Eager 번들", after: "온디맨드 로드", change: "라우트 스코프" },
+    { label: "2D 분자 묘사", before: "Eager 번들", after: "온디맨드 로드", change: "라우트 스코프" },
   ],
   draft: true,
 }
 
-## Context
+## 배경
 
-In the AD3 platform, computational biologists and medicinal chemists routinely inspect 3D protein structures and 2D chemical diagrams. Two specialized libraries handle these tasks:
+AD3 플랫폼에서 전산생물학자와 의약화학자는 일상적으로 3D 단백질 구조와 2D 화학 다이어그램을 검사합니다. 두 가지 특수 라이브러리가 이 작업을 처리합니다:
 
-- **Molstar** — An open-source 3D macromolecular viewer used by the RCSB Protein Data Bank itself
-- **RDKit.js** — A WebAssembly port of the industry-standard RDKit cheminformatics toolkit
+- **Molstar** — RCSB Protein Data Bank에서도 사용하는 오픈소스 3D 고분자 뷰어
+- **RDKit.js** — 업계 표준 RDKit 화학정보학 툴킷의 WebAssembly 포트
 
-Both are large (several MB each) and, in the unoptimized AD3 codebase, were bundled eagerly on every route — even pages that never showed 3D or chemical structures.
+두 라이브러리 모두 크기가 상당하며(각각 수 MB), 최적화되지 않은 AD3 코드베이스에서는 3D나 화학 구조를 전혀 표시하지 않는 페이지를 포함한 모든 라우트에 eager 번들링되어 있었습니다.
 
-## Problem
+## 문제
 
-In production, Molstar plus RDKit contributed more than **50% of the main bundle weight** on routes that neither rendered 3D nor displayed molecular diagrams. The standard approach — route-scoped `dynamic()` imports — could solve this cleanly, but required precise knowledge of which routes needed which libraries.
+프로덕션에서 Molstar와 RDKit은 **3D도 분자 다이어그램도 렌더링하지 않는 라우트에서 메인 번들 무게의 50% 이상을 차지**했습니다. 표준 접근법인 라우트 스코프 `dynamic()` 임포트로 깔끔하게 해결할 수 있었지만, 어떤 라우트가 어떤 라이브러리가 필요한지 정확히 파악하는 것이 선행되어야 했습니다.
 
-## Approach
+## 접근법
 
-### 1. Identify route-to-library mapping
+### 1. 라우트-라이브러리 매핑 식별
 
-I mapped every route in the application against its visualization requirements:
+애플리케이션의 모든 라우트를 시각화 요구사항에 따라 매핑했습니다:
 
 <table>
   <thead>
     <tr>
-      <th>Library</th>
-      <th>Required on</th>
-      <th>Not required on</th>
+      <th>라이브러리</th>
+      <th>필요한 라우트</th>
+      <th>불필요한 라우트</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Molstar (3D viewer)</td>
-      <td>Structure analysis, docking results</td>
-      <td>Dashboard, search, admin</td>
+      <td>Molstar (3D 뷰어)</td>
+      <td>구조 분석, 도킹 결과</td>
+      <td>대시보드, 검색, 관리자</td>
     </tr>
     <tr>
-      <td>RDKit.js (2D chem)</td>
-      <td>Compound designer, property tables</td>
-      <td>Dashboard, admin, settings</td>
+      <td>RDKit.js (2D 화학)</td>
+      <td>화합물 디자이너, 속성 테이블</td>
+      <td>대시보드, 관리자, 설정</td>
     </tr>
   </tbody>
 </table>
 
-### 2. Route-scoped dynamic imports
+### 2. 라우트 스코프 동적 임포트
 
-Both libraries were migrated from top-level imports to route-scoped `dynamic()` calls:
+두 라이브러리 모두 최상위 임포트에서 라우트 스코프 `dynamic()` 호출로 마이그레이션했습니다:
 
 ```tsx
-// Before: every route paid the cost
+// Before: 모든 라우트가 비용 부담
 import { MolstarViewer } from '@molstar/viewer'
 
-// After: only routes that render 3D load Molstar
+// After: 3D를 렌더링하는 라우트만 Molstar 로드
 const MolstarViewer = dynamic(() => import('@/components/3d/MolstarViewer'))
 
-// RDKit.js loaded only on compound-related routes
+// RDKit.js는 화합물 관련 라우트에서만 로드
 const RdkitDepiction = dynamic(() => import('@/components/chem/RdkitDepiction'))
 ```
 
-### 3. Loading UX
+### 3. 로딩 UX
 
-Each heavy component receives a skeleton placeholder that matches its final dimensions, preventing layout shift (CLS) during lazy load.
+각 무거운 컴포넌트는 최종 치수에 맞는 스켈레톤 플레이스홀더를 받아, 지연 로드 중 레이아웃 시프트(CLS)를 방지합니다.
 
-## Live demo: the same technique on this site
+## 실제 데모: 이 사이트에 적용된 동일한 기법
 
-The panel below demonstrates both libraries loading on-demand. Open DevTools → Network and filter by "rdkit" to see the library load only on this page.
+아래 패널은 두 라이브러리가 온디맨드로 로드되는 것을 보여줍니다. DevTools → Network를 열고 "rdkit"으로 필터링하면 이 페이지에서만 라이브러리가 로드되는 것을 확인할 수 있습니다.
 
 <MolecularViewer />
 
-The Molstar viewer is embedded via iframe (it loads independently of the JS bundle). RDKit.js (~2.5 MB WASM) loads from CDN only when this component renders.
+Molstar 뷰어는 iframe을 통해 임베드됩니다(JS 번들과 독립적으로 로드됨). RDKit.js(~2.5 MB WASM)는 이 컴포넌트가 렌더링될 때만 CDN에서 로드됩니다.
 
-## Key decisions
+## 주요 결정
 
-**Why iframe for Molstar instead of npm import?** The full Molstar npm package (`molstar`) pulls in server-side dependencies (Express, compression) that are inappropriate for a browser-only case study site. The iframe delegates rendering to the official Molstar viewer hosted at molstar.org.
+**왜 npm 임포트 대신 iframe을 사용했나요?** Molstar의 전체 npm 패키지(`molstar`)는 브라우저 전용 케이스 스터디 사이트에 적합하지 않은 서버사이드 의존성(Express, compression)을 끌어옵니다. iframe은 molstar.org에서 호스팅되는 공식 Molstar 뷰어로 렌더링을 위임합니다.
 
-**Why CDN for RDKit.js instead of bundling?** RDKit.js is a WebAssembly binary that must be fetched and compiled at runtime regardless of how it's imported. Loading via CDN script tag is the most transparent approach and makes it easy to verify route-scoped loading in DevTools.
+**왜 번들링 대신 CDN에서 RDKit.js를 로드하나요?** RDKit.js는 임포트 방식과 관계없이 런타임에 가져오고 컴파일되어야 하는 WebAssembly 바이너리입니다. CDN 스크립트 태그를 통한 로딩이 가장 투명한 접근법이며, DevTools에서 라우트 스코프 로딩을 쉽게 확인할 수 있습니다.
 
-## Results
+## 결과
 
 <table>
   <thead>
     <tr>
-      <th>Library</th>
+      <th>라이브러리</th>
       <th>Before</th>
       <th>After</th>
-      <th>Method</th>
+      <th>방법</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Molstar</td>
-      <td>Eager import on every route</td>
-      <td>Dynamic import or iframe</td>
+      <td>모든 라우트에 Eager 임포트</td>
+      <td>동적 임포트 또는 iframe</td>
       <td><code>dynamic()</code> / iframe</td>
     </tr>
     <tr>
       <td>RDKit.js (WASM)</td>
-      <td>Eager bundling</td>
-      <td>CDN on-demand</td>
-      <td><code>&lt;script&gt;</code> injection</td>
+      <td>Eager 번들링</td>
+      <td>CDN 온디맨드</td>
+      <td><code>&lt;script&gt;</code> 삽입</td>
     </tr>
   </tbody>
 </table>
 
-## Related
+## 관련 자료
 
-This case study complements the [platform performance](/work/scientific-platform-performance) case study, which shows the same technique applied to the full AD3 codebase with quantified metrics.
+이 케이스 스터디는 [플랫폼 성능 최적화](/work/scientific-platform-performance) 케이스 스터디를 보완합니다. 해당 글에서는 동일한 기법을 전체 AD3 코드베이스에 적용하여 정량화된 지표를 제시합니다.
 
-## Interested in a frontend performance audit?
+## 프런트엔드 성능 감사에 관심이 있으신가요?
 
-One-week fixed-scope audit for your React/Next.js product. You get a prioritized action plan with measurable targets.
+React/Next.js 제품을 위한 1주 고정 범위 감사. 측정 가능한 목표와 우선순위 실행 계획을 제공합니다.

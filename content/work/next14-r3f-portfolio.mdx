@@ -1,39 +1,39 @@
 export const metadata = {
-  title: "Building an Immersive 3D Portfolio: Next.js 14 + React Three Fiber",
+  title: "몰입형 3D 포트폴리오 구축: Next.js 14 + React Three Fiber",
   description:
-    "A bilingual 3D portfolio site with interactive WebGL scenes, macro keyboard controls, Panda CSS, and a full CI/CD pipeline from Jenkins to K3s.",
+    "인터랙티브 WebGL 장면, 매크로 키보드 조작, Panda CSS, Jenkins에서 K3s까지의 완전한 CI/CD 파이프라인을 갖춘 이중언어 3D 포트폴리오 사이트.",
   slug: "next14-r3f-portfolio",
   publishedAt: "2026-XX-XX",
-  role: "Frontend Developer (solo)",
-  timeline: "Dec 2023 – present",
-  industry: "Personal portfolio / 3D web",
+  role: "프런트엔드 개발자 (단독)",
+  timeline: "2023년 12월 – 현재",
+  industry: "개인 포트폴리오 / 3D 웹",
   stack: ["Next.js 14", "React Three Fiber", "Three.js", "Panda CSS", "i18next", "Framer Motion", "Docker", "Jenkins"],
   outcomes: [
-    { label: "3D scenes", before: "0", after: "2 scenes", change: "interactive WebGL" },
-    { label: "Deployment", before: "Manual SSH", after: "Jenkins → K3s auto", change: "fully automated" },
+    { label: "3D 장면", before: "0", after: "2 장면", change: "인터랙티브 WebGL" },
+    { label: "배포", before: "수동 SSH", after: "Jenkins → K3s 자동", change: "완전 자동화" },
   ],
   draft: true,
 }
 
-## Context
+## 배경
 
-A personal portfolio site that doubles as a technical showcase. Instead of a conventional static portfolio, I built an immersive 3D experience using React Three Fiber (R3F) — demonstrating not just frontend development but 3D graphics, internationalization, and DevOps integration in a single project.
+기술 쇼케이스를 겸한 개인 포트폴리오 사이트입니다. 기존의 정적 포트폴리오 대신 React Three Fiber(R3F)를 사용한 몰입형 3D 경험을 구축하여, 프런트엔드 개발뿐 아니라 3D 그래픽스, 국제화(i18n), DevOps 통합을 단일 프로젝트에서 보여줍니다.
 
 **GitHub:** [Lajancia/Next14-R3F](https://github.com/Lajancia/Next14-R3F)
 
-## Technical highlights
+## 기술 하이라이트
 
-### 1. 3D scene composition with React Three Fiber
+### 1. React Three Fiber를 이용한 3D 장면 구성
 
-The site features multiple interactive 3D scenes:
+사이트는 여러 인터랙티브 3D 장면을 포함합니다:
 
-- **Macro Keyboard** — The homepage hero: a detailed keyboard model (`.glb`) with keycaps, rendered with custom lighting and post-processing effects
-- **Bike** — Interactive 3D bicycle model with orbit controls
+- **매크로 키보드** — 홈페이지 히어로: 키캡이 있는 상세한 키보드 모델(`.glb`), 커스텀 조명 및 포스트-프로세싱 효과로 렌더링
+- **자전거** — 궤도 컨트롤이 있는 인터랙티브 3D 자전거 모델
 
-Each scene is a self-contained R3F component:
+각 장면은 독립적인 R3F 컴포넌트입니다:
 
 ```tsx
-// Example: 3D keyboard scene component structure
+// 예: 3D 키보드 장면 컴포넌트 구조
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment, useGLTF } from '@react-three/drei'
 
@@ -49,68 +49,68 @@ function KeyboardScene() {
 }
 ```
 
-### 2. Bilingual support with i18next
+### 2. i18next를 이용한 이중언어 지원
 
-Full Korean and English localization using `i18next` with:
-- Dynamic route-based language detection (`/en/pipeline`, `/ko/pipeline`)
-- Server-side language negotiation via `accept-language` header
-- Namespaced translation files per page component
+`i18next`를 사용한 완전한 한국어/영어 로컬라이제이션:
+- 동적 라우트 기반 언어 감지 (`/en/pipeline`, `/ko/pipeline`)
+- `accept-language` 헤더를 통한 서버사이드 언어 협상
+- 페이지 컴포넌트별 네임스페이스 번역 파일
 
-### 3. Panda CSS for styling
+### 3. Panda CSS 스타일링
 
-Styling is handled by **Panda CSS** — a modern CSS-in-JS framework with:
-- Type-safe design tokens
-- Zero-runtime CSS generation at build time
-- Responsive variants without media query boilerplate
+**Panda CSS**로 스타일링 처리 — 모던 CSS-in-JS 프레임워크:
+- 타입-세이프 디자인 토큰
+- 빌드 타임 제로-런타임 CSS 생성
+- 미디어 쿼리 보일러플레이트 없는 반응형 변형
 
-### 4. Infrastructure timeline
+### 4. 인프라 타임라인
 
-A dedicated Pipeline page visualizes the full CI/CD infrastructure as an interactive timeline diagram — from user → Nginx → Next.js → Jenkins → K3s → GitHub → Tailscale — with animated signal packets flowing between nodes.
+전용 Pipeline 페이지는 전체 CI/CD 인프라를 인터랙티브 타임라인 다이어그램으로 시각화합니다 — 사용자 → Nginx → Next.js → Jenkins → K3s → GitHub → Tailscale, 노드 사이를 흐르는 애니메이션 신호 패킷 포함.
 
-## CI/CD pipeline
+## CI/CD 파이프라인
 
-The project includes a complete DevOps pipeline:
+이 프로젝트는 완전한 DevOps 파이프라인을 포함합니다:
 
-- **`dockerfile`** — Multi-stage build (deps → builder → runner) with pnpm
-- **`docker-compose.yml`** — Local deployment configuration
-- **`Jenkinsfile`** — Automated build, push to GHCR, GitOps repo update
-- **`ecosystem.config.js`** — PM2 process management for production
+- **`dockerfile`** — pnpm을 사용한 멀티-스테이지 빌드 (deps → builder → runner)
+- **`docker-compose.yml`** — 로컬 배포 설정
+- **`Jenkinsfile`** — 자동 빌드, GHCR 푸시, GitOps 저장소 업데이트
+- **`ecosystem.config.js`** — 프로덕션 PM2 프로세스 관리
 
-## Key decisions
+## 주요 결정
 
-**Why Panda CSS over Tailwind?** Panda CSS generates type-safe atomic styles at build time, providing the developer experience of Tailwind with the type safety of CSS-in-JS libraries. It also supports configurable design tokens that can be shared across the application.
+**왜 Tailwind 대신 Panda CSS인가요?** Panda CSS는 빌드 타임에 타입-세이프 원자 스타일을 생성하여, Tailwind의 개발자 경험과 CSS-in-JS 라이브러리의 타입 안전성을 모두 제공합니다. 또한 애플리케이션 전반에 공유할 수 있는 설정 가능한 디자인 토큰을 지원합니다.
 
-**Why separate CI/CD case study?** The Next14-R3F project originally contained both the 3D portfolio and the Jenkins/K3s pipeline. I've documented them separately because each addresses a different engineering concern — visualization and infrastructure.
+**왜 별도의 CI/CD 케이스 스터디인가요?** Next14-R3F 프로젝트는 원래 3D 포트폴리오와 Jenkins/K3s 파이프라인을 모두 포함하고 있었습니다. 각각이 시각화와 인프라라는 다른 엔지니어링 영역을 다루므로 별도로 문서화했습니다.
 
-## Results
+## 결과
 
 <table>
   <thead>
     <tr>
-      <th>Aspect</th>
-      <th>Detail</th>
+      <th>영역</th>
+      <th>내용</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>3D scenes</td>
-      <td>2 interactive WebGL scenes with GLTF models</td>
+      <td>3D 장면</td>
+      <td>GLTF 모델을 사용한 2개의 인터랙티브 WebGL 장면</td>
     </tr>
     <tr>
       <td>i18n</td>
-      <td>Korean + English, route-based detection</td>
+      <td>한국어 + 영어, 라우트 기반 감지</td>
     </tr>
     <tr>
-      <td>Styling</td>
-      <td>Panda CSS with typed design tokens</td>
+      <td>스타일링</td>
+      <td>타입-세이프 디자인 토큰을 사용한 Panda CSS</td>
     </tr>
     <tr>
       <td>CI/CD</td>
-      <td>Jenkins → GHCR → K3s (see dedicated case study)</td>
+      <td>Jenkins → GHCR → K3s (전용 케이스 스터디 참조)</td>
     </tr>
   </tbody>
 </table>
 
-## Related
+## 관련 자료
 
-See the [CI/CD Pipeline](/work/cicd-pipeline) case study for the full Jenkins + K3s + ArgoCD setup that powers this project's deployment.
+[CI/CD Pipeline](/work/cicd-pipeline) 케이스 스터디에서 이 프로젝트의 배포를 담당하는 전체 Jenkins + K3s + ArgoCD 설정을 확인하세요.
