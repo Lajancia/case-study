@@ -114,9 +114,11 @@ The dashboard below compares the unoptimized branch against the current optimize
 
 ## Docker: standalone build comparison
 
-The project uses Next.js `output: 'standalone'` in `next.config.ts`, which produces a minimal self-contained build with only the runtime dependencies needed to run the application.
+*This section is about this case study site's own build, not AD3's — Docker image size wasn't part of the AD3 bundle-optimization work above. Standalone-build Docker slimming is a technique from a separate engagement; it's demonstrated here because this site is also containerized.*
 
-If we compare the Docker image size with and without `output: 'standalone'`, measured from the two branches:
+This site uses Next.js `output: 'standalone'` in `next.config.ts`, which produces a minimal self-contained build with only the runtime dependencies needed to run the application.
+
+If we compare this site's Docker image size with and without `output: 'standalone'`, measured from the two branches:
 
 <table>
   <thead>
