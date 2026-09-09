@@ -1,26 +1,35 @@
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import { siteConfig, mailtoUrl } from '@/lib/site'
-import { caseStudies } from '@/lib/case-studies'
+import { getCaseStudies, type Locale } from '@/lib/case-studies'
 
-export default function HomePage() {
-  const featuredStudies = caseStudies.slice(0, 2)
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>
+}) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'home' })
+  const tSite = await getTranslations({ locale, namespace: 'site' })
+  const featuredStudies = getCaseStudies(locale).slice(0, 2)
+
   return (
     <div className="mx-auto max-w-4xl px-6">
       {/* Hero */}
       <section className="py-20 sm:py-28">
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight mb-4">
-          {siteConfig.tagline}
+          {tSite('tagline')}
         </h1>
         <p className="text-lg text-gray-600 max-w-xl mb-6 dark:text-gray-400">
-          Performance, scientific visualization, test automation, and delivery quality for data-intensive React products.
+          {t('heroSubtitle')}
         </p>
-        <p className="text-sm text-gray-500 mb-8 dark:text-gray-500">{siteConfig.availability.status} — {siteConfig.availability.timezone}</p>
+        <p className="text-sm text-gray-500 mb-8 dark:text-gray-500">{tSite('availabilityStatus')} — {tSite('availabilityTimezone')}</p>
         <div className="flex flex-wrap gap-4">
           <Link
             href="/work"
             className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
           >
-            View case study
+            {t('viewCaseStudy')}
           </Link>
           {siteConfig.calendlyUrl ? (
             <a
@@ -29,14 +38,14 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
             >
-              Book a call
+              {t('bookACall')}
             </a>
           ) : (
             <a
               href={mailtoUrl('Hello from your case study site')}
               className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
             >
-              Email Soomin
+              {t('emailSoomin')}
             </a>
           )}
         </div>
@@ -45,7 +54,7 @@ export default function HomePage() {
       {/* Featured results */}
       {featuredStudies.length > 0 && (
         <section className="mb-16">
-          <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4 dark:text-gray-500">Selected work</h2>
+          <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4 dark:text-gray-500">{t('selectedWork')}</h2>
           <div className="space-y-6">
             {featuredStudies.map((study) => (
               <div key={study.slug} className="border border-gray-200 rounded-lg p-6 sm:p-8 hover:border-gray-300 transition-colors dark:border-gray-800 dark:hover:border-gray-700">
@@ -65,68 +74,68 @@ export default function HomePage() {
                   ))}
                 </div>
                 <Link href={`/work/${study.slug}`} className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300">
-                  Read full case study →
+                  {t('readFullCaseStudy')}
                 </Link>
               </div>
             ))}
           </div>
           <Link href="/work" className="block text-center mt-6 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:text-gray-100">
-            See all case studies
+            {t('seeAllCaseStudies')}
           </Link>
         </section>
       )}
 
       {/* Engagement types */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-2">How we can work together</h2>
-        <p className="text-sm text-gray-500 mb-6 dark:text-gray-500">B2B contract engagements — monthly, sprint-based, or project-scoped.</p>
+        <h2 className="text-2xl font-bold mb-2">{t('howWeWorkTitle')}</h2>
+        <p className="text-sm text-gray-500 mb-6 dark:text-gray-500">{t('howWeWorkSubtitle')}</p>
         <div className="grid sm:grid-cols-2 gap-6">
           <div className="border border-gray-200 rounded-lg p-6 dark:border-gray-800">
-            <h3 className="font-semibold mb-2">Frontend development</h3>
+            <h3 className="font-semibold mb-2">{t('frontendDevTitle')}</h3>
             <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">
-              React / Next.js product development for data-intensive applications — dashboards, scientific tools, 3D visualization interfaces, and design-system work.
+              {t('frontendDevBody')}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-500">B2B contract &middot; monthly or sprint-based</p>
+            <p className="text-xs text-gray-500 dark:text-gray-500">{t('frontendDevTag')}</p>
           </div>
           <div className="border border-gray-200 rounded-lg p-6 dark:border-gray-800">
-            <h3 className="font-semibold mb-2">Performance &amp; delivery quality</h3>
+            <h3 className="font-semibold mb-2">{t('perfTitle')}</h3>
             <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">
-              Bundle optimization, Lighthouse improvements, test automation, and CI/CD hardening — embedded in ongoing development or as a focused workstream.
+              {t('perfBody')}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-500">Part of dev engagements &middot; or standalone workstream</p>
+            <p className="text-xs text-gray-500 dark:text-gray-500">{t('perfTag')}</p>
           </div>
         </div>
       </section>
 
       {/* Credibility */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-6">Expertise</h2>
+        <h2 className="text-2xl font-bold mb-6">{t('expertiseTitle')}</h2>
         <div className="flex flex-wrap gap-2 mb-4">
           {['React', 'Next.js', 'TypeScript', 'Scientific visualization', 'Playwright', 'Cypress', 'Jenkins', 'Docker', 'DevSecOps', 'Performance optimization'].map((item) => (
             <span key={item} className="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full dark:bg-gray-800 dark:text-gray-300">{item}</span>
           ))}
         </div>
         <Link href="/about" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300">
-          Full background &amp; experience →
+          {t('fullBackground')}
         </Link>
       </section>
 
       {/* Final CTA */}
       <section className="text-center py-12 border-t border-gray-200 dark:border-gray-800">
-        <h2 className="text-2xl font-bold mb-3">Let&apos;s work together</h2>
-        <p className="text-gray-600 mb-6 dark:text-gray-400">Available for contract and B2B engagements from October 2026.</p>
+        <h2 className="text-2xl font-bold mb-3">{t('letsWorkTitle')}</h2>
+        <p className="text-gray-600 mb-6 dark:text-gray-400">{t('letsWorkSubtitle')}</p>
         <div className="flex justify-center gap-4">
           <Link
             href="/work"
             className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
           >
-            View case study
+            {t('viewCaseStudy')}
           </Link>
           <a
             href={mailtoUrl('Let\'s work together')}
             className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
           >
-            Email Soomin
+            {t('emailSoomin')}
           </a>
         </div>
       </section>

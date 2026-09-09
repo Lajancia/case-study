@@ -7,7 +7,19 @@ export const alt = 'Soomin Hwang — Frontend Case Studies'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
-export default function OGImage() {
+const TAGLINE: Record<string, string> = {
+  en: 'Frontend engineer for data-intensive React products.',
+  ko: '데이터 집약적인 React 제품을 위한 프론트엔드 엔지니어.',
+}
+
+export default async function OGImage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const tagline = TAGLINE[locale] ?? TAGLINE.en
+
   return new ImageResponse(
     (
       <div
@@ -28,7 +40,7 @@ export default function OGImage() {
           {siteConfig.name}
         </div>
         <div style={{ fontSize: 24, opacity: 0.9, textAlign: 'center', maxWidth: 600 }}>
-          {siteConfig.tagline}
+          {tagline}
         </div>
       </div>
     ),

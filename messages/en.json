@@ -1,0 +1,84 @@
+{
+  "site": {
+    "titleSuffix": "Frontend Case Studies",
+    "tagline": "Frontend engineer for data-intensive React products.",
+    "availabilityStatus": "Available for contract/B2B from 20 October 2026",
+    "availabilityTimezone": "CET (Nov–Jan), KST (thereafter)"
+  },
+  "nav": {
+    "about": "About",
+    "work": "Work",
+    "technicalWriting": "Technical Writing",
+    "resume": "Resume",
+    "contact": "Contact",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "theme": {
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "email": "Email",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "medium": "Medium",
+    "portfolio": "Interactive portfolio"
+  },
+  "home": {
+    "heroSubtitle": "Performance, scientific visualization, test automation, and delivery quality for data-intensive React products.",
+    "viewCaseStudy": "View case study",
+    "bookACall": "Book a call",
+    "emailSoomin": "Email Soomin",
+    "selectedWork": "Selected work",
+    "readFullCaseStudy": "Read full case study →",
+    "seeAllCaseStudies": "See all case studies",
+    "howWeWorkTitle": "How we can work together",
+    "howWeWorkSubtitle": "B2B contract engagements — monthly, sprint-based, or project-scoped.",
+    "frontendDevTitle": "Frontend development",
+    "frontendDevBody": "React / Next.js product development for data-intensive applications — dashboards, scientific tools, 3D visualization interfaces, and design-system work.",
+    "frontendDevTag": "B2B contract · monthly or sprint-based",
+    "perfTitle": "Performance & delivery quality",
+    "perfBody": "Bundle optimization, Lighthouse improvements, test automation, and CI/CD hardening — embedded in ongoing development or as a focused workstream.",
+    "perfTag": "Part of dev engagements · or standalone workstream",
+    "expertiseTitle": "Expertise",
+    "fullBackground": "Full background & experience →",
+    "letsWorkTitle": "Let's work together",
+    "letsWorkSubtitle": "Available for contract and B2B engagements from October 2026."
+  },
+  "work": {
+    "title": "Selected work",
+    "comingSoon": "Coming soon",
+    "readCaseStudy": "Read case study →",
+    "draft": "Draft"
+  },
+  "caseStudyHero": {
+    "role": "Role",
+    "timeline": "Timeline",
+    "stack": "Stack",
+    "nda": "NDA",
+    "ndaValue": "Details anonymized"
+  },
+  "caseStudyCta": {
+    "title": "Interested in a frontend performance audit?",
+    "body": "One-week fixed-scope audit for your React/Next.js product. You get a prioritized action plan with measurable targets.",
+    "bookACall": "Book a call",
+    "bookingComingSoon": "Book a call (coming soon)",
+    "emailSoomin": "Email Soomin"
+  },
+  "about": {
+    "title": "About",
+    "intro": "I build React/Next.js products end to end — from backend API integration through CI/CD, test automation, and security review. Most of my recent work has been on data-intensive platforms in biotech: 3D molecular visualization, scientific charting, and the bundle-size and delivery-pipeline discipline that keeps those products fast to load and safe to ship. I also use Claude Code and Codex to automate parts of testing, review, and refactoring in day-to-day development.",
+    "experience": "Experience",
+    "skills": "Skills",
+    "education": "Education",
+    "leftNote": "Left when the company ceased operations.",
+    "letsWorkTitle": "Let's work together",
+    "letsWorkSubtitle": "Available for contract and B2B engagements from October 2026.",
+    "emailSoomin": "Email Soomin"
+  }
+}

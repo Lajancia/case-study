@@ -7,7 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: '/work/scientific-platform-performance/', // draft until published
       },
     ],
     sitemap: `${siteConfig.url}/sitemap.xml`,

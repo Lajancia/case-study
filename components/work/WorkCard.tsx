@@ -1,11 +1,14 @@
-import Link from 'next/link'
-import type { CaseStudyMeta } from '@/lib/case-studies'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
+import type { CaseStudyMeta, Locale } from '@/lib/case-studies'
 
 interface WorkCardProps {
   study: CaseStudyMeta
+  locale: Locale
 }
 
-export function WorkCard({ study }: WorkCardProps) {
+export async function WorkCard({ study, locale }: WorkCardProps) {
+  const t = await getTranslations({ locale, namespace: 'work' })
   return (
     <article className={`border rounded-lg p-6 transition-all duration-200 ${
       study.draft
@@ -16,7 +19,7 @@ export function WorkCard({ study }: WorkCardProps) {
         <div className={`text-xs font-medium uppercase tracking-wider ${study.draft ? 'text-gray-400 dark:text-gray-600' : 'text-indigo-600 dark:text-indigo-400'}`}>{study.industry}</div>
         {study.draft && (
           <span className="shrink-0 text-xs font-semibold text-gray-500 bg-gray-200 border border-gray-300 rounded-full px-2.5 py-0.5 leading-none dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700">
-            Draft
+            {t('draft')}
           </span>
         )}
       </div>
@@ -45,7 +48,7 @@ export function WorkCard({ study }: WorkCardProps) {
           study.draft ? 'text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500' : 'text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
         }`}
       >
-        Read case study →
+        {t('readCaseStudy')}
       </Link>
     </article>
   )

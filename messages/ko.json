@@ -1,0 +1,84 @@
+{
+  "site": {
+    "titleSuffix": "프론트엔드 케이스 스터디",
+    "tagline": "데이터 집약적인 React 제품을 위한 프론트엔드 엔지니어.",
+    "availabilityStatus": "2026년 10월 20일부터 계약/B2B 가능",
+    "availabilityTimezone": "CET(11월–1월), 이후 KST"
+  },
+  "nav": {
+    "about": "소개",
+    "work": "작업물",
+    "technicalWriting": "기술 글쓰기",
+    "resume": "이력서",
+    "contact": "연락하기",
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기"
+  },
+  "theme": {
+    "switchToDark": "다크 모드로 전환",
+    "switchToLight": "라이트 모드로 전환"
+  },
+  "language": {
+    "label": "언어"
+  },
+  "footer": {
+    "rights": "모든 권리 보유.",
+    "email": "이메일",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "medium": "Medium",
+    "portfolio": "인터랙티브 포트폴리오"
+  },
+  "home": {
+    "heroSubtitle": "데이터 집약적인 React 제품을 위한 성능 최적화, 과학적 시각화, 테스트 자동화, 딜리버리 품질 관리.",
+    "viewCaseStudy": "케이스 스터디 보기",
+    "bookACall": "미팅 예약",
+    "emailSoomin": "이메일 보내기",
+    "selectedWork": "대표 작업물",
+    "readFullCaseStudy": "전체 케이스 스터디 읽기 →",
+    "seeAllCaseStudies": "모든 케이스 스터디 보기",
+    "howWeWorkTitle": "협업 방식",
+    "howWeWorkSubtitle": "B2B 계약 — 월 단위, 스프린트 단위, 또는 프로젝트 단위.",
+    "frontendDevTitle": "프론트엔드 개발",
+    "frontendDevBody": "데이터 집약적인 애플리케이션을 위한 React / Next.js 제품 개발 — 대시보드, 과학 도구, 3D 시각화 인터페이스, 디자인 시스템 작업.",
+    "frontendDevTag": "B2B 계약 · 월 단위 또는 스프린트 단위",
+    "perfTitle": "성능 & 딜리버리 품질",
+    "perfBody": "번들 최적화, Lighthouse 개선, 테스트 자동화, CI/CD 안정화 — 진행 중인 개발에 포함되거나 별도 워크스트림으로 진행.",
+    "perfTag": "개발 계약에 포함 · 또는 단독 워크스트림",
+    "expertiseTitle": "전문 분야",
+    "fullBackground": "전체 경력 보기 →",
+    "letsWorkTitle": "함께 일해요",
+    "letsWorkSubtitle": "2026년 10월부터 계약 및 B2B 협업 가능합니다."
+  },
+  "work": {
+    "title": "대표 작업물",
+    "comingSoon": "준비 중",
+    "readCaseStudy": "케이스 스터디 읽기 →",
+    "draft": "초안"
+  },
+  "caseStudyHero": {
+    "role": "역할",
+    "timeline": "기간",
+    "stack": "기술 스택",
+    "nda": "NDA",
+    "ndaValue": "세부 정보 비식별화"
+  },
+  "caseStudyCta": {
+    "title": "프론트엔드 성능 감사가 필요하신가요?",
+    "body": "React/Next.js 제품을 위한 1주 고정 범위 감사. 측정 가능한 목표가 담긴 우선순위 실행 계획을 받아보세요.",
+    "bookACall": "미팅 예약",
+    "bookingComingSoon": "미팅 예약 (준비 중)",
+    "emailSoomin": "이메일 보내기"
+  },
+  "about": {
+    "title": "소개",
+    "intro": "백엔드 API 연동부터 CI/CD, 테스트 자동화, 보안 점검까지 React/Next.js 제품을 처음부터 끝까지 만듭니다. 최근에는 주로 바이오테크 분야의 데이터 집약적인 플랫폼을 다뤄왔습니다 — 3D 분자 시각화, 과학적 차트, 그리고 이런 제품들을 빠르고 안전하게 유지하는 번들 사이즈·배포 파이프라인 관리까지. 일상적인 개발에서 테스트·리뷰·리팩터링 일부를 자동화하기 위해 Claude Code와 Codex도 활용하고 있습니다.",
+    "experience": "경력",
+    "skills": "기술 스택",
+    "education": "학력",
+    "leftNote": "회사 운영 중단으로 퇴사.",
+    "letsWorkTitle": "함께 일해요",
+    "letsWorkSubtitle": "2026년 10월부터 계약 및 B2B 협업 가능합니다.",
+    "emailSoomin": "이메일 보내기"
+  }
+}

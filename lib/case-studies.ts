@@ -1,3 +1,5 @@
+export type Locale = 'en' | 'ko'
+
 export interface CaseStudyMeta {
   slug: string
   title: string
@@ -19,7 +21,7 @@ export interface CaseStudyMeta {
   draft: boolean
 }
 
-export const caseStudies: CaseStudyMeta[] = [
+const caseStudiesEn: CaseStudyMeta[] = [
   {
     slug: 'scientific-platform-performance',
     title: "Cutting a Scientific 3D Platform's Main Bundle by 80%",
@@ -117,10 +119,51 @@ export const caseStudies: CaseStudyMeta[] = [
   },
 ]
 
-export function getCaseStudy(slug: string): CaseStudyMeta | undefined {
-  return caseStudies.find((c) => c.slug === slug)
+// Stage 1 of the i18n rollout: only the flagship case study is translated.
+// The other four intentionally reuse the English copy as a placeholder so
+// nothing 404s or renders blank on /ko — replace each entry as it's
+// translated (content/work/ko/<slug>.mdx should be translated at the same
+// time as its metadata here).
+const caseStudiesKo: CaseStudyMeta[] = [
+  {
+    slug: 'scientific-platform-performance',
+    title: '과학 3D 플랫폼 메인 번들 80% 감축하기',
+    description:
+      '라우트 단위 로딩과 런타임 렌더링 개선으로 과학 분야 React 플랫폼의 메인 번들을 32MB에서 6.5MB로 줄인 과정.',
+    publishedAt: '2026-08-XX',
+    role: '프론트엔드 개발자 (단독 프론트엔드 담당)',
+    timeline: '2025년 3월 – 현재',
+    industry: '바이오테크 / AI 신약 개발',
+    stack: ['React', 'Vite', 'Molstar', 'RDKit', 'Plotly', 'MUI'],
+    outcomes: [
+      { label: '메인 번들', before: '32MB', after: '6.5MB', change: '−80%' },
+      { label: 'Lighthouse 성능 점수', before: '29', after: '78', change: '+49' },
+    ],
+    capabilityTags: ['performance', 'visualization'],
+    domains: ['biotech'],
+    collaborations: [],
+    draft: false,
+  },
+  ...caseStudiesEn.slice(1),
+]
+
+const caseStudiesByLocale: Record<Locale, CaseStudyMeta[]> = {
+  en: caseStudiesEn,
+  ko: caseStudiesKo,
 }
 
-export function getPublishedCaseStudies(): CaseStudyMeta[] {
-  return caseStudies.filter((c) => !c.draft)
+export function getCaseStudies(locale: Locale): CaseStudyMeta[] {
+  return caseStudiesByLocale[locale] ?? caseStudiesEn
+}
+
+export function getCaseStudy(locale: Locale, slug: string): CaseStudyMeta | undefined {
+  return getCaseStudies(locale).find((c) => c.slug === slug)
+}
+
+export function getPublishedCaseStudies(locale: Locale): CaseStudyMeta[] {
+  return getCaseStudies(locale).filter((c) => !c.draft)
+}
+
+export function getAllSlugs(): string[] {
+  return caseStudiesEn.map((c) => c.slug)
 }

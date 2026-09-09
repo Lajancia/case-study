@@ -1,0 +1,197 @@
+export const metadata = {
+  title: "과학 3D 플랫폼 메인 번들 80% 감축하기",
+  description:
+    "라우트 단위 로딩과 런타임 렌더링 개선으로 과학 분야 React 플랫폼의 메인 번들을 32MB에서 6.5MB로 줄인 과정.",
+  slug: "scientific-platform-performance",
+  publishedAt: "2026-10-XX",
+  role: "프론트엔드 개발자 (단독 프론트엔드 담당)",
+  timeline: "2025년 3월 – 현재",
+  industry: "바이오테크 / AI 신약 개발",
+  stack: ["React", "Vite", "Molstar", "RDKit", "Plotly", "MUI"],
+  outcomes: [
+    { label: "메인 번들", before: "32MB", after: "6.5MB", change: "−80%" },
+    { label: "Lighthouse 성능 점수", before: "29", after: "78", change: "+49" },
+  ],
+  draft: false,
+}
+
+## 배경
+
+이 제품([AD3](https://ad3.io/), 실제 서비스 중)은 단백질–리간드 상호작용을 연구하는 전산생물학자와 의약화학자를 대상으로 합니다. 연구자들은 브라우저에서 가설을 탐색하고 검증하기 위해 3D 분자 뷰어, 구조화학 라이브러리, 인터랙티브 차트 같은 무거운 도메인 도구에 의존합니다.
+
+## 문제
+
+메인 JavaScript 번들 용량이 **32MB**였고, 프로덕션 빌드 기준 Lighthouse 성능 점수는 **29**였습니다. `rollup-plugin-visualizer`로 트리맵을 뽑아보니 **RDKit과 Molstar가 실제로 사용되지 않는 라우트에서도 번들의 50% 이상을 차지**하고 있었습니다 — 사용자가 그 라우트에서 결코 만지지 않을 과학 라이브러리 비용을 모든 페이지가 그대로 떠안고 있었던 겁니다.
+
+## 진행한 작업
+
+### 1. 측정
+
+프로덕션 빌드에 `rollup-plugin-visualizer`를 돌려 가장 큰 원인을 짚었습니다. 트리맵은 로드 타임 프로파일링에서 짐작했던 바를 그대로 확인해줬습니다: 현재 라우트와 무관하게 RDKit(구조화학)과 Molstar(3D 분자 뷰어)가 번들을 지배하고 있었습니다.
+
+### 2. 대안 검토
+
+전역 압축(`brotli` / `gzip`)은 전송 크기는 줄여주지만 브라우저가 파싱·실행해야 하는 32MB 자체는 바뀌지 않습니다 — 압축은 증상만 완화할 뿐 로드 비용 자체를 해결하지 못합니다. 무거운 import마다 `React.lazy`를 무분별하게 적용하는 것도 비용을 옮길 뿐, 과학 라이브러리를 관련 여부와 무관하게 모든 라우트에 심어두는 구조 자체는 그대로 남습니다. 이 코드베이스에는 두 방법 모두 충분하지 않았고, 구조적인 해결이 필요했습니다.
+
+### 3. 라우트 단위 Molstar/RDKit 청크 분리
+
+3D 뷰나 구조화학 화면을 실제로 렌더링하는 라우트에서만 Molstar와 RDKit이 로드되도록 번들링 전략을 재구성했습니다. 테이블 위주·폼 위주·대시보드 화면은 더 이상 메인 청크에 이 라이브러리들을 포함하지 않습니다.
+
+### 4. RDKit 선택적 import
+
+RDKit은 C++ 케모인포매틱스 라이브러리를 통째로 JavaScript로 포팅한 형태로 배포됩니다. 전체 라이브러리 import를 각 라우트가 실제로 필요로 하는 분자 연산만 가져오는 tree-shakeable entry point로 교체했습니다.
+
+### 5. react-plotly.js 지연 로딩
+
+인터랙티브 플로팅 라이브러리가 모든 라우트에 즉시(eager) 번들링되고 있었습니다. 라우트 단위 dynamic import로 지연시켜, 실제로 사용하는 분석 화면에서만 로드되게 했습니다.
+
+### 6. Compound Designer — 가장 까다로운 경로
+
+Compound Designer 라우트는 분자 뷰어·속성 테이블·필터 패널·유사도 검색 결과·병렬 좌표 플롯 등 **150개 이상의 React 노드**로 구성된 인터랙티브 워크스페이스를 렌더링합니다. 병목 지점은 다음과 같았습니다:
+
+- **뷰포트 로딩**: 현재 뷰포트에 보이는 노드만 렌더링. 사용자가 스크롤·팬 하면 나머지 노드가 필요 시점에 하이드레이션됨.
+- **병렬 렌더링**: 독립적인 노드 트리들을 순차가 아니라 동시에 렌더링.
+- **`useEffect` 의존성 배열 수정**: 의존성 배열 누락·오래된 값 때문에 렌더링마다 불필요하게 재실행되던 이펙트들이 있었음. 이를 고쳐서 상호작용 1회당 발생하던 수천 건의 불필요한 리렌더를 제거.
+- **메모이제이션**: 지문(fingerprint) 생성, 유사도 스코어링, 속성 계산 같은 비용이 큰 연산을 안정적인 입력값 기준 `useMemo`로 캐싱.
+
+### 7. CLS(레이아웃 밀림) 회귀
+
+배포 과정에서 Cumulative Layout Shift 회귀가 감지됐습니다: 동적 콘텐츠 로딩이 Compound Designer 라우트에서 레이아웃이 튀는 현상을 유발했습니다. 원인은 스타일이 없는 로딩 컨테이너가 높이 0으로 붕괴하는 것이었고, 프로덕션 반영 전에 원인을 찾아 해결했습니다.
+
+## 결과
+
+<table>
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th>이전</th>
+      <th>이후</th>
+      <th>변화</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>메인 번들</td>
+      <td>32MB</td>
+      <td>6.5MB</td>
+      <td>−80%</td>
+    </tr>
+    <tr>
+      <td>Lighthouse 성능 점수</td>
+      <td>29</td>
+      <td>78</td>
+      <td>+49</td>
+    </tr>
+  </tbody>
+</table>
+
+*동일한 테스트 환경에서 전후 프로덕션 빌드를 대상으로 Chrome DevTools Lighthouse로 측정.*
+
+6.5MB로 줄어든 메인 번들은 일반 사무실 네트워크 환경에서 3초 이내에 로드됩니다 (프로덕션 빌드, Chrome DevTools Fast 3G 스로틀링 기준 측정). 이후 라우트 전환에서는 해당 라우트 전용 청크만 추가로 로드됩니다.
+
+## 비식별화된 기술 도식
+
+![전후 라우트-청크 다이어그램](/work/scientific-platform-performance/route-chunks.svg)
+
+*단순화한 재구성 이미지이며, 실제 프로덕션 스크린샷이 아닙니다.*
+
+이 다이어그램은 대표적인 라우트 일부를 보여줍니다. 변경 전에는 모든 라우트가 전체 과학 라이브러리 청크를 포함했고, 변경 후에는 각 라우트가 필요한 부분집합만 로드합니다.
+
+---
+
+## 같은 기법을 이 사이트 자체에도 적용
+
+이 케이스 스터디 사이트 자체도 동일한 라우트 단위 코드 스플리팅과 standalone 빌드 전략을 사용합니다. 이를 직접 증명하기 위해, 전용 `perf/before-optimization` 브랜치를 만들어 AD3에서 있었던 안티패턴을 이 사이트에 그대로 재현했습니다:
+
+- **즉시(eager) import:** `three.js`(99 KB)가 `layout.tsx`를 통해 모든 라우트에서 로드됨
+- **standalone 빌드 미적용:** `next.config.ts`에서 `output: 'standalone'` 제거
+
+아래 대시보드는 최적화 전 브랜치와 현재 최적화된 상태를 — AD3의 비공개 코드베이스가 아니라 — 바로 이 사이트에서 직접 비교합니다.
+
+<PerformanceDashboard />
+
+---
+
+## Docker: standalone 빌드 비교
+
+*이 섹션은 AD3가 아니라 이 케이스 스터디 사이트 자체의 빌드에 대한 내용입니다 — Docker 이미지 용량 절감은 위의 AD3 번들 최적화 작업에 포함되지 않았습니다. standalone 빌드로 Docker 이미지를 줄이는 기법은 별도 프로젝트에서 실제로 적용했던 것이며, 이 사이트도 컨테이너로 배포되기 때문에 같은 기법을 여기서 보여드립니다.*
+
+이 사이트는 `next.config.ts`에서 Next.js의 `output: 'standalone'`을 사용합니다. 이는 애플리케이션 실행에 필요한 런타임 의존성만 담은 최소 자체완결형(self-contained) 빌드를 만들어줍니다.
+
+`output: 'standalone'` 적용 전후의 Docker 이미지 크기를 두 브랜치 기준으로 비교하면:
+
+<table>
+  <thead>
+    <tr>
+      <th>레이어</th>
+      <th>standalone 미적용 (<code>perf/before-optimization</code>)</th>
+      <th>standalone 적용 (<code>current</code>)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>베이스 이미지 (node:22-alpine)</td>
+      <td>~50 MB</td>
+      <td>~50 MB</td>
+    </tr>
+    <tr>
+      <td><code>node_modules</code></td>
+      <td>~350 MB</td>
+      <td>~55 MB (standalone이 정리)</td>
+    </tr>
+    <tr>
+      <td>빌드 산출물 (<code>.next/</code>)</td>
+      <td>~92 MB (캐시 포함)</td>
+      <td>~5 MB (정적 자산만)</td>
+    </tr>
+    <tr>
+      <td><strong>최종 러너 스테이지</strong></td>
+      <td><strong>~492 MB</strong></td>
+      <td><strong>~110 MB</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+`Dockerfile`은 3단계 빌드로 구성됩니다:
+
+```dockerfile
+# Stage 1: 의존성 설치
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Stage 2: 빌드
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+# Stage 3: 최소 러너
+FROM node:22-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+```
+
+핵심은 `COPY --from=builder /app/.next/standalone ./` 이 한 줄입니다. Next.js의 standalone 출력은 devDependencies·빌드 도구·캐시된 중간 산출물을 모두 제거하고, 필요한 런타임만 남깁니다.
+
+> **참고:** 측정 환경에는 Docker 데몬이 없었습니다. standalone 미적용 수치는 Next.js + MDX + Tailwind 프로젝트의 일반적인 `node_modules` 용량을 기준으로 추정한 값이고, standalone 적용 수치는 실제 `.next/standalone/` 디렉터리를 측정한 값입니다.
+
+---
+
+## 이 주장들을 직접 검증하는 방법
+
+1. **이 저장소를 클론:** `git clone https://github.com/Lajancia/case-study`
+2. **현재 빌드(최적화 후):** `git checkout main && npm run build && node scripts/measure-bundle.mjs`
+3. **최적화 전 빌드:** `git checkout perf/before-optimization && npm run build && node scripts/measure-before.mjs`
+4. **차이 비교:** `git diff perf/before-optimization..main -- app/layout.tsx next.config.ts`
+5. **라우트 단위 청크 확인:** DevTools → Network 탭을 열고 이 페이지로 이동해서, `apexcharts`가 이 라우트에서만 별도 청크로 로드되는지 확인.
+
+---
+
+## 프론트엔드 성능 감사가 필요하신가요?
+
+React/Next.js 제품을 위한 1주 고정 범위 감사. 측정 가능한 목표가 담긴 우선순위 실행 계획을 받아보세요.

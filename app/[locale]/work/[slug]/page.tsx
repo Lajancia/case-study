@@ -1,21 +1,24 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getCaseStudy, caseStudies } from '@/lib/case-studies'
+import { getCaseStudy, getAllSlugs, type Locale } from '@/lib/case-studies'
 import { mdxModules } from '@/content/work'
 import { CaseStudyHero } from '@/components/case-study/CaseStudyHero'
 import { CaseStudyCTA } from '@/components/case-study/CaseStudyCTA'
+import { routing } from '@/i18n/routing'
 
 export async function generateStaticParams() {
-  return caseStudies.map((s) => ({ slug: s.slug }))
+  return routing.locales.flatMap((locale) =>
+    getAllSlugs().map((slug) => ({ locale, slug }))
+  )
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: Locale; slug: string }>
 }): Promise<Metadata> {
-  const { slug } = await params
-  const study = getCaseStudy(slug)
+  const { locale, slug } = await params
+  const study = getCaseStudy(locale, slug)
   if (!study) return {}
   return {
     title: study.title,
@@ -27,22 +30,22 @@ export async function generateMetadata({
 export default async function CaseStudyPage({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: Locale; slug: string }>
 }) {
-  const { slug } = await params
-  const study = getCaseStudy(slug)
+  const { locale, slug } = await params
+  const study = getCaseStudy(locale, slug)
   if (!study) notFound()
 
-  const MDXContent = mdxModules[slug]
+  const MDXContent = mdxModules[locale]?.[slug]
   if (!MDXContent) notFound()
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">
-      <CaseStudyHero study={study} />
+      <CaseStudyHero study={study} locale={locale} />
       <div className="prose">
         <MDXContent />
       </div>
-      <CaseStudyCTA />
+      <CaseStudyCTA locale={locale} />
     </article>
   )
 }

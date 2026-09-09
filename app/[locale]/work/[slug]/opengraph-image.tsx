@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og'
-import { getCaseStudy } from '@/lib/case-studies'
+import { getCaseStudy, type Locale } from '@/lib/case-studies'
 
 export const runtime = 'edge'
 
@@ -10,10 +10,10 @@ export const contentType = 'image/png'
 export default async function OGImage({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: Locale; slug: string }>
 }) {
-  const { slug } = await params
-  const study = getCaseStudy(slug)
+  const { locale, slug } = await params
+  const study = getCaseStudy(locale, slug)
   if (!study) {
     return new ImageResponse(
       (
