@@ -31,11 +31,11 @@ export function CaseStudyHero({ study }: CaseStudyHeroProps) {
           <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Details anonymized</div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-6 rounded-lg bg-gray-50 p-6 dark:bg-gray-900">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 rounded-lg bg-gray-50 p-6 dark:bg-gray-900">
         {study.outcomes.map((outcome) => (
-          <div key={outcome.label}>
+          <div key={outcome.label} className="min-w-0">
             <div className="text-sm text-gray-500 mb-1 dark:text-gray-500">{outcome.label}</div>
-            <div className="flex items-baseline gap-2">
+            <div className="flex flex-wrap items-baseline gap-2">
               <span className="text-gray-400 line-through text-lg dark:text-gray-600">{outcome.before}</span>
               <span className="text-2xl font-bold text-green-700 dark:text-green-400">{outcome.after}</span>
               <span className="text-green-600 font-semibold dark:text-green-500">{outcome.change}</span>

@@ -3,7 +3,7 @@ import { siteConfig, mailtoUrl } from '@/lib/site'
 import { caseStudies } from '@/lib/case-studies'
 
 export default function HomePage() {
-  const featured = caseStudies[0]
+  const featuredStudies = caseStudies.slice(0, 2)
   return (
     <div className="mx-auto max-w-4xl px-6">
       {/* Hero */}
@@ -42,26 +42,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured result */}
-      {featured && (
-        <section className="border border-gray-200 rounded-lg p-6 sm:p-8 mb-16 hover:border-gray-300 transition-colors dark:border-gray-800 dark:hover:border-gray-700">
-          <div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2 dark:text-blue-400">{featured.industry}</div>
-          <h2 className="text-xl sm:text-2xl font-semibold mb-2">{featured.title}</h2>
-          <p className="text-gray-600 text-sm mb-4 dark:text-gray-400">{featured.description}</p>
-          <div className="grid grid-cols-2 gap-6 mb-4">
-            {featured.outcomes.map((outcome) => (
-              <div key={outcome.label}>
-                <div className="text-sm text-gray-500 mb-0.5 dark:text-gray-500">{outcome.label}</div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-gray-400 line-through dark:text-gray-600">{outcome.before}</span>
-                  <span className="text-xl font-bold text-green-700 dark:text-green-400">{outcome.after}</span>
-                  <span className="text-green-600 font-semibold dark:text-green-500">{outcome.change}</span>
+      {/* Featured results */}
+      {featuredStudies.length > 0 && (
+        <section className="mb-16">
+          <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4 dark:text-gray-500">Selected work</h2>
+          <div className="space-y-6">
+            {featuredStudies.map((study) => (
+              <div key={study.slug} className="border border-gray-200 rounded-lg p-6 sm:p-8 hover:border-gray-300 transition-colors dark:border-gray-800 dark:hover:border-gray-700">
+                <div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2 dark:text-blue-400">{study.industry}</div>
+                <h3 className="text-xl sm:text-2xl font-semibold mb-2">{study.title}</h3>
+                <p className="text-gray-600 text-sm mb-4 dark:text-gray-400">{study.description}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
+                  {study.outcomes.map((outcome) => (
+                    <div key={outcome.label} className="min-w-0">
+                      <div className="text-sm text-gray-500 mb-0.5 dark:text-gray-500">{outcome.label}</div>
+                      <div className="flex flex-wrap items-baseline gap-2">
+                        <span className="text-gray-400 line-through dark:text-gray-600">{outcome.before}</span>
+                        <span className="text-xl font-bold text-green-700 dark:text-green-400">{outcome.after}</span>
+                        <span className="text-green-600 font-semibold dark:text-green-500">{outcome.change}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+                <Link href={`/work/${study.slug}`} className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300">
+                  Read full case study →
+                </Link>
               </div>
             ))}
           </div>
-          <Link href={`/work/${featured.slug}`} className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300">
-            Read full case study →
+          <Link href="/work" className="block text-center mt-6 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:text-gray-100">
+            See all case studies
           </Link>
         </section>
       )}
@@ -89,13 +99,16 @@ export default function HomePage() {
       </section>
 
       {/* Credibility */}
-      <section className="mb-16" id="about">
+      <section className="mb-16">
         <h2 className="text-2xl font-bold mb-6">Expertise</h2>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mb-4">
           {['React', 'Next.js', 'TypeScript', 'Scientific visualization', 'Playwright', 'Cypress', 'Jenkins', 'Docker', 'DevSecOps', 'Performance optimization'].map((item) => (
             <span key={item} className="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full dark:bg-gray-800 dark:text-gray-300">{item}</span>
           ))}
         </div>
+        <Link href="/about" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300">
+          Full background &amp; experience →
+        </Link>
       </section>
 
       {/* Final CTA */}

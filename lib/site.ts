@@ -14,6 +14,7 @@ export const siteConfig = {
 	},
 	portfolioUrl: 'https://soominlab.com',
 	calendlyUrl: '', // To be filled: real Calendly URL
+	resumeUrl: '/resume.pdf', // Drop the actual file at public/resume.pdf
 };
 
 export function mailtoUrl(subject: string) {

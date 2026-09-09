@@ -21,25 +21,6 @@ export interface CaseStudyMeta {
 
 export const caseStudies: CaseStudyMeta[] = [
   {
-    slug: 'devsecops-pipeline',
-    title: 'One Pipeline, Three Products: Standardizing CI/CD and Security Reporting',
-    description:
-      'Building a shared Jenkins Build-Test-Scan-Deploy pipeline — containerized Cypress E2E, full-suite regression runs, and Snyk/SonarQube/OWASP ZAP report automation — that cut manual regression testing from 5 hours to 1 across three frontend products.',
-    publishedAt: '2026-XX-XX',
-    role: 'CI/CD Pipeline Design & Operations',
-    timeline: 'Apr 2025 – present',
-    industry: 'Platform engineering / DevSecOps',
-    stack: ['Jenkins', 'Docker', 'Cypress', 'Snyk', 'OWASP ZAP', 'SonarQube', 'Pipeline Script'],
-    outcomes: [
-      { label: 'Manual regression testing', before: '~5 hours/release', after: '~1 hour/release', change: '−80%' },
-      { label: 'Security/quality reporting', before: 'ad hoc, manual', after: 'Snyk+Sonar every build, ZAP per release', change: 'automated' },
-    ],
-    capabilityTags: ['devops', 'security', 'testing'],
-    domains: ['platform'],
-    collaborations: [],
-    draft: true,
-  },
-  {
     slug: 'scientific-platform-performance',
     title: "Cutting a Scientific 3D Platform's Main Bundle by 80%",
     description:
@@ -56,7 +37,26 @@ export const caseStudies: CaseStudyMeta[] = [
     capabilityTags: ['performance', 'visualization'],
     domains: ['biotech'],
     collaborations: [],
-    draft: true,
+    draft: false,
+  },
+  {
+    slug: 'devsecops-pipeline',
+    title: 'One Pipeline, Three Products: Standardizing CI/CD and Security Reporting',
+    description:
+      'Building a shared Jenkins Build-Test-Scan-Deploy pipeline — containerized Cypress E2E, full-suite regression runs, and Snyk/SonarQube/OWASP ZAP report automation — that cut manual regression testing from 5 hours to 1 across three frontend products.',
+    publishedAt: '2026-XX-XX',
+    role: 'CI/CD Pipeline Design & Operations',
+    timeline: 'Apr 2025 – present',
+    industry: 'Platform engineering / DevSecOps',
+    stack: ['Jenkins', 'Docker', 'Cypress', 'Snyk', 'OWASP ZAP', 'SonarQube', 'Pipeline Script'],
+    outcomes: [
+      { label: 'Manual regression testing', before: '~5 hours/release', after: '~1 hour/release', change: '−80%' },
+      { label: 'Security/quality reporting', before: 'ad hoc, manual', after: 'Snyk+Sonar every build, ZAP per release', change: 'automated' },
+    ],
+    capabilityTags: ['devops', 'security', 'testing'],
+    domains: ['platform'],
+    collaborations: [],
+    draft: false,
   },
   {
     slug: 'scientific-visualization',
@@ -75,7 +75,7 @@ export const caseStudies: CaseStudyMeta[] = [
     capabilityTags: ['visualization', 'performance'],
     domains: ['biotech'],
     collaborations: [],
-    draft: true,
+    draft: false,
   },
   {
     slug: 'next14-r3f-portfolio',
@@ -94,7 +94,7 @@ export const caseStudies: CaseStudyMeta[] = [
     capabilityTags: ['visualization', 'devops'],
     domains: ['web'],
     collaborations: [],
-    draft: true,
+    draft: false,
   },
   {
     slug: 'cicd-pipeline',
@@ -113,7 +113,7 @@ export const caseStudies: CaseStudyMeta[] = [
     capabilityTags: ['devops', 'fullstack'],
     domains: ['infrastructure'],
     collaborations: [],
-    draft: true,
+    draft: false,
   },
 ]
 

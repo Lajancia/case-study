@@ -13,6 +13,7 @@ interface BeforeAfterTableProps {
 export function BeforeAfterTable({ entries, caption }: BeforeAfterTableProps) {
   return (
     <figure>
+      <div className="overflow-x-auto">
       <table className="min-w-full border-collapse">
         <thead>
           <tr>
@@ -33,6 +34,7 @@ export function BeforeAfterTable({ entries, caption }: BeforeAfterTableProps) {
           ))}
         </tbody>
       </table>
+      </div>
       {caption && <figcaption className="text-xs text-gray-500 mt-2 dark:text-gray-500">{caption}</figcaption>}
     </figure>
   )

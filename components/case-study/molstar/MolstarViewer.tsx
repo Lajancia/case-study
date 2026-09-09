@@ -24,45 +24,51 @@ export default function MolstarViewer({ pdbId, height = 480 }: MolstarViewerProp
   const containerRef = useRef<HTMLDivElement>(null)
   const pluginRef = useRef<PluginUIContext | null>(null)
   const structureRef = useRef<StateObjectRef<PluginStateObject.Molecule.Structure> | null>(null)
+  // Survives React Strict Mode's mount→cleanup→remount replay (refs aren't
+  // reset by it, unlike a plain local variable) so the second replayed
+  // effect reuses the same in-flight creation instead of calling
+  // createPluginUI a second time on the same container.
+  const creationRef = useRef<Promise<PluginUIContext> | null>(null)
   const [ready, setReady] = useState(false)
   const [activePreset, setActivePreset] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    let disposed = false
+    let cancelled = false
 
     async function init() {
       if (!containerRef.current) return
       try {
-        const plugin = await createPluginUI({
-          target: containerRef.current,
-          render: renderReact18,
-          spec: {
-            ...DefaultPluginUISpec(),
-            layout: { initial: { controlsDisplay: 'reactive' } },
-            components: {
-              controls: { left: 'none', right: 'none', top: 'none', bottom: 'none' },
+        if (!creationRef.current) {
+          creationRef.current = createPluginUI({
+            target: containerRef.current,
+            render: renderReact18,
+            spec: {
+              ...DefaultPluginUISpec(),
+              layout: { initial: { controlsDisplay: 'reactive' } },
+              components: {
+                controls: { left: 'none', right: 'none', top: 'none', bottom: 'none' },
+              },
+              config: [
+                [PluginConfig.VolumeStreaming.Enabled, false],
+                [PluginConfig.Viewport.ShowAnimation, false],
+                [PluginConfig.Viewport.ShowExpand, false],
+                [PluginConfig.Viewport.ShowControls, false],
+                [PluginConfig.Viewport.ShowSelectionMode, false],
+                [PluginConfig.Viewport.ShowSettings, false],
+                [PluginConfig.Viewport.ShowReset, false],
+                [PluginConfig.Viewport.ShowToggleFullscreen, false],
+                [PluginConfig.Viewport.ShowScreenshotControls, false],
+                [PluginConfig.Viewport.ShowIllumination, false],
+                [PluginConfig.Viewport.ShowTrajectoryControls, false],
+                [PluginConfig.Viewport.ShowXR, 'never'],
+              ],
             },
-            config: [
-              [PluginConfig.VolumeStreaming.Enabled, false],
-              [PluginConfig.Viewport.ShowAnimation, false],
-              [PluginConfig.Viewport.ShowExpand, false],
-              [PluginConfig.Viewport.ShowControls, false],
-              [PluginConfig.Viewport.ShowSelectionMode, false],
-              [PluginConfig.Viewport.ShowSettings, false],
-              [PluginConfig.Viewport.ShowReset, false],
-              [PluginConfig.Viewport.ShowToggleFullscreen, false],
-              [PluginConfig.Viewport.ShowScreenshotControls, false],
-              [PluginConfig.Viewport.ShowIllumination, false],
-              [PluginConfig.Viewport.ShowTrajectoryControls, false],
-              [PluginConfig.Viewport.ShowXR, 'never'],
-            ],
-          },
-        })
-        if (disposed) {
-          plugin.dispose()
-          return
+          })
         }
+
+        const plugin = await creationRef.current
+        if (cancelled) return
         pluginRef.current = plugin
 
         const data = await plugin.builders.data.download(
@@ -76,15 +82,15 @@ export default function MolstarViewer({ pdbId, height = 480 }: MolstarViewerProp
         structureRef.current = structure
         await plugin.builders.structure.representation.applyPreset(structure, CASE_STUDY_PRESETS[0].preset)
 
-        setReady(true)
+        if (!cancelled) setReady(true)
       } catch (e) {
-        if (!disposed) setError(e instanceof Error ? e.message : 'Failed to initialize Mol*')
+        if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to initialize Mol*')
       }
     }
     init()
 
     return () => {
-      disposed = true
+      cancelled = true
       pluginRef.current?.dispose()
       pluginRef.current = null
     }
