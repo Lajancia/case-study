@@ -11,14 +11,14 @@ export default function HomePage() {
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight mb-4">
           {siteConfig.tagline}
         </h1>
-        <p className="text-lg text-gray-600 max-w-xl mb-6">
+        <p className="text-lg text-gray-600 max-w-xl mb-6 dark:text-gray-400">
           Performance, scientific visualization, test automation, and delivery quality for data-intensive React products.
         </p>
-        <p className="text-sm text-gray-500 mb-8">{siteConfig.availability.status} — {siteConfig.availability.timezone}</p>
+        <p className="text-sm text-gray-500 mb-8 dark:text-gray-500">{siteConfig.availability.status} — {siteConfig.availability.timezone}</p>
         <div className="flex flex-wrap gap-4">
           <Link
             href="/work"
-            className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
           >
             View case study
           </Link>
@@ -27,14 +27,14 @@ export default function HomePage() {
               href={siteConfig.calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors"
+              className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
             >
               Book a call
             </a>
           ) : (
             <a
               href={mailtoUrl('Hello from your case study site')}
-              className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors"
+              className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
             >
               Email Soomin
             </a>
@@ -44,23 +44,23 @@ export default function HomePage() {
 
       {/* Featured result */}
       {featured && (
-        <section className="border border-gray-200 rounded-lg p-6 sm:p-8 mb-16 hover:border-gray-300 transition-colors">
-          <div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2">{featured.industry}</div>
+        <section className="border border-gray-200 rounded-lg p-6 sm:p-8 mb-16 hover:border-gray-300 transition-colors dark:border-gray-800 dark:hover:border-gray-700">
+          <div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2 dark:text-blue-400">{featured.industry}</div>
           <h2 className="text-xl sm:text-2xl font-semibold mb-2">{featured.title}</h2>
-          <p className="text-gray-600 text-sm mb-4">{featured.description}</p>
+          <p className="text-gray-600 text-sm mb-4 dark:text-gray-400">{featured.description}</p>
           <div className="grid grid-cols-2 gap-6 mb-4">
             {featured.outcomes.map((outcome) => (
               <div key={outcome.label}>
-                <div className="text-sm text-gray-500 mb-0.5">{outcome.label}</div>
+                <div className="text-sm text-gray-500 mb-0.5 dark:text-gray-500">{outcome.label}</div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-gray-400 line-through">{outcome.before}</span>
-                  <span className="text-xl font-bold text-green-700">{outcome.after}</span>
-                  <span className="text-green-600 font-semibold">{outcome.change}</span>
+                  <span className="text-gray-400 line-through dark:text-gray-600">{outcome.before}</span>
+                  <span className="text-xl font-bold text-green-700 dark:text-green-400">{outcome.after}</span>
+                  <span className="text-green-600 font-semibold dark:text-green-500">{outcome.change}</span>
                 </div>
               </div>
             ))}
           </div>
-          <Link href={`/work/${featured.slug}`} className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+          <Link href={`/work/${featured.slug}`} className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300">
             Read full case study →
           </Link>
         </section>
@@ -69,21 +69,21 @@ export default function HomePage() {
       {/* Engagement types */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold mb-2">How we can work together</h2>
-        <p className="text-sm text-gray-500 mb-6">B2B contract engagements — monthly, sprint-based, or project-scoped.</p>
+        <p className="text-sm text-gray-500 mb-6 dark:text-gray-500">B2B contract engagements — monthly, sprint-based, or project-scoped.</p>
         <div className="grid sm:grid-cols-2 gap-6">
-          <div className="border border-gray-200 rounded-lg p-6">
+          <div className="border border-gray-200 rounded-lg p-6 dark:border-gray-800">
             <h3 className="font-semibold mb-2">Frontend development</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">
               React / Next.js product development for data-intensive applications — dashboards, scientific tools, 3D visualization interfaces, and design-system work.
             </p>
-            <p className="text-xs text-gray-500">B2B contract &middot; monthly or sprint-based</p>
+            <p className="text-xs text-gray-500 dark:text-gray-500">B2B contract &middot; monthly or sprint-based</p>
           </div>
-          <div className="border border-gray-200 rounded-lg p-6">
+          <div className="border border-gray-200 rounded-lg p-6 dark:border-gray-800">
             <h3 className="font-semibold mb-2">Performance &amp; delivery quality</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">
               Bundle optimization, Lighthouse improvements, test automation, and CI/CD hardening — embedded in ongoing development or as a focused workstream.
             </p>
-            <p className="text-xs text-gray-500">Part of dev engagements &middot; or standalone workstream</p>
+            <p className="text-xs text-gray-500 dark:text-gray-500">Part of dev engagements &middot; or standalone workstream</p>
           </div>
         </div>
       </section>
@@ -93,25 +93,25 @@ export default function HomePage() {
         <h2 className="text-2xl font-bold mb-6">Expertise</h2>
         <div className="flex flex-wrap gap-2">
           {['React', 'Next.js', 'TypeScript', 'Scientific visualization', 'Playwright', 'Cypress', 'Jenkins', 'Docker', 'DevSecOps', 'Performance optimization'].map((item) => (
-            <span key={item} className="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full">{item}</span>
+            <span key={item} className="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full dark:bg-gray-800 dark:text-gray-300">{item}</span>
           ))}
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="text-center py-12 border-t border-gray-200">
+      <section className="text-center py-12 border-t border-gray-200 dark:border-gray-800">
         <h2 className="text-2xl font-bold mb-3">Let&apos;s work together</h2>
-        <p className="text-gray-600 mb-6">Available for contract and B2B engagements from October 2026.</p>
+        <p className="text-gray-600 mb-6 dark:text-gray-400">Available for contract and B2B engagements from October 2026.</p>
         <div className="flex justify-center gap-4">
           <Link
             href="/work"
-            className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
           >
             View case study
           </Link>
           <a
             href={mailtoUrl('Let\'s work together')}
-            className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors"
+            className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
           >
             Email Soomin
           </a>

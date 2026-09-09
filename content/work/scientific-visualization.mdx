@@ -17,12 +17,12 @@ export const metadata = {
 
 ## Context
 
-In the AD3 platform, computational biologists and medicinal chemists routinely inspect 3D protein structures and 2D chemical diagrams. Two specialized libraries handle these tasks:
+In the [AD3 platform](https://ad3.io/), computational biologists and medicinal chemists routinely inspect 3D protein structures and 2D chemical diagrams. Two specialized libraries handle these tasks:
 
 - **Molstar** — An open-source 3D macromolecular viewer used by the RCSB Protein Data Bank itself
 - **RDKit.js** — A WebAssembly port of the industry-standard RDKit cheminformatics toolkit
 
-Both are large (several MB each) and, in the unoptimized AD3 codebase, were bundled eagerly on every route — even pages that never showed 3D or chemical structures.
+Both are large (several MB each) and, in the unoptimized AD3 codebase, were bundled eagerly on every route — even pages that never showed 3D or chemical structures. The same Molstar + RDKit combination also ships in [ADC](https://adc.arontier.co/), a related public product built on the same viewer stack.
 
 ## Problem
 
@@ -77,15 +77,19 @@ Each heavy component receives a skeleton placeholder that matches its final dime
 
 ## Live demo: the same technique on this site
 
-The panel below demonstrates both libraries loading on-demand. Open DevTools → Network and filter by "rdkit" to see the library load only on this page.
+The panel below demonstrates both libraries loading on-demand. Open DevTools → Network and filter by "rdkit" or "molstar" to see each library load only on this page. The Molstar panel also includes a small preset switcher (Cartoon / Ball & stick / Surface) — three custom `StructureRepresentationPresetProvider`s, the same customization mechanism used to build alternate representation styles on the real platform.
 
 <MolecularViewer />
 
-The Molstar viewer is embedded via iframe (it loads independently of the JS bundle). RDKit.js (~2.5 MB WASM) loads from CDN only when this component renders.
+Both libraries are genuinely bundled and code-split, not simulated: RDKit.js (~2.5 MB WASM) loads from CDN, and Molstar loads from the `molstar` npm package via `React.lazy()` — the same pattern AD3 itself uses for its viewer component.
 
 ## Key decisions
 
-**Why iframe for Molstar instead of npm import?** The full Molstar npm package (`molstar`) pulls in server-side dependencies (Express, compression) that are inappropriate for a browser-only case study site. The iframe delegates rendering to the official Molstar viewer hosted at molstar.org.
+**Why `React.lazy()` for Molstar instead of `next/dynamic`?** `next/dynamic` is built for lazy-loading a single React component; Mol*'s production integration is imperative (`createPluginUI` mounts directly into a DOM container, not through a component tree Next can code-split on its own). Splitting the whole module behind `React.lazy(() => import('./MolstarViewer'))` + `Suspense` defers the entire `molstar` chunk until this component renders — mirroring AD3's own `lazy-molstar.tsx` / `molstar.tsx` split.
+
+**Why `createPluginUI` + `DefaultPluginUISpec` instead of the pre-built Viewer app?** Molstar ships a batteries-included `Viewer.create()` helper (used by molstar.org's own hosted viewer), but production use calls for the lower-level plugin API directly — custom `PluginConfig` to hide every default panel, and a project-specific preset builder for representation styles. `createPluginUI` is what the `Viewer` helper uses internally anyway.
+
+**Does the `molstar` npm package really pull in server-side dependencies?** Its `package.json` lists `express`/`compression`/`cors` — but those belong to a separate part of the package (`model-server`, `volume-server`, bundled CLI tools), never imported by the viewer's UI entry point (`molstar/lib/mol-plugin-ui`). A production build was run against this exact import path to confirm: no server-only module ends up in the client bundle.
 
 **Why CDN for RDKit.js instead of bundling?** RDKit.js is a WebAssembly binary that must be fetched and compiled at runtime regardless of how it's imported. Loading via CDN script tag is the most transparent approach and makes it easy to verify route-scoped loading in DevTools.
 
@@ -104,8 +108,8 @@ The Molstar viewer is embedded via iframe (it loads independently of the JS bund
     <tr>
       <td>Molstar</td>
       <td>Eager import on every route</td>
-      <td>Dynamic import or iframe</td>
-      <td><code>dynamic()</code> / iframe</td>
+      <td>On-demand (~0.9 MB gzipped chunk, this route only)</td>
+      <td><code>React.lazy()</code></td>
     </tr>
     <tr>
       <td>RDKit.js (WASM)</td>
@@ -115,6 +119,8 @@ The Molstar viewer is embedded via iframe (it loads independently of the JS bund
     </tr>
   </tbody>
 </table>
+
+*Molstar chunk size measured from this site's own production build (`next build`) for this route.*
 
 ## Related
 

@@ -1,0 +1,127 @@
+export const metadata = {
+  title: "One Pipeline, Three Products: Standardizing CI/CD and Security Reporting",
+  description:
+    "Building a shared Jenkins Build-Test-Scan-Deploy pipeline — containerized Cypress E2E, full-suite regression runs, and Snyk/SonarQube/OWASP ZAP report automation — that cut manual regression testing from 5 hours to 1 across three frontend products.",
+  slug: "devsecops-pipeline",
+  publishedAt: "2026-XX-XX",
+  role: "CI/CD Pipeline Design & Operations",
+  timeline: "Apr 2025 – present",
+  industry: "Platform engineering / DevSecOps",
+  stack: ["Jenkins", "Docker", "Cypress", "Snyk", "OWASP ZAP", "SonarQube", "Pipeline Script"],
+  outcomes: [
+    { label: "Manual regression testing", before: "~5 hours/release", after: "~1 hour/release", change: "−80%" },
+    { label: "Security/quality reporting", before: "ad hoc, manual", after: "Snyk+Sonar every build, ZAP per release", change: "automated" },
+  ],
+  draft: true,
+}
+
+## Context
+
+*This case study reconstructs a real engagement at the level of technique and outcome. Company and product names, internal URLs, and identifying details are anonymized or altered; the pipeline design and measured outcomes are accurate.*
+
+Three frontend products shared one small platform team, but no shared release infrastructure — each had grown its own ad hoc mix of manual QA passes and security checks that ran only when someone remembered to run them.
+
+## Problem
+
+Two symptoms kept recurring:
+
+1. **Manual regression ate the release calendar.** A full manual pass across the affected product's UI took roughly 5 hours before every release — done by hand because there was no reliable automated pipeline to trust for full coverage.
+2. **Security and quality checks were opportunistic.** Dependency/container scanning (Snyk), static analysis (SonarQube), and dynamic security scanning (OWASP ZAP) existed as tools someone had set up once, not as a standard step every build produced a report from. Regressions in code paths *outside* a release's stated scope — a shared component touched by an unrelated change — occasionally shipped undetected, because nothing re-ran the full suite against changes that "shouldn't have touched that."
+
+## What I did
+
+### 1. Design one reusable Build-Test-Scan-Deploy Jenkinsfile
+
+Rather than let each product maintain its own bespoke pipeline, I designed one declarative Jenkinsfile meant to be dropped into any of the three repos with minimal per-project changes:
+
+```groovy
+pipeline {
+  agent { docker { image 'cypress/included:13.13.0' } }
+  options {
+    timeout(time: 30, unit: 'MINUTES')
+    timestamps()
+  }
+  stages {
+    stage('Install')   { steps { sh 'npm ci' } }
+    stage('Lint/Type') { steps { sh 'npm run lint && npm run typecheck' } }
+    stage('E2E (Cypress, full suite)') {
+      steps { sh 'npx cypress run --config-file cypress.config.ts' }
+      post {
+        always {
+          archiveArtifacts artifacts: 'cypress/screenshots/**, cypress/videos/**', allowEmptyArchive: true
+        }
+      }
+    }
+    stage('Security & Quality Scans') {
+      parallel {
+        stage('Snyk')      { steps { sh 'snyk container test $IMAGE_TAG || true' } }
+        stage('SonarQube') { steps { sh 'sonar-scanner' } }
+      }
+    }
+    stage('Report') { steps { junit 'cypress/results/**/*.xml' } }
+  }
+}
+```
+
+The four-stage shape — **install → lint/typecheck → full-suite Cypress E2E (containerized) → security/quality scans → report/artifact** — became the common contract. Each product's Jenkinsfile now differs only in environment variables, not in structure.
+
+### 2. Containerize the Cypress E2E environment
+
+The existing suite ran inconsistently across machines — "works on my laptop" was a real failure mode. Running Cypress inside a pinned Docker image (`cypress/included`) removed environment drift entirely: the same browser version and dependencies run in CI as in local dev, and any engineer can reproduce a CI failure locally with the same image.
+
+### 3. Automate security and quality reporting
+
+- **Snyk** scans the built container image for known vulnerabilities as part of every pipeline run, instead of as a manual, occasional check.
+- **SonarQube** runs static analysis against a defined quality profile on every build, with a Quality Gate that can fail the build once issues cross an agreed threshold.
+- **OWASP ZAP** runs against staging for releases that touch auth or data-handling, producing a report the team reviews before sign-off — a first line of defense before an external audit finds the same class of issue.
+
+None of these replace a real security review, but turning "did anyone run the scanner" into "the scanner runs, and produces a report, every time" closed the gap where checks depended on someone remembering to do them manually.
+
+### 4. Run the full suite, not just the diff
+
+The most valuable habit change wasn't a tool — it was running the **full** E2E suite on a regular cadence, not just the tests that map to a release's stated change set. More than once, this caught a regression in a feature nobody had touched intentionally: a frontend-side shared component, or a backend API response shape, had changed for one feature and silently broken another that depended on it. Catching that pre-release, from an automated full-suite run, is a fundamentally cheaper failure mode than catching it from a user report after deployment.
+
+## Results
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Manual regression testing</td>
+      <td>~5 hours/release</td>
+      <td>~1 hour/release</td>
+      <td>−80%</td>
+    </tr>
+    <tr>
+      <td>E2E environment</td>
+      <td>local, per-machine drift</td>
+      <td>containerized, reproducible</td>
+      <td>standardized</td>
+    </tr>
+    <tr>
+      <td>Security/quality reporting</td>
+      <td>manual, ad hoc</td>
+      <td>Snyk + SonarQube every build, ZAP per relevant release</td>
+      <td>automated</td>
+    </tr>
+    <tr>
+      <td>Pipeline maintenance</td>
+      <td>bespoke per product</td>
+      <td>one shared Jenkinsfile</td>
+      <td>standardized</td>
+    </tr>
+  </tbody>
+</table>
+
+The 80% reduction in manual testing time didn't come from testing less — it came from testing the same surface automatically instead of by hand, freeing the reclaimed hours for the cases automation still can't cover: exploratory testing and reviewing what the full-suite runs actually caught.
+
+## Interested in a CI/CD or test-automation audit?
+
+If manual QA is eating your release calendar, or security scanning is something that happens "when someone remembers," a fixed-scope pipeline audit can identify the highest-leverage first steps.

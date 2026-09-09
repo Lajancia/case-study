@@ -1,26 +1,27 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { DEMO_PDB, DEMO_LIGAND_SMILES } from '@/lib/molecular-demo'
 
 const RDKIT_CDN = 'https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2025.3.4-1.0.0/dist/RDKit_minimal.js'
 const RDKIT_BASE = 'https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2025.3.4-1.0.0/dist'
 
+// route-scoped: molstar (npm) only enters the bundle when this component renders
+const MolstarViewer = lazy(() => import('./molstar/MolstarViewer'))
+
 /**
  * RDKit 2D chemical structure viewer — loaded from CDN on demand.
- * 
- * This component demonstrates route-scoped loading of scientific libraries:
- * RDKit.js (WASM, ~2.5 MB) only loads on this page and contributes zero
- * bytes to any other route.
- * 
- * Molstar 3D viewer is embedded via iframe from molstar.org/viewer —
- * it loads independently of the page's JS bundle.
+ * Molstar 3D viewer — loaded from the `molstar` npm package via
+ * React.lazy(), so it code-splits into its own chunk instead of shipping
+ * with every route.
+ *
+ * Both libraries demonstrate route-scoped loading of scientific
+ * dependencies: neither contributes bytes to any other page.
  */
 
 export default function MolecularViewer() {
   const [mounted, setMounted] = useState(false)
   const [rdkitStatus, setRdkitStatus] = useState<'loading' | 'ready' | 'error'>('loading')
-  const [iframeLoaded, setIframeLoaded] = useState(false)
   const [errorDetail, setErrorDetail] = useState<string | null>(null)
   const rdkitSvgRef = useRef<HTMLDivElement>(null)
 
@@ -102,72 +103,66 @@ export default function MolecularViewer() {
 
   if (!mounted) return null
 
-  const molstarUrl = `https://molstar.org/viewer/?pdb=${DEMO_PDB}&hide-controls=1`
-
   return (
     <div className="not-prose my-10 space-y-8">
-      <h3 className="text-lg font-semibold text-gray-900">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
         Live demo: Molecular Viewer
       </h3>
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-500 dark:text-gray-500">
         RDKit.js loads <em>only on this page</em> — open DevTools &rarr; Network
         and filter &quot;rdkit&quot; to confirm route-scoped loading.
       </p>
 
       {/* Molstar 3D — full width */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="px-5 pt-3 pb-2 border-b border-gray-100 bg-gray-50">
-          <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+      <div className="border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800">
+        <div className="px-5 pt-3 pb-2 border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
+          <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide dark:text-gray-300">
             Molstar &mdash; 3D Protein Structure
           </span>
-          <span className="text-xs text-gray-400 ml-2">
-            {DEMO_PDB} (crambin) &middot; <a href={molstarUrl} target="_blank" rel="noopener noreferrer" className="underline">open fullscreen</a>
-          </span>
+          <span className="text-xs text-gray-400 ml-2 dark:text-gray-600">{DEMO_PDB} (crambin)</span>
         </div>
-        <div className="relative bg-gray-100" style={{ minHeight: 480 }}>
-          {!iframeLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm animate-pulse z-10">
-              Loading Molstar viewer...
-            </div>
-          )}
-          <iframe
-            src={molstarUrl}
-            className="w-full border-0"
-            style={{ height: 480 }}
-            title="Molstar 3D protein viewer"
-            onLoad={() => setIframeLoaded(true)}
-            allow="fullscreen"
-          />
+        <div className="p-4">
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center text-gray-400 text-sm animate-pulse dark:text-gray-600" style={{ height: 480 }}>
+                Loading Mol* (npm package, ~few MB, route-scoped)...
+              </div>
+            }
+          >
+            <MolstarViewer pdbId={DEMO_PDB} height={480} />
+          </Suspense>
         </div>
       </div>
 
       {/* RDKit 2D — full width */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="px-5 pt-3 pb-2 border-b border-gray-100 bg-gray-50">
-          <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+      <div className="border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800">
+        <div className="px-5 pt-3 pb-2 border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
+          <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide dark:text-gray-300">
             RDKit.js &mdash; 2D Molecule Structure
           </span>
-          <span className="text-xs text-gray-400 ml-2">Aspirin (C₉H₈O₄)</span>
+          <span className="text-xs text-gray-400 ml-2 dark:text-gray-600">Aspirin (C₉H₈O₄)</span>
         </div>
         <div
-          className="flex items-center justify-center bg-white"
+          className="flex items-center justify-center bg-white dark:bg-gray-950"
           style={{ minHeight: 400 }}
         >
           {rdkitStatus === 'loading' && (
-            <div className="text-gray-400 text-sm animate-pulse px-4 text-center">
+            <div className="text-gray-400 text-sm animate-pulse px-4 text-center dark:text-gray-600">
               <p>Loading RDKit.js (~2.5 MB WASM) from CDN...</p>
               <p className="text-xs mt-2">This library loads on-demand — zero bytes on other pages.</p>
             </div>
           )}
+          {/* RDKit renders its SVG with dark, fixed-color bonds/atoms — invert+hue-rotate
+              flips it to light-on-dark while keeping element colors roughly on-hue. */}
           <div
             ref={rdkitSvgRef}
-            className={`items-center justify-center p-6 w-full ${rdkitStatus === 'ready' ? 'flex' : 'hidden'}`}
+            className={`items-center justify-center p-6 w-full dark:invert dark:hue-rotate-180 ${rdkitStatus === 'ready' ? 'flex' : 'hidden'}`}
           />
           {rdkitStatus === 'error' && (
-            <div className="text-red-500 text-sm text-center p-4">
+            <div className="text-red-500 text-sm text-center p-4 dark:text-red-400">
               <p>Failed to load RDKit.js</p>
-              {errorDetail && <p className="text-xs mt-1 text-gray-400 break-all">{errorDetail}</p>}
-              <p className="text-xs mt-2 text-gray-400">
+              {errorDetail && <p className="text-xs mt-1 text-gray-400 break-all dark:text-gray-600">{errorDetail}</p>}
+              <p className="text-xs mt-2 text-gray-400 dark:text-gray-600">
                 CDN: {RDKIT_CDN}
               </p>
             </div>
@@ -175,12 +170,12 @@ export default function MolecularViewer() {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 dark:text-gray-600">
         <span>PDB data: <a href={`https://files.rcsb.org/download/${DEMO_PDB}.pdb`} target="_blank" rel="noopener noreferrer" className="underline">RCSB</a></span>
         <span>&middot;</span>
         <span>RDKit.js: v2025.3.4, loaded on-demand</span>
         <span>&middot;</span>
-        <span>Molstar: loaded via iframe</span>
+        <span>Molstar: npm package, loaded via React.lazy()</span>
       </div>
     </div>
   )

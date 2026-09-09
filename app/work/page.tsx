@@ -24,7 +24,7 @@ export default function WorkPage() {
       {drafts.length > 0 && (
         <div className="mt-8">
           {published.length > 0 && (
-            <h2 className="text-lg font-medium text-gray-400 mb-4">Coming soon</h2>
+            <h2 className="text-lg font-medium text-gray-400 mb-4 dark:text-gray-600">Coming soon</h2>
           )}
           <div className="grid gap-6">
             {drafts.map((study) => (
