@@ -34,9 +34,9 @@ export default async function AboutPage({
       <p className="text-lg text-gray-600 max-w-xl mb-4 dark:text-gray-400">
         {tSite("tagline")}
       </p>
-      <p className="text-sm text-gray-500 mb-12 dark:text-gray-500">
+      {/* <p className="text-sm text-gray-500 mb-12 dark:text-gray-500">
         {tSite("availabilityStatus")} — {tSite("availabilityTimezone")}
-      </p>
+      </p> */}
 
       <section className="mb-16">
         <p className="text-gray-700 leading-relaxed dark:text-gray-300">

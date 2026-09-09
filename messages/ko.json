@@ -8,9 +8,9 @@
   "nav": {
     "about": "소개",
     "work": "작업물",
-    "technicalWriting": "기술 글쓰기",
+    "technicalWriting": "기술 블로그",
     "resume": "이력서",
-    "contact": "연락하기",
+    "contact": "Contact",
     "openMenu": "메뉴 열기",
     "closeMenu": "메뉴 닫기"
   },
@@ -31,13 +31,13 @@
   },
   "home": {
     "heroSubtitle": "데이터 집약적인 React 제품을 위한 성능 최적화, 과학적 시각화, 테스트 자동화, 딜리버리 품질 관리.",
-    "viewCaseStudy": "케이스 스터디 보기",
+    "viewCaseStudy": "작업물 보기",
     "bookACall": "미팅 예약",
     "emailSoomin": "이메일 보내기",
     "selectedWork": "대표 작업물",
     "readFullCaseStudy": "전체 케이스 스터디 읽기 →",
     "seeAllCaseStudies": "모든 케이스 스터디 보기",
-    "howWeWorkTitle": "협업 방식",
+    "howWeWorkTitle": "How we can work together",
     "howWeWorkSubtitle": "B2B 계약 — 월 단위, 스프린트 단위, 또는 프로젝트 단위.",
     "frontendDevTitle": "프론트엔드 개발",
     "frontendDevBody": "데이터 집약적인 애플리케이션을 위한 React / Next.js 제품 개발 — 대시보드, 과학 도구, 3D 시각화 인터페이스, 디자인 시스템 작업.",
@@ -45,9 +45,9 @@
     "perfTitle": "성능 & 딜리버리 품질",
     "perfBody": "번들 최적화, Lighthouse 개선, 테스트 자동화, CI/CD 안정화 — 진행 중인 개발에 포함되거나 별도 워크스트림으로 진행.",
     "perfTag": "개발 계약에 포함 · 또는 단독 워크스트림",
-    "expertiseTitle": "전문 분야",
+    "expertiseTitle": "Expertise",
     "fullBackground": "전체 경력 보기 →",
-    "letsWorkTitle": "함께 일해요",
+    "letsWorkTitle": "Let's work together",
     "letsWorkSubtitle": "2026년 10월부터 계약 및 B2B 협업 가능합니다."
   },
   "work": {
@@ -77,7 +77,7 @@
     "skills": "기술 스택",
     "education": "학력",
     "leftNote": "회사 운영 중단으로 퇴사.",
-    "letsWorkTitle": "함께 일해요",
+    "letsWorkTitle": "Let's work together",
     "letsWorkSubtitle": "2026년 10월부터 계약 및 B2B 협업 가능합니다.",
     "emailSoomin": "이메일 보내기"
   }

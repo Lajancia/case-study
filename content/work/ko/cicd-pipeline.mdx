@@ -1,41 +1,41 @@
 export const metadata = {
-  title: "From Commit to Production: Jenkins + K3s + ArgoCD GitOps Pipeline",
+  title: "커밋에서 프로덕션까지: Jenkins + K3s + ArgoCD GitOps 파이프라인",
   description:
-    "A fully automated CI/CD pipeline: GitHub → Jenkins build → GHCR push → GitOps repo update → K3s cluster via ArgoCD.",
+    "GitHub → Jenkins 빌드 → GHCR push → GitOps 저장소 업데이트 → ArgoCD를 통한 K3s 클러스터 배포까지 완전 자동화한 CI/CD 파이프라인.",
   slug: "cicd-pipeline",
   publishedAt: "2026-XX-XX",
-  role: "DevOps Engineer (solo)",
-  timeline: "Jan 2024 – present",
-  industry: "DevOps / Cloud infrastructure",
+  role: "DevOps 엔지니어 (단독)",
+  timeline: "2024년 1월 – 현재",
+  industry: "DevOps / 클라우드 인프라",
   stack: ["Jenkins", "Docker", "GHCR", "K3s", "ArgoCD", "Nginx", "Tailscale", "GitOps"],
   outcomes: [
-    { label: "Deployment", before: "Manual SSH + build", after: "< 5 min auto", change: "fully automated" },
-    { label: "Infrastructure", before: "Single VPS", after: "K3s cluster", change: "high availability" },
+    { label: "배포", before: "수동 SSH + 빌드", after: "5분 이내 자동", change: "완전 자동화" },
+    { label: "인프라", before: "단일 VPS", after: "K3s 클러스터", change: "고가용성" },
   ],
   draft: false,
 }
 
-## Context
+## 배경
 
-The Next14-R3F portfolio project (see separate case study) needed a production-grade deployment pipeline. Instead of the typical "SSH in, pull, build, restart" cycle, I built a complete GitOps pipeline:
+Next14-R3F 포트폴리오 프로젝트(별도 케이스 스터디 참고)에는 프로덕션 등급의 배포 파이프라인이 필요했습니다. 흔한 "SSH 접속 → pull → 빌드 → 재시작" 방식 대신, 완전한 GitOps 파이프라인을 구축했습니다:
 
 ```
-Developer push → GitHub → Jenkins build & push → GitOps repo update → ArgoCD sync → K3s cluster
+개발자 push → GitHub → Jenkins 빌드 & push → GitOps 저장소 업데이트 → ArgoCD sync → K3s 클러스터
 ```
 
-**GitHub:** [Lajancia/Next14-R3F](https://github.com/Lajancia/Next14-R3F) (contains Jenkinsfile)
+**GitHub:** [Lajancia/Next14-R3F](https://github.com/Lajancia/Next14-R3F) (Jenkinsfile 포함)
 
-## Pipeline architecture
+## 파이프라인 아키텍처
 
-### GitHub → Jenkins trigger
+### GitHub → Jenkins 트리거
 
-A webhook configured in GitHub sends push events to the Jenkins server. Upon receiving a push to the `main` branch, the pipeline starts automatically.
+GitHub에 설정된 웹훅이 push 이벤트를 Jenkins 서버로 보냅니다. `main` 브랜치로의 push를 받으면 파이프라인이 자동으로 시작됩니다.
 
-### Stage 1: Checkout
+### 1단계: Checkout
 
-Jenkins checks out the repository at the pushed commit, ensuring the build matches exactly what the developer intended.
+Jenkins가 push된 커밋 기준으로 저장소를 체크아웃해서, 빌드가 개발자가 의도한 내용과 정확히 일치하도록 보장합니다.
 
-### Stage 2: Docker build & push
+### 2단계: Docker 빌드 & push
 
 ```groovy
 stage('Docker Build & Push') {
@@ -52,7 +52,7 @@ stage('Docker Build & Push') {
 }
 ```
 
-The multi-stage Docker build uses pnpm for dependency management:
+멀티 스테이지 Docker 빌드는 의존성 관리에 pnpm을 씁니다:
 
 ```dockerfile
 FROM node:20-alpine AS base
@@ -76,14 +76,14 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 ```
 
-Key optimizations:
-- **pnpm** for faster installs and disk efficiency vs npm
-- **`output: 'standalone'`** for minimal Docker image (~110 MB runner stage)
-- **Multi-stage build** — deps cache layer prevents reinstall on code-only changes
+핵심 최적화 포인트:
+- **pnpm** — npm 대비 빠른 설치와 디스크 효율
+- **`output: 'standalone'`** — 최소 Docker 이미지(러너 스테이지 약 110MB)
+- **멀티 스테이지 빌드** — deps 캐시 레이어 덕분에 코드만 바뀐 경우 재설치 불필요
 
-### Stage 3: GitOps repo update
+### 3단계: GitOps 저장소 업데이트
 
-Instead of SSH-ing into the server, Jenkins updates a separate **GitOps repository**:
+서버에 SSH로 접속하는 대신, Jenkins가 별도의 **GitOps 저장소**를 업데이트합니다:
 
 ```groovy
 stage('Update GitOps Repo') {
@@ -101,96 +101,98 @@ stage('Update GitOps Repo') {
 }
 ```
 
-The GitOps repo contains a single Kubernetes manifest (`next-r3f.yaml`) that ArgoCD watches.
+GitOps 저장소에는 ArgoCD가 감시하는 쿠버네티스 매니페스트(`next-r3f.yaml`) 하나가 들어 있습니다.
 
-### Stage 4: ArgoCD sync
+### 4단계: ArgoCD sync
 
-ArgoCD, running on the K3s cluster, polls the GitOps repository every 3 minutes. When it detects a change to the image tag, it automatically syncs the new manifest to the cluster — rolling update with zero downtime.
+K3s 클러스터에서 돌고 있는 ArgoCD가 3분마다 GitOps 저장소를 폴링합니다. 이미지 태그 변경을 감지하면 새 매니페스트를 클러스터에 자동으로 동기화합니다 — 무중단으로 롤링 업데이트됩니다.
 
-## Infrastructure diagram
+## 인프라 다이어그램
 
-The pipeline page on the portfolio site visualizes this architecture as an interactive timeline:
+포트폴리오 사이트의 Pipeline 페이지는 이 아키텍처를 인터랙티브 타임라인으로 시각화합니다:
 
 ```
-User → Nginx (proxy + SSL) → Next.js (R3F portfolio) → Jenkins (CI pipeline)
+사용자 → Nginx (프록시 + SSL) → Next.js (R3F 포트폴리오) → Jenkins (CI 파이프라인)
                                                               ↓
-                                                        GHCR (image registry)
+                                                        GHCR (이미지 레지스트리)
                                                               ↓
-                                                        GitOps repo (manifests)
+                                                        GitOps 저장소 (매니페스트)
                                                               ↓
-                                                        ArgoCD (auto-sync)
+                                                        ArgoCD (자동 sync)
                                                               ↓
-                                                        K3s cluster (production)
+                                                        K3s 클러스터 (프로덕션)
                                                               ↓
-                                                        Tailscale (secure VPN access)
+                                                        Tailscale (보안 VPN 접근)
 ```
 
-Each node is clickable with detailed descriptions of its role.
+각 노드는 클릭하면 역할에 대한 상세 설명을 볼 수 있습니다.
 
-## Infrastructure details
+## 인프라 세부 사항
 
-### K3s cluster
+### K3s 클러스터
 
-- Lightweight Kubernetes distribution ideal for single-VPS deployments
-- Runs on a VPS behind Nginx reverse proxy
-- Services exposed via Tailscale VPN for secure administrative access
+- 단일 VPS 배포에 적합한 경량 쿠버네티스 배포판
+- Nginx 리버스 프록시 뒤에서 VPS 위에 실행
+- 관리용 접근은 Tailscale VPN을 통해서만 노출
 
 ### Nginx
 
-- Reverse proxy handling SSL termination (Let's Encrypt)
-- Routes traffic to the Next.js application running on K3s
-- Static asset caching headers configured for performance
+- SSL 종료(Let's Encrypt)를 처리하는 리버스 프록시
+- K3s 위에서 실행되는 Next.js 애플리케이션으로 트래픽 라우팅
+- 성능을 위한 정적 자산 캐싱 헤더 설정
 
 ### Tailscale
 
-- WireGuard-based mesh VPN for secure cluster access
-- No open ports on the K3s nodes — all traffic through Tailscale
-- Administrative dashboard and monitoring accessible only via VPN
+- 보안 클러스터 접근을 위한 WireGuard 기반 메시 VPN
+- K3s 노드에 열린 포트 없음 — 모든 트래픽이 Tailscale을 경유
+- 관리자 대시보드와 모니터링은 VPN을 통해서만 접근 가능
 
-## Results
+## 결과
 
 <table>
   <thead>
     <tr>
-      <th>Metric</th>
-      <th>Before</th>
-      <th>After</th>
+      <th>지표</th>
+      <th>이전</th>
+      <th>이후</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Deployment method</td>
-      <td>Manual SSH</td>
-      <td>GitOps (fully automated)</td>
+      <td>배포 방식</td>
+      <td>수동 SSH</td>
+      <td>GitOps (완전 자동화)</td>
     </tr>
     <tr>
-      <td>Deployment time</td>
-      <td>~20 min</td>
-      <td>&lt; 5 min</td>
+      <td>배포 시간</td>
+      <td>~20분</td>
+      <td>&lt; 5분</td>
     </tr>
     <tr>
-      <td>Rollback</td>
-      <td>Manual</td>
+      <td>롤백</td>
+      <td>수동</td>
       <td><code>git revert</code> + push</td>
     </tr>
     <tr>
-      <td>Access</td>
-      <td>Public ports</td>
+      <td>접근</td>
+      <td>공개 포트</td>
       <td>Tailscale VPN + Nginx</td>
     </tr>
   </tbody>
 </table>
 
-## How to verify
+## 직접 검증하는 방법
 
-1. **Check the Jenkinsfile:** [Lajancia/Next14-R3F/blob/main/Jenkinsfile](https://github.com/Lajancia/Next14-R3F/blob/main/Jenkinsfile)
-2. **View the Docker multi-stage build:** [Lajancia/Next14-R3F/blob/main/dockerfile](https://github.com/Lajancia/Next14-R3F/blob/main/dockerfile)
-3. **GitOps repo** (private): `github.com/g3941813-svg/next-r3f-ops`
+1. **Jenkinsfile 확인:** [Lajancia/Next14-R3F/blob/main/Jenkinsfile](https://github.com/Lajancia/Next14-R3F/blob/main/Jenkinsfile)
+2. **Docker 멀티 스테이지 빌드 확인:** [Lajancia/Next14-R3F/blob/main/dockerfile](https://github.com/Lajancia/Next14-R3F/blob/main/dockerfile)
+3. **GitOps 저장소** (비공개): `github.com/g3941813-svg/next-r3f-ops`
 
-## Related
+## 관련 케이스 스터디
 
-See the [3D Portfolio](/work/next14-r3f-portfolio) case study for the application this pipeline deploys.
+이 파이프라인이 배포하는 애플리케이션에 대해서는 [3D 포트폴리오](/ko/work/next14-r3f-portfolio) 케이스 스터디를 참고하세요.
 
-## Interested in a DevOps audit / CI/CD setup?
+{/*
+## DevOps 감사 / CI/CD 구축이 필요하신가요?
 
-Fixed-scope engagement to audit or build your deployment pipeline. Inquire for details.
+배포 파이프라인을 감사하거나 새로 구축하는 고정 범위 계약을 진행합니다. 자세한 내용은 문의해주세요.
+*/}

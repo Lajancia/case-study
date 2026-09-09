@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import { getCaseStudy, getAllSlugs, type Locale } from '@/lib/case-studies'
 import { mdxModules } from '@/content/work'
 import { CaseStudyHero } from '@/components/case-study/CaseStudyHero'
-import { CaseStudyCTA } from '@/components/case-study/CaseStudyCTA'
 import { routing } from '@/i18n/routing'
 
 export async function generateStaticParams() {
@@ -45,7 +44,7 @@ export default async function CaseStudyPage({
       <div className="prose">
         <MDXContent />
       </div>
-      <CaseStudyCTA locale={locale} />
+      {/* <CaseStudyCTA locale={locale} /> */}
     </article>
   )
 }
