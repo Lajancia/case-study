@@ -1,7 +1,7 @@
 {
   "site": {
     "titleSuffix": "Frontend Case Studies",
-    "tagline": "Frontend engineer for data-intensive React products.",
+    "tagline": "React/Next.js Frontend Engineer · DevOps",
     "availabilityStatus": "Available for contract/B2B from 20 October 2026",
     "availabilityTimezone": "CET (Nov–Jan), KST (thereafter)"
   },
@@ -30,25 +30,25 @@
     "portfolio": "Interactive portfolio"
   },
   "home": {
-    "heroSubtitle": "Performance, scientific visualization, test automation, and delivery quality for data-intensive React products.",
+    "heroSubtitle": "Product development, test automation, CI/CD, and performance — for data-intensive products.",
     "viewCaseStudy": "View case study",
     "bookACall": "Book a call",
     "emailSoomin": "Email Soomin",
     "selectedWork": "Selected work",
     "readFullCaseStudy": "Read full case study →",
     "seeAllCaseStudies": "See all case studies",
-    "howWeWorkTitle": "How we can work together",
-    "howWeWorkSubtitle": "B2B contract engagements — monthly, sprint-based, or project-scoped.",
-    "frontendDevTitle": "Frontend development",
-    "frontendDevBody": "React / Next.js product development for data-intensive applications — dashboards, scientific tools, 3D visualization interfaces, and design-system work.",
-    "frontendDevTag": "B2B contract · monthly or sprint-based",
-    "perfTitle": "Performance & delivery quality",
-    "perfBody": "Bundle optimization, Lighthouse improvements, test automation, and CI/CD hardening — embedded in ongoing development or as a focused workstream.",
-    "perfTag": "Part of dev engagements · or standalone workstream",
+    "howWeWorkTitle": "Core strengths",
+    "howWeWorkSubtitle": "Three areas I've focused on.",
+    "frontendTitle": "Frontend",
+    "frontendBody": "React/Next.js for dashboards, 3D visualization, and design systems — including bundle and Lighthouse optimization.",
+    "devopsTitle": "DevOps",
+    "devopsBody": "Test automation, CI/CD setup and hardening — Playwright/Cypress, Jenkins, Docker.",
+    "agenticTitle": "Agentic coding",
+    "agenticBody": "Automating parts of testing, review, and refactoring with Claude Code and Codex.",
     "expertiseTitle": "Expertise",
     "fullBackground": "Full background & experience →",
     "letsWorkTitle": "Let's work together",
-    "letsWorkSubtitle": "Available for contract and B2B engagements from October 2026."
+    "letsWorkSubtitle": "Open to new opportunities."
   },
   "work": {
     "title": "Selected work",
@@ -64,8 +64,8 @@
     "ndaValue": "Details anonymized"
   },
   "caseStudyCta": {
-    "title": "Interested in a frontend performance audit?",
-    "body": "One-week fixed-scope audit for your React/Next.js product. You get a prioritized action plan with measurable targets.",
+    "title": "Found this case study interesting?",
+    "body": "If you'd like to chat, feel free to reach out anytime.",
     "bookACall": "Book a call",
     "bookingComingSoon": "Book a call (coming soon)",
     "emailSoomin": "Email Soomin"
@@ -78,7 +78,7 @@
     "education": "Education",
     "leftNote": "Left when the company ceased operations.",
     "letsWorkTitle": "Let's work together",
-    "letsWorkSubtitle": "Available for contract and B2B engagements from October 2026.",
+    "letsWorkSubtitle": "Open to new opportunities.",
     "emailSoomin": "Email Soomin"
   }
 }

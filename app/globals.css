@@ -38,6 +38,7 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-sans, Arial, Helvetica, sans-serif);
   line-height: 1.75;
+  word-break: keep-all;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
