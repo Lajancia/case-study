@@ -31,7 +31,7 @@ export default async function HirePage({
       title: t("service1Title"),
       body: t("service1Body"),
       link: t("service1Link"),
-      href: "/work/path-wsi-viewer" as const,
+      href: "/work/adc-visualization" as const,
     },
     {
       title: t("service2Title"),

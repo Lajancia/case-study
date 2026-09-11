@@ -91,7 +91,7 @@ stage('Update GitOps Repo') {
         script {
             def shortCommit = sh(...)
             sh """
-                git clone https://github.com/g3941813-svg/next-r3f-ops.git
+                git clone https://github.com/<gitops-org>/next-r3f-ops.git
                 sed -i 's|image: ...|image: ${GHCR_IMAGE}:${shortCommit}|' next-r3f.yaml
                 git commit -m "chore: update image tag to ${shortCommit}"
                 git push
@@ -185,7 +185,6 @@ K3s 클러스터에서 돌고 있는 ArgoCD가 3분마다 GitOps 저장소를 �
 
 1. **Jenkinsfile 확인:** [Lajancia/Next14-R3F/blob/main/Jenkinsfile](https://github.com/Lajancia/Next14-R3F/blob/main/Jenkinsfile)
 2. **Docker 멀티 스테이지 빌드 확인:** [Lajancia/Next14-R3F/blob/main/dockerfile](https://github.com/Lajancia/Next14-R3F/blob/main/dockerfile)
-3. **GitOps 저장소** (비공개): `github.com/g3941813-svg/next-r3f-ops`
 
 ## 관련 케이스 스터디
 

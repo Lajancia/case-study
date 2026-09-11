@@ -24,7 +24,7 @@ const EXPERIENCE_EN: Role[] = [
     period: "Mar 2025 – present",
     bullets: [
       "Own frontend development on AD3, a protein structure analysis platform — Molstar/RDKit-based 3D visualization, analysis parameter forms, and route-scoped bundle optimization (32MB → 6.5MB, Lighthouse 29 → 78).",
-      "Built viewer and interaction UI for a digital pathology (WSI) platform, including security-requirement response for an on-premise, regulated deployment.",
+      "Built viewer and interaction UI for a digital pathology (WSI) platform, including an OWASP ZAP-based security check ahead of an on-premise, regulated delivery.",
       "Designed a shared Jenkins Build-Test-Scan-Deploy pipeline (Cypress, Snyk, SonarQube) used across three frontend products — cut manual regression testing from ~5 hours to ~1 hour per release.",
       "Built 3D/2D molecular viewers for an antibody-drug conjugate (ADC) data platform, and introduced a Claude Code-based workflow for automated test generation.",
       "Led AD3's E2E migration from Cypress to Playwright; ADC was built on Playwright from the start and set the conventions the migration followed.",
@@ -70,7 +70,7 @@ const EXPERIENCE_KO: Role[] = [
     period: "2025년 3월 – 현재",
     bullets: [
       "단백질 구조 분석 플랫폼 AD3의 프론트엔드 개발 담당 — Molstar/RDKit 기반 3D 시각화, 분석 파라미터 입력 폼, 라우트 단위 번들 최적화(32MB → 6.5MB, Lighthouse 29 → 78).",
-      "병리 이미지(WSI) 분석 플랫폼의 뷰어·인터랙션 UI 개발, 온프레미스 규제 환경 납품을 위한 보안 요구사항 대응 포함.",
+      "병리 이미지(WSI) 분석 플랫폼의 뷰어·인터랙션 UI 개발, 온프레미스 규제 환경 납품에 앞선 OWASP ZAP 기반 보안 점검 포함.",
       "3개 프론트엔드 제품에서 공통으로 쓰는 Jenkins Build-Test-Scan-Deploy 파이프라인(Cypress, Snyk, SonarQube) 설계 — 수동 회귀 테스트 시간을 릴리즈당 약 5시간에서 1시간으로 단축.",
       "항체-약물 접합체(ADC) 데이터 플랫폼의 3D/2D 분자 뷰어 구현, Claude Code 기반 테스트 자동 생성 워크플로우 도입.",
       "AD3의 E2E 테스트를 Cypress에서 Playwright로 마이그레이션 주도 — ADC에서 먼저 잡은 Playwright 기준을 그대로 적용.",
