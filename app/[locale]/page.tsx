@@ -24,7 +24,6 @@ export default async function HomePage({
         <p className="text-lg text-gray-600 max-w-xl mb-6 dark:text-gray-400">
           {t("heroSubtitle")}
         </p>
-        {/* <p className="text-sm text-gray-500 mb-8 dark:text-gray-500">{tSite('availabilityStatus')} — {tSite('availabilityTimezone')}</p> */}
         <div className="flex flex-wrap gap-4">
           <Link
             href="/work"

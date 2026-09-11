@@ -1,9 +1,7 @@
 {
   "site": {
     "titleSuffix": "Frontend Case Studies",
-    "tagline": "React/Next.js Frontend Engineer · DevOps",
-    "availabilityStatus": "Available for contract/B2B from 20 October 2026",
-    "availabilityTimezone": "CET (Nov–Jan), KST (thereafter)"
+    "tagline": "React/Next.js Frontend Engineer · DevOps"
   },
   "nav": {
     "about": "About",
