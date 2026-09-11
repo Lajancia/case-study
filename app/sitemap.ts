@@ -11,6 +11,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       { url: `${siteConfig.url}/${locale}`, lastModified: new Date(), changeFrequency: 'monthly', priority: 1 },
       { url: `${siteConfig.url}/${locale}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
       { url: `${siteConfig.url}/${locale}/work`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+      // Not linked from the site nav — reached from B2B platform profiles — but
+      // listed here so it stays indexable.
+      { url: `${siteConfig.url}/${locale}/hire`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     )
     for (const slug of getAllSlugs()) {
       entries.push({

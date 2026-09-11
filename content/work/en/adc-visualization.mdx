@@ -1,0 +1,85 @@
+export const metadata = {
+  title: "ADC Visualization: 3D/2D Molecular Viewers on Next.js 16",
+  description:
+    "Building 3D protein-structure and 2D chemical-structure viewers (Molstar + RDKit) for an antibody-drug-conjugate (ADC) data platform, and introducing a Claude Code-based workflow for generating Playwright E2E tests.",
+  slug: "adc-visualization",
+  publishedAt: "2026-XX-XX",
+  role: "UI Development / Test Automation",
+  timeline: "Mar 2026 – May 2026",
+  industry: "Biotech / Antibody-drug conjugates (ADC)",
+  stack: ["React", "TypeScript", "Next.js 16", "Molstar", "RDKit", "Tailwind CSS", "Playwright", "Claude Code"],
+  outcomes: [
+    { label: "E2E test authoring", before: "Hand-written specs", after: "Claude Code-assisted generation", change: "workflow adopted" },
+    { label: "Stack", before: "n/a (new product)", after: "Next.js 16 App Router + Tailwind CSS", change: "current gen" },
+  ],
+  draft: false,
+}
+
+## Context
+
+*This case study reconstructs real work at the level of technique and outcome. Internal system names and non-public details are omitted; the measured figures are as recorded.*
+
+ADC is a web application for searching, exploring, and visualizing antibody-drug-conjugate data — DAR (Drug-Antibody Ratio) distributions, representative 3D structures, and related data. It shares the same Molstar + RDKit viewer stack as the [AD3 platform](/en/work/scientific-platform-performance), but ADC is a newer product designed from day one with that combination loaded route-scoped.
+
+- A **Molstar**-based 3D protein-structure viewer and **RDKit**-based chemical-structure rendering, integrated into a popup/detail view
+- The search page and conjugate detail pages built on **Next.js 16 (App Router)** with **Tailwind CSS**
+- Selected internally as the **pilot project** for a Claude Code-based AI development workflow
+
+## What I did
+
+### 1. Build the 3D/2D molecular viewers
+
+Drilling from a search result into a conjugate's detail page opens a 3D structure popup, implemented with Molstar; chemical structure diagrams render through RDKit. Having already learned on AD3 that heavyweight scientific libraries can't ship on every route, ADC was designed from the start to load these viewers only on the routes that need them.
+
+### 2. Establish Playwright as the E2E standard
+
+Other internal products were running Cypress-based E2E tests, but ADC **started on Playwright from day one**. The conventions set here — `playwright.config.ts`, smoke-test tagging (`@smoke`) — became the reference when AD3 was later migrated from Cypress to Playwright.
+
+### 3. Introduce a Claude Code-based test-generation workflow
+
+Instead of hand-writing Playwright specs for every UI change, I introduced a workflow where Claude Code drafts E2E tests from the UI changes and a human reviews and refines them. It landed as a **semi-automated workflow** — AI handles the first draft of a spec, a person still verifies it — rather than a fully automated one.
+
+## Results
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>E2E test framework</td>
+      <td>Cypress (existing standard elsewhere)</td>
+      <td>Playwright (ADC is the first standardized case)</td>
+      <td>standard established</td>
+    </tr>
+    <tr>
+      <td>E2E test authoring</td>
+      <td>Hand-written specs</td>
+      <td>Claude Code draft + human review</td>
+      <td>workflow adopted</td>
+    </tr>
+    <tr>
+      <td>Frontend stack</td>
+      <td>n/a (new product)</td>
+      <td>Next.js 16 App Router + Tailwind CSS</td>
+      <td>current gen</td>
+    </tr>
+  </tbody>
+</table>
+
+Because ADC was a smaller, newer project, it was a low-risk place to validate the Playwright conventions and the Claude Code test workflow before extending either to larger, higher-stakes internal projects.
+
+## Related
+
+The story of first optimizing this same Molstar/RDKit viewer combination is in the [AD3 platform case study](/en/work/scientific-platform-performance); the shared internal CI/CD and test-reporting pipeline is covered in the [DevSecOps pipeline case study](/en/work/devsecops-pipeline).
+
+{/*
+## Interested in a frontend performance audit?
+
+One-week fixed-scope audit for your React/Next.js product. You get a prioritized action plan with measurable targets.
+*/}

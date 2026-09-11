@@ -7,6 +7,11 @@ RUN npm ci
 
 FROM base AS builder
 WORKDIR /app
+# NEXT_PUBLIC_* values are inlined at build time, so the public site URL must be
+# available here — a runtime env var in docker-compose comes too late and leaves
+# localhost baked into og:image, canonical, and sitemap URLs.
+ARG NEXT_PUBLIC_SITE_URL=https://soominlab.com
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build

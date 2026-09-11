@@ -1,0 +1,94 @@
+export const metadata = {
+  title: "PATH Digital Pathology Platform: WSI Viewer and Security Response",
+  description:
+    "Building the viewer/interaction UI for a whole-slide-image (WSI) pathology platform on OpenSeadragon, and responding to a client security team's OWASP-based penetration test findings ahead of an on-premise hospital delivery.",
+  slug: "path-wsi-viewer",
+  publishedAt: "2026-XX-XX",
+  role: "Frontend Development / Security Response",
+  timeline: "Jun 2025 – May 2026",
+  industry: "Medical AI / Digital pathology",
+  stack: ["React", "TypeScript", "Jotai", "React Hook Form", "TanStack Query", "OpenSeadragon", "OWASP ZAP"],
+  outcomes: [
+    { label: "Delivery", before: "Internal staging only", after: "On-premise hospital deployment", change: "shipped" },
+    { label: "Reported findings", before: "2 flagged by client pentest", after: "1 confirmed defect, scoped for a fix", change: "triaged" },
+  ],
+  draft: false,
+}
+
+## Context
+
+*This case study reconstructs a real engagement at the level of technique and outcome. Hospital name, organization name, and internal system names are anonymized; the techniques and response process are accurate.*
+
+PATH is a platform that runs pathology whole-slide images (WSI) through an upload → tiling → analysis pipeline, surfacing the results for pathologists to review. It's a completely separate product from AD3. I owned the frontend for this pipeline — specifically the viewer and interaction UI.
+
+- An **OpenSeadragon**-based deep-zoom viewer that tile-renders gigapixel-scale slide images
+- **Jotai** for viewer state (zoom, pan, overlay toggles), and **React Hook Form** for analysis-parameter and account-settings forms
+- **TanStack Query** for fetching and caching analysis results (hotspots, ESD/ICI/TME analysis, etc.)
+
+The product was built to be delivered **on-premise** to a large domestic medical institution — installed and operated entirely inside the hospital's own network.
+
+## Problem
+
+Ahead of the on-premise delivery, the client's (hospital's) security team ran its own OWASP-based automated penetration test against the application and, after some delay, reported two findings:
+
+1. **Password sent in plaintext at login** — the request body's password field was flagged as transmitted over plain HTTP.
+2. **Bearer token not expired after logout** — logging out didn't invalidate the existing access token; a request replayed with the old token still succeeded.
+
+The two findings were different in kind. The first was a point where **HTTP had been the agreed operating mode under an internal-network assumption**, because issuing an HTTPS certificate was impractical in the on-premise environment — the question wasn't "why is this a problem" so much as "is that assumption still valid." The second was a clear **real bug**: logout only cleared the session cookie, not the token itself, so a leaked token replayed elsewhere would keep a session alive. The team reproduced that scenario directly.
+
+## What I did
+
+### 1. Triage the findings
+
+As a team, we confirmed root cause for both issues through code review and reproduction tests. For the plaintext-password finding, we first checked whether an HTTPS rescan cleared the flag, to establish clearly that HTTP had been a contractual/environmental condition rather than an oversight. For the token-expiry finding, we concluded the fix belonged on the backend — sign-out needed to invalidate the access/refresh tokens server-side — and I took ownership of the follow-up (filing the issue and documenting the reproduction steps) as a confirmed defect.
+
+### 2. Build a re-verification routine with OWASP ZAP
+
+There was no way for the team to independently confirm whether the reported findings were actually resolved, so I set up **OWASP ZAP** (Zed Attack Proxy) and built a routine to rescan the login flow over both HTTP and HTTPS. Because it's a React SPA, a standard spider couldn't crawl it properly — login is a JS `fetch` POST, not a form submit — so I switched to the AJAX Spider and authenticated through a real browser session so ZAP could learn the authenticated state.
+
+This rescan isn't the same as "certified zero vulnerabilities" — it was a self-verification tool to check whether the client's specific reported findings reproduced, and whether they still reproduced after the fix. We discussed folding the scan into the pipeline as a standing stage, but within this delivery's scope it never reached that level of standardization.
+
+### 3. Stabilize viewer interactions
+
+In parallel with the security work, I stabilized the viewer — unifying zoom/pan state in Jotai atoms so overlay panels (ROI, hotspot results) stayed in sync with the viewer's coordinate system, and consolidating analysis-parameter form validation into React Hook Form schemas.
+
+## Results
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Delivery scope</td>
+      <td>Internal staging only</td>
+      <td>On-premise hospital deployment</td>
+      <td>shipped</td>
+    </tr>
+    <tr>
+      <td>Reported findings</td>
+      <td>2 flagged by client pentest</td>
+      <td>1 addressed via contractual context, 1 confirmed for a fix</td>
+      <td>triaged</td>
+    </tr>
+    <tr>
+      <td>Self-verification</td>
+      <td>None</td>
+      <td>ZAP-based login-flow rescan procedure</td>
+      <td>introduced</td>
+    </tr>
+  </tbody>
+</table>
+
+Delivering to a medical institution on-premise comes with a different set of constraints than a typical SaaS rollout — the client runs its own security audits under network-isolation assumptions. The bigger lesson here wasn't standing up a scanner; it was building **a procedure for separating what's our responsibility from what's a contractual or environmental assumption**, before reacting to a finding.
+
+{/*
+## Interested in a CI/CD or security-response audit?
+
+If you're heading toward an on-premise or regulated delivery, a fixed-scope audit can identify the highest-priority gaps.
+*/}

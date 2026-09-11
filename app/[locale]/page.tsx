@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { siteConfig, mailtoUrl } from "@/lib/site";
 import { getCaseStudies, type Locale } from "@/lib/case-studies";
+import { ResultsAtAGlance } from "@/components/site/ResultsAtAGlance";
 
 export default async function HomePage({
   params,
@@ -51,6 +52,9 @@ export default async function HomePage({
         </div>
       </section>
 
+      {/* Results at a glance — KPI row */}
+      <ResultsAtAGlance locale={locale} />
+
       {/* Featured results */}
       {featuredStudies.length > 0 && (
         <section className="mb-16">
@@ -73,7 +77,7 @@ export default async function HomePage({
                   {study.description}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
-                  {study.outcomes.map((outcome) => (
+                  {study.outcomes.slice(0, 2).map((outcome) => (
                     <div key={outcome.label} className="min-w-0">
                       <div className="text-sm text-gray-500 mb-0.5 dark:text-gray-500">
                         {outcome.label}

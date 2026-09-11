@@ -9,7 +9,7 @@ export const siteConfig = {
 		github: 'https://github.com/Lajancia',
 		medium: 'https://medium.com/@lajancia',
 	},
-	portfolioUrl: 'https://soominlab.com',
+	portfolioUrl: 'https://creative.soominlab.com',
 	calendlyUrl: '', // To be filled: real Calendly URL
 	resumeUrl: '/resume.pdf', // Drop the actual file at public/resume.pdf
 };

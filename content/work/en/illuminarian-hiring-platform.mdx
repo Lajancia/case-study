@@ -1,0 +1,75 @@
+export const metadata = {
+  title: "Job Posting & Applicant Management Platform",
+  description:
+    "A Next.js 14 recruiting service and admin panel, built frontend-first against an MSW mock API before the backend was ready, with next-translate powering multilingual SSG pages.",
+  slug: "illuminarian-hiring-platform",
+  publishedAt: "2026-XX-XX",
+  role: "Service & Admin Panel Development",
+  timeline: "Nov 2024 – Jan 2025",
+  industry: "HR tech / Recruiting platform",
+  stack: ["Next.js 14", "React Query", "React Hook Form", "MSW", "Docker", "next-translate", "Tailwind CSS", "Emotion"],
+  outcomes: [
+    { label: "Frontend start date", before: "Blocked on backend API", after: "Started against MSW mocks", change: "parallelized" },
+    { label: "Schedule risk", before: "Sequential handoff", after: "Frontend/backend in parallel", change: "reduced" },
+  ],
+  draft: false,
+}
+
+## Context
+
+*This case study reconstructs real work at the level of technique and outcome. Internal system names and non-public details are omitted; the measured figures are as recorded.*
+
+I built a Next.js 14 service covering job-posting creation through applicant management, alongside the admin panel operations staff used. Both surfaces leaned heavily on input forms and server-state management.
+
+## Problem
+
+Backend API development was scheduled to start later than the frontend. Left as-is, the frontend would have had to wait on the backend and proceed sequentially, stretching the overall timeline.
+
+## What I did
+
+### 1. Build frontend-first against MSW mocks
+
+I introduced **MSW (Mock Service Worker)** to mock responses against the agreed API spec, letting frontend development and testing start before the backend existed. When the API contract changed, only the mock handlers needed updating — the frontend was no longer blocked on backend progress.
+
+### 2. Forms and server-state management
+
+I implemented validation for complex forms — job-posting creation, application submission — with **React Hook Form**, and managed server state (applicant lists, status changes) with **React Query**.
+
+### 3. Multilingual SSG pages
+
+I used **next-translate** to statically generate (SSG) job-posting pages in multiple languages.
+
+## Results
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Frontend start date</td>
+      <td>Waiting on backend API completion</td>
+      <td>Started immediately against MSW mocks</td>
+      <td>parallelized</td>
+    </tr>
+    <tr>
+      <td>Schedule risk</td>
+      <td>Sequential (backend → frontend)</td>
+      <td>Frontend and backend progressing together</td>
+      <td>reduced</td>
+    </tr>
+  </tbody>
+</table>
+
+The biggest win from adopting MSW wasn't speed so much as **removing a category of schedule risk** — backend delays stopped pushing back the frontend's start date.
+
+{/*
+## Need frontend development?
+
+I take on fixed-scope engagements for React/Next.js feature development, from UI through API integration.
+*/}

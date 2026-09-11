@@ -38,10 +38,10 @@ npm run dev
 
 ## Deployment
 
-1. Build: `docker compose build`
+1. Build: `docker compose build` — `NEXT_PUBLIC_SITE_URL` is a **build arg** (see `docker-compose.yml`), because Next inlines `NEXT_PUBLIC_*` at build time. Setting it only at runtime leaves `localhost:3000` baked into og:image, canonical, and sitemap URLs.
 2. Run: `docker compose up -d`
-3. Configure nginx with the provided `nginx/case-studies.conf`
-4. Expand Let's Encrypt certificate to include the chosen hostname (e.g., `work.soominlab.com`)
+3. Configure nginx with the provided `nginx/case-studies.conf` (serves `soominlab.com`, redirects `www` → apex)
+4. Expand Let's Encrypt certificate to cover `soominlab.com` and `www.soominlab.com`
 5. Create DNS A record pointing to the VPS
 
 ## Content

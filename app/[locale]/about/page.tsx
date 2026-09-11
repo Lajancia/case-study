@@ -104,7 +104,11 @@ export default async function AboutPage({
             {content.educationSchool}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-500">
-            {content.educationProgram} &middot; {content.educationPeriod}
+            {content.educationProgram}
+            {content.educationMinor && (
+              <> &middot; {content.educationMinor}</>
+            )}{" "}
+            &middot; {content.educationPeriod}
           </p>
         </div>
       </section>

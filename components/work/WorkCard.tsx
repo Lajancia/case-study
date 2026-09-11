@@ -26,7 +26,7 @@ export async function WorkCard({ study, locale }: WorkCardProps) {
       <h2 className={`text-xl font-semibold mb-2 leading-snug ${study.draft ? 'text-gray-500 dark:text-gray-500' : 'text-gray-900 dark:text-gray-100'}`}>{study.title}</h2>
       <p className={`text-sm mb-4 line-clamp-2 ${study.draft ? 'text-gray-400 dark:text-gray-600' : 'text-gray-600 dark:text-gray-400'}`}>{study.description}</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-        {study.outcomes.map((outcome) => (
+        {study.outcomes.slice(0, 2).map((outcome) => (
           <div key={outcome.label} className="min-w-0">
             <div className="text-xs text-gray-500 mb-0.5 dark:text-gray-500">{outcome.label}</div>
             <div className="flex flex-wrap items-baseline gap-1.5">

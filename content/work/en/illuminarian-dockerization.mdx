@@ -1,0 +1,142 @@
+export const metadata = {
+  title: "Frontend Dockerization and CI/CD Optimization",
+  description:
+    "Moving a Next.js 14 app to a standalone build with a pnpm migration, cutting the Docker image from 1.3GB to 500MB and deploy time from 15 minutes to under 3.",
+  slug: "illuminarian-dockerization",
+  publishedAt: "2026-XX-XX",
+  role: "Deploy Pipeline & Build Structure",
+  timeline: "Jul 2024 – Dec 2024",
+  industry: "HR tech / Recruiting platform",
+  stack: ["Next.js 14", "TypeScript", "Docker", "Jenkins", "pnpm", "GitHub Actions", "next-translate"],
+  outcomes: [
+    { label: "Docker image size", before: "1.3GB", after: "500MB", change: "−62%" },
+    { label: "Deploy time", before: "~15 min", after: "< 3 min", change: "−80%" },
+  ],
+  draft: false,
+}
+
+## Context
+
+*This case study reconstructs real work at the level of technique and outcome. Internal system names and non-public details are omitted; the measured figures are as recorded.*
+
+I owned the deployment environment for a Next.js 14 recruiting service. The existing Docker image carried a full `npm`-based dependency install and the default Next.js build output, which made it large — and Jenkins deploys were slow in proportion to the image size.
+
+## Problem
+
+- The Docker image weighed **1.3GB**, and the time to build, transfer, and boot that image dominated the deploy.
+- A single deploy took roughly **15 minutes**, making even a small change expensive to ship.
+
+## What I did
+
+### 1. Adopt Next.js `output: 'standalone'`
+
+I switched to Next.js's standalone build output and rewrote the Dockerfile around it, producing a minimal image with only the dependencies actually needed at runtime. Stripping devDependencies, build-only tooling, and cached intermediates from the final image cut its size substantially.
+
+### 2. Migrate npm → pnpm
+
+I switched the package manager to pnpm to improve install speed and disk efficiency. pnpm's content-addressable store also improved cache reuse across CI builds.
+
+### 3. Stabilize next-translate-based multilingual SSG builds
+
+I reworked the build order and configuration so that next-translate-based multilingual pages generated reliably at build time in the SSG (static generation) environment.
+
+## Results
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Docker image size</td>
+      <td>1.3GB</td>
+      <td>500MB</td>
+      <td>−62%</td>
+    </tr>
+    <tr>
+      <td>Deploy time</td>
+      <td>~15 min</td>
+      <td>< 3 min</td>
+      <td>−80%</td>
+    </tr>
+  </tbody>
+</table>
+
+## How a standalone build shrinks the image (measured on this site)
+
+*The actual Illuminarian Docker images aren't something I can reopen today, so I reproduced the same `output: 'standalone'` technique on this portfolio site itself and measured it layer by layer. The mechanism is identical.*
+
+This site uses Next.js `output: 'standalone'` in `next.config.ts`, which produces a minimal self-contained build with only the runtime dependencies needed to run the application.
+
+Comparing this site's Docker image size with and without `output: 'standalone'`, measured from two branches:
+
+<table>
+  <thead>
+    <tr>
+      <th>Layer</th>
+      <th>Without standalone (<code>perf/before-optimization</code>)</th>
+      <th>With standalone (<code>current</code>)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Base image (node:22-alpine)</td>
+      <td>~50 MB</td>
+      <td>~50 MB</td>
+    </tr>
+    <tr>
+      <td><code>node_modules</code></td>
+      <td>~350 MB</td>
+      <td>~55 MB (pruned by standalone)</td>
+    </tr>
+    <tr>
+      <td>Build artifacts (<code>.next/</code>)</td>
+      <td>~92 MB (incl. cache)</td>
+      <td>~5 MB (static assets only)</td>
+    </tr>
+    <tr>
+      <td><strong>Total runner stage</strong></td>
+      <td><strong>~492 MB</strong></td>
+      <td><strong>~110 MB</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+The `Dockerfile` uses a three-stage build:
+
+```dockerfile
+# Stage 1: Install dependencies
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Stage 2: Build
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+# Stage 3: Minimal runner
+FROM node:22-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+```
+
+The key line is `COPY --from=builder /app/.next/standalone ./`. Next.js's standalone output strips `devDependencies`, build tools, and cached intermediates, keeping only the required runtime — the same mechanism behind the 62% image-size cut at Illuminarian.
+
+> **Note:** Docker daemon was not available on the measurement machine. The non-standalone estimate is based on typical `node_modules` footprint for a Next.js + MDX + Tailwind project. The standalone figure was measured from the actual `.next/standalone/` directory.
+
+{/*
+## Interested in a DevOps audit or CI/CD build-out?
+
+I take on fixed-scope engagements to audit or stand up deployment pipelines. Get in touch for details.
+*/}

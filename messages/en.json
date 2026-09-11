@@ -34,6 +34,7 @@
     "viewCaseStudy": "View case study",
     "bookACall": "Book a call",
     "emailSoomin": "Email Soomin",
+    "resultsAtAGlance": "Results at a glance",
     "selectedWork": "Selected work",
     "readFullCaseStudy": "Read full case study →",
     "seeAllCaseStudies": "See all case studies",
@@ -54,18 +55,50 @@
     "title": "Selected work",
     "comingSoon": "Coming soon",
     "readCaseStudy": "Read case study →",
-    "draft": "Draft"
+    "draft": "Draft",
+    "groups": {
+      "arontier": "Arontier Inc.",
+      "illuminarian": "Illuminarian LLC",
+      "yura": "Yura Corp.",
+      "common-srl": "commON srl",
+      "personal": "Personal Projects"
+    }
+  },
+  "hire": {
+    "title": "Work with me",
+    "tagline": "Frontend and delivery for browser apps that handle 3D, gigapixel imagery, and large datasets — remote.",
+    "intro": "I work on the part that is harder than the layout — rendering large datasets without stalling the browser, keeping multi-megabyte visualization libraries off the critical path, and shipping it all through a release pipeline the team can actually trust. I have built gigapixel image viewers, 3D structure viewers, and chart dashboards over large datasets, all in production products.",
+    "servicesTitle": "What I take on",
+    "service1Title": "Heavy viewer & rendering integration",
+    "service1Body": "Integrating 3D/WebGL viewers, gigapixel deep-zoom imagery, and node-heavy interactive workspaces into an existing app — including isolating multi-megabyte libraries route by route so initial load does not suffer.",
+    "service1Link": "Gigapixel deep-zoom viewer →",
+    "service2Title": "Performance & bundle audit",
+    "service2Body": "Finding what actually makes a React app slow, then fixing it structurally: route-scoped loading, code splitting, and render-path profiling — reported with before/after numbers you can reproduce.",
+    "service2Link": "32MB → 6.5MB bundle cut →",
+    "service3Title": "CI/CD & test automation",
+    "service3Body": "Standing up or tightening the release path — containerized E2E, full-suite regression runs, dependency and quality scanning, and build/image optimization.",
+    "service3Link": "One pipeline, three products →",
+    "howTitle": "How I work",
+    "how1Title": "Korea-based, overlapping with European mornings",
+    "how1Body": "Late afternoon in Korea overlaps with the Central European morning, giving a dependable 3-4 hour window for live collaboration each day (17:00 KST is 09:00 CET). I worked across exactly that gap for a year and eight months with a production plant team in Serbia, coordinating process definitions and feedback — and worked remotely for a Korean startup.",
+    "how2Title": "English as the working language",
+    "how2Body": "Including direct coordination with overseas teams on technical requirements and process definitions.",
+    "how3Title": "Documentation outlives the contract",
+    "how3Body": "I document what changed, why, and how it was measured, so the team can carry the work forward once the engagement ends. On a short contract, that documentation is effectively the entire handover.",
+    "ctaTitle": "Discuss a project",
+    "ctaBody": "Send a brief overview of the product and the technical challenge you're addressing. I'll follow up with an assessment of scope and fit.",
+    "ctaButton": "Get in touch",
+    "workLink": "Browse all case studies →"
   },
   "caseStudyHero": {
     "role": "Role",
     "timeline": "Timeline",
     "stack": "Stack",
-    "nda": "NDA",
-    "ndaValue": "Details anonymized"
+    "disclosure": "Disclosure"
   },
   "caseStudyCta": {
     "title": "Found this case study interesting?",
-    "body": "If you'd like to chat, feel free to reach out anytime.",
+    "body": "Always up for a conversation — whether or not there's a project attached.",
     "bookACall": "Book a call",
     "bookingComingSoon": "Book a call (coming soon)",
     "emailSoomin": "Email Soomin"

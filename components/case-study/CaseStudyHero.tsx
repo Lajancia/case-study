@@ -30,8 +30,19 @@ export async function CaseStudyHero({ study, locale }: CaseStudyHeroProps) {
           </div>
         </div>
         <div>
-          <div className="text-xs text-gray-500 mb-0.5 dark:text-gray-500">{t('nda')}</div>
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('ndaValue')}</div>
+          <div className="text-xs text-gray-500 mb-0.5 dark:text-gray-500">{t('disclosure')}</div>
+          {study.disclosure.href ? (
+            <a
+              href={study.disclosure.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              {study.disclosure.label} →
+            </a>
+          ) : (
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">{study.disclosure.label}</div>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 rounded-lg bg-gray-50 p-6 dark:bg-gray-900">

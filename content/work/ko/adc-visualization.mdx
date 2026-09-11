@@ -1,0 +1,85 @@
+export const metadata = {
+  title: "ADC 데이터 시각화: Next.js 16 기반 3D/2D 분자 뷰어",
+  description:
+    "항체-약물 접합체(ADC) 데이터 플랫폼에 Molstar·RDKit 기반 3D 단백질/2D 화학구조 뷰어를 구현하고, Claude Code 기반 Playwright E2E 테스트 자동 생성 워크플로우를 도입한 과정.",
+  slug: "adc-visualization",
+  publishedAt: "2026-XX-XX",
+  role: "UI 개발 / 테스트 자동화",
+  timeline: "2026년 3월 – 2026년 5월",
+  industry: "바이오테크 / 항체-약물 접합체(ADC)",
+  stack: ["React", "TypeScript", "Next.js 16", "Molstar", "RDKit", "Tailwind CSS", "Playwright", "Claude Code"],
+  outcomes: [
+    { label: "E2E 테스트 작성", before: "수동 스펙 작성", after: "Claude Code 기반 자동 생성", change: "워크플로우 도입" },
+    { label: "스택", before: "해당 없음 (신규 제품)", after: "Next.js 16 App Router + Tailwind CSS", change: "최신 스택" },
+  ],
+  draft: false,
+}
+
+## 배경
+
+*이 케이스 스터디는 실제 프로젝트를 기법과 결과 수준으로 재구성한 것입니다. 내부 시스템명·비공개 세부사항은 생략했으며, 측정된 수치는 실제와 동일합니다.*
+
+ADC는 항체-약물 접합체(Antibody-Drug Conjugate) 관련 데이터 — DAR(Drug-Antibody Ratio) 분포, 대표 3D 구조 등 — 를 검색·탐색·시각화하는 웹 애플리케이션입니다. [AD3 플랫폼](/ko/work/scientific-platform-performance)과 같은 Molstar + RDKit 뷰어 스택을 쓰지만, ADC는 처음부터 이 조합을 라우트 단위로 설계해서 시작한 신규 제품이라는 점이 다릅니다.
+
+- **Molstar** 기반 3D 단백질 구조 뷰어와 **RDKit** 기반 화학구조식 렌더링을 팝업/상세 화면에 통합
+- **Next.js 16(App Router)** + **Tailwind CSS**로 최신 스택 위에서 검색 메인 화면과 컨쥬게이트 상세 페이지 구현
+- 사내에서 Claude Code 기반 AI 개발 워크플로우를 처음 적용해보는 **파일럿 프로젝트**로 선정됨
+
+## 진행한 작업
+
+### 1. 3D/2D 분자 뷰어 구현
+
+검색 결과에서 컨쥬게이트 상세 페이지로 진입하면 3D 구조 팝업이 뜨는 흐름을 Molstar로 구현하고, 화학구조식은 RDKit으로 렌더링했습니다. AD3에서 이미 겪었던 "무거운 과학 라이브러리를 모든 라우트에 태우면 안 된다"는 교훈을 반영해, ADC는 처음부터 이 뷰어들을 관련 라우트에만 로드하도록 설계했습니다.
+
+### 2. Playwright E2E 기준 정립
+
+사내 다른 제품들은 Cypress 기반 E2E를 쓰고 있었지만, ADC는 **처음부터 Playwright로 시작**했습니다. 여기서 잡은 설정(`playwright.config.ts`)과 스모크 테스트 태깅(`@smoke`) 기준이, 이후 AD3의 E2E를 Cypress에서 Playwright로 마이그레이션할 때 그대로 참고 기준이 됐습니다.
+
+### 3. Claude Code 기반 테스트 자동 생성 워크플로우 도입
+
+Playwright 스펙을 화면 변경마다 수동으로 작성하는 대신, Claude Code로 UI 변경 사항을 분석해 E2E 테스트 초안을 자동 생성하고 사람이 리뷰·보정하는 워크플로우를 도입했습니다. 완전 자동화라기보다는, 스펙 작성의 초안 단계를 AI에게 맡기고 검증은 사람이 하는 **반자동 워크플로우**로 자리잡았습니다.
+
+## 결과
+
+<table>
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th>이전</th>
+      <th>이후</th>
+      <th>변화</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>E2E 테스트 프레임워크</td>
+      <td>Cypress (다른 제품들의 기존 표준)</td>
+      <td>Playwright (ADC가 첫 표준화 사례)</td>
+      <td>기준 정립</td>
+    </tr>
+    <tr>
+      <td>E2E 테스트 작성</td>
+      <td>수동 스펙 작성</td>
+      <td>Claude Code 초안 생성 + 사람 리뷰</td>
+      <td>워크플로우 도입</td>
+    </tr>
+    <tr>
+      <td>프론트엔드 스택</td>
+      <td>해당 없음 (신규 제품)</td>
+      <td>Next.js 16 App Router + Tailwind CSS</td>
+      <td>최신 스택</td>
+    </tr>
+  </tbody>
+</table>
+
+ADC는 규모가 크지 않은 신규 프로젝트였기 때문에, 여기서 정립한 Playwright 기준과 Claude Code 테스트 워크플로우를 다른 사내 프로젝트로 확장하기 전에 먼저 리스크를 낮게 검증해볼 수 있는 자리였습니다.
+
+## 관련 케이스 스터디
+
+같은 Molstar/RDKit 뷰어 조합을 처음 최적화한 이야기는 [AD3 플랫폼 케이스 스터디](/ko/work/scientific-platform-performance)에서, 사내 공용 CI/CD·테스트 파이프라인 이야기는 [DevSecOps 파이프라인 케이스 스터디](/ko/work/devsecops-pipeline)에서 다룹니다.
+
+{/*
+## 프론트엔드 성능 감사가 필요하신가요?
+
+React/Next.js 제품을 위한 1주 고정 범위 감사. 측정 가능한 목표가 담긴 우선순위 실행 계획을 받아보세요.
+*/}
