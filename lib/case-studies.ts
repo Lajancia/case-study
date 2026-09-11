@@ -355,7 +355,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
     slug: "next14-r3f-portfolio",
     title: "Building an Immersive 3D Portfolio: Next.js 14 + React Three Fiber",
     description:
-      "A bilingual 3D portfolio site with interactive WebGL scenes (keyboard, bike), Panda CSS styling, and a full CI/CD pipeline from Jenkins to K3s.",
+      "A bilingual 3D portfolio site with interactive WebGL scenes (keyboard, motorcycle), Panda CSS styling, and a full CI/CD pipeline from Jenkins to K3s.",
     publishedAt: "2026-XX-XX",
     role: "Frontend Engineer (solo)",
     timeline: "Dec 2023 – present",
@@ -375,7 +375,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
       {
         label: "3D scenes",
         before: "0",
-        after: "2 (keyboard, bike)",
+        after: "2 (keyboard, motorcycle)",
         change: "interactive WebGL",
       },
       {
