@@ -47,6 +47,12 @@ export default async function HirePage({
     },
   ];
 
+  const process = [1, 2, 3, 4, 5].map((n) => ({
+    title: t(`step${n}Title`),
+    timing: t(`step${n}Timing`),
+    body: t(`step${n}Body`),
+  }));
+
   const howIWork = [
     { title: t("how1Title"), body: t("how1Body") },
     { title: t("how2Title"), body: t("how2Body") },
@@ -98,6 +104,36 @@ export default async function HirePage({
         >
           {t("workLink")}
         </Link>
+      </section>
+
+      <section className="mb-16">
+        <h2 className="text-xl font-bold mb-6">{t("processTitle")}</h2>
+        <ol className="space-y-5">
+          {process.map((step, i) => (
+            <li
+              key={step.title}
+              className="border-l-2 border-gray-200 pl-5 dark:border-gray-800"
+            >
+              <div className="flex flex-wrap items-baseline gap-x-2 mb-1">
+                <span className="text-xs font-semibold text-gray-400 dark:text-gray-600">
+                  {i + 1}
+                </span>
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                  {step.title}
+                </h3>
+                <span className="text-xs text-gray-500 dark:text-gray-500">
+                  · {step.timing}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {step.body}
+              </p>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-6 text-sm text-gray-600 dark:text-gray-400">
+          {t("processNote")}
+        </p>
       </section>
 
       <section className="mb-16">
