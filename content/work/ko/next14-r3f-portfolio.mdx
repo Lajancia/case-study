@@ -7,13 +7,32 @@ export const metadata = {
   role: "프론트엔드 엔지니어 (단독)",
   timeline: "2023년 12월 – 현재",
   industry: "개인 포트폴리오 / 3D 웹",
-  stack: ["Next.js 14", "React Three Fiber", "Three.js", "Panda CSS", "i18next", "Framer Motion", "Docker", "Jenkins"],
+  stack: [
+    "Next.js 14",
+    "React Three Fiber",
+    "Three.js",
+    "Panda CSS",
+    "i18next",
+    "Framer Motion",
+    "Docker",
+    "Jenkins",
+  ],
   outcomes: [
-    { label: "3D 씬", before: "0", after: "2개 씬", change: "인터랙티브 WebGL" },
-    { label: "배포", before: "수동 SSH", after: "Jenkins → K3s 자동", change: "완전 자동화" },
+    {
+      label: "3D 씬",
+      before: "0",
+      after: "2개 씬",
+      change: "인터랙티브 WebGL",
+    },
+    {
+      label: "배포",
+      before: "수동 SSH",
+      after: "Jenkins → K3s 자동",
+      change: "완전 자동화",
+    },
   ],
   draft: false,
-}
+};
 
 ## 배경
 
@@ -29,30 +48,35 @@ export const metadata = {
 이 사이트는 여러 개의 인터랙티브 3D 씬을 포함합니다:
 
 - **매크로 키보드** — 홈페이지 히어로 영역: 키캡까지 표현한 정교한 키보드 모델(`.glb`)을 커스텀 라이팅과 후처리 효과로 렌더링
-- **자전거** — 오빗 컨트롤이 적용된 인터랙티브 3D 자전거 모델
+- **바이크** — 오빗 컨트롤이 적용된 인터랙티브 3D 바이크 모델
 
 각 씬은 독립적인 R3F 컴포넌트입니다:
 
 ```tsx
 // 예시: 3D 키보드 씬 컴포넌트 구조
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Environment, useGLTF } from '@react-three/drei'
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Environment, useGLTF } from "@react-three/drei";
 
 function KeyboardScene() {
-  const { nodes, materials } = useGLTF('/keyboard.glb')
+  const { nodes, materials } = useGLTF("/keyboard.glb");
   return (
     <group>
       {Object.values(nodes).map((node, i) => (
-        <mesh key={i} geometry={node.geometry} material={materials[node.name]} />
+        <mesh
+          key={i}
+          geometry={node.geometry}
+          material={materials[node.name]}
+        />
       ))}
     </group>
-  )
+  );
 }
 ```
 
 ### 2. i18next 기반 이중언어 지원
 
 `i18next`로 한국어·영어 완전 다국어 처리를 구현했습니다:
+
 - 라우트 기반 동적 언어 감지(`/en/pipeline`, `/ko/pipeline`)
 - `accept-language` 헤더를 통한 서버 사이드 언어 협상
 - 페이지 컴포넌트별로 네임스페이스가 분리된 번역 파일
@@ -60,6 +84,7 @@ function KeyboardScene() {
 ### 3. Panda CSS 스타일링
 
 스타일링은 **Panda CSS** — 다음 특징을 가진 모던 CSS-in-JS 프레임워크 — 로 처리합니다:
+
 - 타입 세이프한 디자인 토큰
 - 빌드 타임에 생성되는 zero-runtime CSS
 - 미디어 쿼리 보일러플레이트 없는 반응형 variant

@@ -173,7 +173,14 @@ const caseStudiesEn: CaseStudyMeta[] = [
     timeline: "Apr 2025 – present",
     industry: "Platform engineering / DevSecOps",
     company: "arontier",
-    stack: ["Jenkins", "Docker", "Cypress", "Snyk", "SonarQube", "Pipeline Script"],
+    stack: [
+      "Jenkins",
+      "Docker",
+      "Cypress",
+      "Snyk",
+      "SonarQube",
+      "Pipeline Script",
+    ],
     outcomes: [
       {
         label: "Manual regression",
@@ -348,7 +355,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
     slug: "next14-r3f-portfolio",
     title: "Building an Immersive 3D Portfolio: Next.js 14 + React Three Fiber",
     description:
-      "A bilingual 3D portfolio site with interactive WebGL scenes (keyboard, bicycle), Panda CSS styling, and a full CI/CD pipeline from Jenkins to K3s.",
+      "A bilingual 3D portfolio site with interactive WebGL scenes (keyboard, bike), Panda CSS styling, and a full CI/CD pipeline from Jenkins to K3s.",
     publishedAt: "2026-XX-XX",
     role: "Frontend Engineer (solo)",
     timeline: "Dec 2023 – present",
@@ -418,7 +425,10 @@ const caseStudiesEn: CaseStudyMeta[] = [
         change: "high availability",
       },
     ],
-    disclosure: { label: "Public repo", href: "https://github.com/Lajancia/Next14-R3F" },
+    disclosure: {
+      label: "Public repo",
+      href: "https://github.com/Lajancia/Next14-R3F",
+    },
     capabilityTags: ["devops", "fullstack"],
     domains: ["infrastructure"],
     collaborations: [],
@@ -557,7 +567,14 @@ const caseStudiesKo: CaseStudyMeta[] = [
     timeline: "2025년 4월 – 현재",
     industry: "플랫폼 엔지니어링 / DevSecOps",
     company: "arontier",
-    stack: ["Jenkins", "Docker", "Cypress", "Snyk", "SonarQube", "Pipeline Script"],
+    stack: [
+      "Jenkins",
+      "Docker",
+      "Cypress",
+      "Snyk",
+      "SonarQube",
+      "Pipeline Script",
+    ],
     outcomes: [
       {
         label: "수동 회귀 테스트",
@@ -752,7 +769,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
       {
         label: "3D 씬",
         before: "0",
-        after: "2개 (키보드, 자전거)",
+        after: "2개 (키보드, 바이크)",
         change: "인터랙티브 WebGL",
       },
       {
@@ -762,7 +779,10 @@ const caseStudiesKo: CaseStudyMeta[] = [
         change: "완전 자동화",
       },
     ],
-    disclosure: { label: "공개 사이트", href: "https://creative.soominlab.com" },
+    disclosure: {
+      label: "공개 사이트",
+      href: "https://creative.soominlab.com",
+    },
     capabilityTags: ["visualization", "devops"],
     domains: ["web"],
     collaborations: [],
@@ -802,7 +822,10 @@ const caseStudiesKo: CaseStudyMeta[] = [
         change: "고가용성",
       },
     ],
-    disclosure: { label: "공개 저장소", href: "https://github.com/Lajancia/Next14-R3F" },
+    disclosure: {
+      label: "공개 저장소",
+      href: "https://github.com/Lajancia/Next14-R3F",
+    },
     capabilityTags: ["devops", "fullstack"],
     domains: ["infrastructure"],
     collaborations: [],
