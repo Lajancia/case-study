@@ -39,7 +39,7 @@ pipeline {
                         git config user.name "Jenkins CI"
                         git config user.email "ci@soominlab.com"
                         git add case-study.yaml
-                        git commit -m "chore: update case-study image tag to ${shortCommit}"
+                        git commit -m "chore: update case-study image tag to ${shortCommit}" || true
                         git push
                         cd .. && rm -rf gitops-tmp
                     """
