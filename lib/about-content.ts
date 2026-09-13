@@ -48,7 +48,7 @@ const EXPERIENCE_EN: Role[] = [
       "Oct 2022 – May 2024 · 1 yr 8 mo · Seoul-based, remote collaboration with Serbia plant",
     bullets: [
       "Designed and built a chart-based monitoring dashboard for a Serbia-based production plant, from Figma design through React/MUI implementation to a Spring Boot + MariaDB backend.",
-      "Visualized per-product, per-line AOI pass rates with ApexCharts and Plotly; the resulting real-time monitoring cut the AOI defect rate by roughly 20%.",
+      "Visualized per-product, per-line AOI pass rates with ApexCharts and Plotly; the resulting visibility cut the AOI defect rate by roughly 20%.",
       "Coordinated directly with the Serbia-based plant team in English on process formulas and feedback.",
     ],
   },
@@ -94,7 +94,7 @@ const EXPERIENCE_KO: Role[] = [
       "2022년 10월 – 2024년 5월 · 1년 8개월 · 서울 근무, 세르비아 현지와 원격 협업",
     bullets: [
       "세르비아 소재 생산 공장을 위한 차트 기반 모니터링 대시보드를 Figma 설계부터 React/MUI 구현, Spring Boot + MariaDB 백엔드까지 직접 설계·개발.",
-      "ApexCharts·Plotly로 품목별·라인별 AOI 직행률을 시각화 — 실시간 모니터링 체계로 AOI 불량률을 약 20% 감소.",
+      "ApexCharts·Plotly로 품목별·라인별 AOI 직행률을 시각화 — AOI 불량률을 약 20% 감소.",
       "세르비아 현지 공장 팀과 영어로 직접 소통하며 공정 계산식과 피드백을 반영.",
     ],
   },

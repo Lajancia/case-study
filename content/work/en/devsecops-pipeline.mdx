@@ -1,23 +1,40 @@
 export const metadata = {
-  title: "One Pipeline, Three Products: Standardizing CI/CD and Test Reporting",
-  description:
-    "Building a shared Jenkins Build-Test-Scan-Deploy pipeline — containerized Cypress E2E, full-suite regression runs, and Snyk/SonarQube report automation — that cut manual regression testing from 5 hours to 1 across three frontend products.",
-  slug: "devsecops-pipeline",
-  publishedAt: "2026-XX-XX",
-  role: "CI/CD Pipeline Design & Operations",
-  timeline: "Apr 2025 – present",
-  industry: "Platform engineering / DevSecOps",
-  stack: ["Jenkins", "Docker", "Cypress", "Snyk", "SonarQube", "Pipeline Script"],
-  outcomes: [
-    { label: "Manual regression", before: "~5 hours/release", after: "~1 hour/release", change: "−80%" },
-    { label: "Security/quality reporting", before: "ad hoc, manual", after: "Snyk + SonarQube every build", change: "automated" },
-  ],
-  draft: false,
-}
+	title: 'One Pipeline, Three Products: Standardizing CI/CD and Test Reporting',
+	description:
+		'Building a shared Jenkins Build-Test-Scan-Deploy pipeline — containerized Cypress E2E, full-suite regression runs, and Snyk/SonarQube report automation — that cut manual regression testing from 5 hours to 1 across three frontend products.',
+	slug: 'devsecops-pipeline',
+	publishedAt: '2026-XX-XX',
+	role: 'CI/CD Pipeline Design & Operations',
+	timeline: 'Apr 2025 – present',
+	industry: 'Platform engineering / DevSecOps',
+	stack: [
+		'Jenkins',
+		'Docker',
+		'Cypress',
+		'Snyk',
+		'SonarQube',
+		'Pipeline Script',
+	],
+	outcomes: [
+		{
+			label: 'Manual regression',
+			before: '~5 hours/release',
+			after: '~1 hour/release',
+			change: '−80%',
+		},
+		{
+			label: 'Security/quality reporting',
+			before: 'ad hoc, manual',
+			after: 'Snyk + SonarQube every build',
+			change: 'automated',
+		},
+	],
+	draft: false,
+};
 
 ## Context
 
-*This case study reconstructs real work at the level of technique and outcome. Internal system names and non-public details are omitted; the measured figures are as recorded.*
+_This case study reconstructs real work at the level of technique and outcome. Internal system names and non-public details are omitted; the measured figures are as recorded._
 
 Three frontend products shared one small platform team, but no shared release infrastructure — each had grown its own ad hoc mix of manual QA passes and security checks that ran only when someone remembered to run them.
 
@@ -26,7 +43,7 @@ Three frontend products shared one small platform team, but no shared release in
 Two symptoms kept recurring:
 
 1. **Manual regression ate the release calendar.** A full manual pass across the affected product's UI took roughly 5 hours before every release — done by hand because there was no reliable automated pipeline to trust for full coverage.
-2. **Security and quality checks were opportunistic.** Dependency/container scanning (Snyk) and static analysis (SonarQube) existed as tools someone had set up once, not as a standard step every build produced a report from. Regressions in code paths *outside* a release's stated scope — a shared component touched by an unrelated change — occasionally shipped undetected, because nothing re-ran the full suite against changes that "shouldn't have touched that."
+2. **Security and quality checks were opportunistic.** Dependency/container scanning (Snyk) and static analysis (SonarQube) existed as tools someone had set up once, not as a standard step every build produced a report from. Regressions in code paths _outside_ a release's stated scope — a shared component touched by an unrelated change — occasionally shipped undetected, because nothing re-ran the full suite against changes that "shouldn't have touched that."
 
 ## What I did
 
@@ -74,8 +91,6 @@ The existing suite ran inconsistently across machines — "works on my laptop" w
 - **Snyk** scans the built container image for known vulnerabilities as part of every pipeline run, instead of as a manual, occasional check.
 - **SonarQube** runs static analysis against a defined quality profile on every build, with a Quality Gate that can fail the build once issues cross an agreed threshold.
 
-Dynamic security scanning (OWASP ZAP) was evaluated too, but it never made it into this shared pipeline as a standard stage — it stayed at the level of per-project experiments rather than something every build ran. (ZAP's actual use on a related project is covered separately in the [PATH case study](/en/work/path-wsi-viewer).)
-
 None of these replace a real security review, but turning "did anyone run the scanner" into "the scanner runs, and produces a report, every time" closed the gap where checks depended on someone remembering to do them manually.
 
 ### 4. Run the full suite, not just the diff
@@ -85,45 +100,46 @@ The most valuable habit change wasn't a tool — it was running the **full** E2E
 ## Results
 
 <table>
-  <thead>
-    <tr>
-      <th>Metric</th>
-      <th>Before</th>
-      <th>After</th>
-      <th>Change</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Manual regression testing</td>
-      <td>~5 hours/release</td>
-      <td>~1 hour/release</td>
-      <td>−80%</td>
-    </tr>
-    <tr>
-      <td>E2E environment</td>
-      <td>local, per-machine drift</td>
-      <td>containerized, reproducible</td>
-      <td>standardized</td>
-    </tr>
-    <tr>
-      <td>Security/quality reporting</td>
-      <td>manual, ad hoc</td>
-      <td>Snyk + SonarQube every build</td>
-      <td>automated</td>
-    </tr>
-    <tr>
-      <td>Pipeline maintenance</td>
-      <td>bespoke per product</td>
-      <td>one shared Jenkinsfile</td>
-      <td>standardized</td>
-    </tr>
-  </tbody>
+	<thead>
+		<tr>
+			<th>Metric</th>
+			<th>Before</th>
+			<th>After</th>
+			<th>Change</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Manual regression testing</td>
+			<td>~5 hours/release</td>
+			<td>~1 hour/release</td>
+			<td>−80%</td>
+		</tr>
+		<tr>
+			<td>E2E environment</td>
+			<td>local, per-machine drift</td>
+			<td>containerized, reproducible</td>
+			<td>standardized</td>
+		</tr>
+		<tr>
+			<td>Security/quality reporting</td>
+			<td>manual, ad hoc</td>
+			<td>Snyk + SonarQube every build</td>
+			<td>automated</td>
+		</tr>
+		<tr>
+			<td>Pipeline maintenance</td>
+			<td>bespoke per product</td>
+			<td>one shared Jenkinsfile</td>
+			<td>standardized</td>
+		</tr>
+	</tbody>
 </table>
 
 The 80% reduction in manual testing time didn't come from testing less — it came from testing the same surface automatically instead of by hand, freeing the reclaimed hours for the cases automation still can't cover: exploratory testing and reviewing what the full-suite runs actually caught.
 
 {/*
+
 ## Interested in a CI/CD or test-automation audit?
 
 If manual QA is eating your release calendar, or security scanning is something that happens "when someone remembers," a fixed-scope pipeline audit can identify the highest-leverage first steps.
