@@ -19,9 +19,7 @@ pipeline {
                 script {
                     def shortCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
                     echo "Building image: ${GHCR_IMAGE}:${shortCommit}"
-                    sh "docker build \\"
-                        + " --build-arg NEXT_PUBLIC_SITE_URL=https://soominlab.com \\"
-                        + " -t ${GHCR_IMAGE}:${shortCommit} ."
+                    sh "docker build --build-arg NEXT_PUBLIC_SITE_URL=https://soominlab.com -t ${GHCR_IMAGE}:${shortCommit} ."
                     sh "docker tag ${GHCR_IMAGE}:${shortCommit} ${GHCR_IMAGE}:latest"
                     sh "docker push ${GHCR_IMAGE}:${shortCommit}"
                     sh "docker push ${GHCR_IMAGE}:latest"
