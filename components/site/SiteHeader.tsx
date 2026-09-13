@@ -9,6 +9,7 @@ import { LanguageSwitcher } from '@/components/site/LanguageSwitcher'
 export async function SiteHeader({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'nav' })
   const contactHref = siteConfig.calendlyUrl || `mailto:${siteConfig.email}`
+  const resumeUrl = `/resume_${locale}.pdf`
 
   const navLinks = [
     { label: t('about'), href: '/about' as const },
@@ -29,7 +30,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
             {t('technicalWriting')}
           </a>
           <a
-            href={siteConfig.resumeUrl}
+            href={resumeUrl}
             download
             className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-3.5 py-1.5 text-gray-700 hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
           >
@@ -47,7 +48,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
         <div className="flex items-center gap-1 sm:hidden">
           <LanguageSwitcher />
           <ThemeToggle />
-          <MobileNav links={navLinks} contactHref={contactHref} contactLabel={t('contact')} resumeUrl={siteConfig.resumeUrl} resumeLabel={t('resume')} openLabel={t('openMenu')} closeLabel={t('closeMenu')} />
+          <MobileNav links={navLinks} contactHref={contactHref} contactLabel={t('contact')} resumeUrl={resumeUrl} resumeLabel={t('resume')} openLabel={t('openMenu')} closeLabel={t('closeMenu')} />
         </div>
       </div>
     </header>
