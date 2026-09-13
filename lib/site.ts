@@ -3,7 +3,7 @@
 export const siteConfig = {
 	name: 'Soomin Hwang',
 	url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-	email: 'lajancia@soominlab.com',
+	email: 'kie6974@naver.com',
 	social: {
 		linkedin: 'https://linkedin.com/in/lajancia',
 		github: 'https://github.com/Lajancia',
