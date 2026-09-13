@@ -24,10 +24,10 @@ export default async function HomePage({
         <p className="text-lg text-gray-600 max-w-xl mb-6 dark:text-gray-400">
           {t("heroSubtitle")}
         </p>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
           <Link
             href="/work"
-            className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
+            className="inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:bg-blue-500 dark:hover:bg-blue-600"
           >
             {t("viewCaseStudy")}
           </Link>
@@ -36,14 +36,14 @@ export default async function HomePage({
               href={siteConfig.calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
+              className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
             >
               {t("bookACall")}
             </a>
           ) : (
             <a
               href={mailtoUrl("Hello from your case study site")}
-              className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
+              className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
             >
               {t("emailSoomin")}
             </a>
@@ -179,16 +179,16 @@ export default async function HomePage({
         <p className="text-gray-600 mb-6 dark:text-gray-400">
           {t("letsWorkSubtitle")}
         </p>
-        <div className="flex justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
           <Link
             href="/work"
-            className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
+            className="inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:bg-blue-500 dark:hover:bg-blue-600"
           >
             {t("viewCaseStudy")}
           </Link>
           <a
             href={mailtoUrl("Let's work together")}
-            className="inline-flex items-center rounded-full border border-gray-300 px-6 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
+            className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
           >
             {t("emailSoomin")}
           </a>
