@@ -3,8 +3,7 @@ pipeline {
 
     environment {
         GHCR_IMAGE = 'ghcr.io/g3941813-svg/case-study'
-        CONTAINER_NAME = 'soomin-case-studies'
-        COMPOSE_DIR = '/root/case-study'
+        GITOPS_REPO = 'https://github.com/g3941813-svg/case-study-ops.git'
     }
 
     stages {
@@ -27,10 +26,23 @@ pipeline {
             }
         }
 
-        stage('Deploy to Host') {
+        stage('Update GitOps Repo') {
             steps {
                 script {
-                    sh "chmod +x scripts/deploy.sh && ./scripts/deploy.sh ${GHCR_IMAGE}:latest"
+                    def shortCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+                    sh """
+                        export GIT_TERMINAL_PROMPT=0
+                        rm -rf gitops-tmp
+                        git clone ${GITOPS_REPO} gitops-tmp
+                        cd gitops-tmp
+                        sed -i 's|image: ghcr.io/g3941813-svg/case-study:.*|image: ${GHCR_IMAGE}:${shortCommit}|' case-study.yaml
+                        git config user.name "Jenkins CI"
+                        git config user.email "ci@soominlab.com"
+                        git add case-study.yaml
+                        git commit -m "chore: update case-study image tag to ${shortCommit}"
+                        git push
+                        cd .. && rm -rf gitops-tmp
+                    """
                 }
             }
         }
@@ -44,7 +56,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Pipeline completed! Case study deployed to soominlab.com"
+            echo '✅ Pipeline completed! Image pushed to GHCR and GitOps repo updated — ArgoCD will auto-sync.'
         }
         failure {
             echo '❌ Pipeline failed. Check Jenkins logs for details.'
