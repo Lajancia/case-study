@@ -1,7 +1,7 @@
 export const metadata = {
   title: "세르비아 생산 공장 스마트팩토리 모니터링 시스템",
   description:
-    "ApexCharts·Plotly 기반 차트로 해외 생산 공장의 AOI 공정 데이터를 시각화한 모니터링 대시보드. Figma 설계부터 Spring Boot API까지 전 과정을 맡아, 실시간 모니터링 체계로 AOI 불량률을 약 20% 낮춘 과정.",
+    "ApexCharts·Plotly 기반 차트로 해외 생산 공장의 AOI 공정 데이터를 시각화한 모니터링 대시보드. Figma 설계부터 Spring Boot API까지 전 과정을 맡아, AOI 불량률을 약 20% 낮춘 과정.",
   slug: "yura-smart-factory",
   publishedAt: "2026-XX-XX",
   role: "UI/UX 설계, 화면 구현, API 개발",
@@ -10,7 +10,7 @@ export const metadata = {
   stack: ["React.js", "MUI", "ApexCharts", "Plotly", "Java Spring Boot", "MyBatis", "MariaDB", "Figma"],
   outcomes: [
     { label: "AOI 불량률", before: "수기 집계 기준", after: "약 20% 감소", change: "−20%" },
-    { label: "공정 가시성", before: "수기 점검", after: "실시간 대시보드", change: "상시 모니터링" },
+    { label: "공정 가시성", before: "수기 점검", after: "대시보드 모니터링", change: "상시 모니터링" },
   ],
   draft: false,
 }
@@ -64,13 +64,13 @@ export const metadata = {
     <tr>
       <td>공정 가시성</td>
       <td>수기 집계·점검</td>
-      <td>실시간 차트 대시보드</td>
+      <td>차트 대시보드</td>
       <td>상시 모니터링</td>
     </tr>
   </tbody>
 </table>
 
-수기 집계를 실시간 대시보드로 바꾼 것 자체가 목적이 아니라, 그 가시성 덕분에 문제 공정을 더 빨리 짚어낼 수 있게 된 것이 AOI 불량률 감소로 이어진 핵심이었습니다.
+수기 집계를 대시보드로 바꾼 것 자체가 목적이 아니라, 그 가시성 덕분에 문제 공정을 더 빨리 짚어낼 수 있게 된 것이 AOI 불량률 감소로 이어진 핵심이었습니다.
 
 {/*
 ## 대시보드·모니터링 시스템 구축이 필요하신가요?
