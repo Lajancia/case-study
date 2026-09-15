@@ -64,7 +64,7 @@ export default async function HomePage({
             {featuredStudies.map((study) => (
               <div
                 key={study.slug}
-                className="border border-gray-200 rounded-lg p-6 sm:p-8 hover:border-gray-300 transition-colors dark:border-gray-800 dark:hover:border-gray-700"
+                className="border border-gray-200 rounded-lg p-6 sm:p-8 transition-colors hover:border-blue-400 dark:border-gray-800 dark:hover:border-[#007DCC]"
               >
                 <div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2 dark:text-blue-400">
                   {study.industry}
@@ -159,7 +159,7 @@ export default async function HomePage({
           ].map((item) => (
             <span
               key={item}
-              className="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full dark:bg-gray-800 dark:text-gray-300"
+              className="text-sm bg-[#00224D] text-[#F5EBDD] dark:bg-[#FF204E] dark:text-white px-3 py-1 rounded-full font-medium"
             >
               {item}
             </span>
