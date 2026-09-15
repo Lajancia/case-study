@@ -50,15 +50,15 @@
 }
 
 .dark {
-  /* Gray Palette in Dark Mode (Card / Box background: #001736 in dark mode) */
+  /* Gray Palette in Dark Mode (pure white/light-gray text for sharp legibility) */
   --color-gray-50: #001736;
   --color-gray-100: #0d356c;
   --color-gray-200: #1a457f;
-  --color-gray-300: #295796;
-  --color-gray-400: #8da4c4;
-  --color-gray-500: #adc1dc;
-  --color-gray-600: #cbd8ec;
-  --color-gray-700: #dfebf8;
+  --color-gray-300: #e2e8f0;
+  --color-gray-400: #f1f5f9;
+  --color-gray-500: #cbd5e1;
+  --color-gray-600: #94a3b8;
+  --color-gray-700: #f8fafc;
   --color-gray-800: #062b5b;
   --color-gray-900: #001736;
   --color-gray-950: #001736;
@@ -74,10 +74,10 @@
   --color-blue-950: #001736;
 
   --color-background: #00224d;
-  --color-foreground: #f5ebdd;
+  --color-foreground: #ffffff;
   --color-accent: #ff204e;
   --color-accent-hover: #ff5c7d;
-  --color-muted: #adc1dc;
+  --color-muted: #cbd5e1;
   --color-border: #0d356c;
   --color-surface: #001736;
 
