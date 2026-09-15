@@ -403,10 +403,10 @@ const caseStudiesEn: CaseStudyMeta[] = [
     stack: ["Vue.js", "Vuetify"],
     outcomes: [
       {
-        label: "Still in service",
-        before: "Built 2022",
-        after: "Live today",
-        change: "4+ years",
+        label: "Portfolio journey",
+        before: "Arrival and inquiry disconnected",
+        after: "Social → work → business inquiry",
+        change: "flow connected",
       },
     ],
     disclosure: { label: "Public site", href: "http://www.common-mag.com/" },
@@ -782,10 +782,10 @@ const caseStudiesKo: CaseStudyMeta[] = [
     stack: ["Vue.js", "Vuetify"],
     outcomes: [
       {
-        label: "운영 지속",
-        before: "2022년 구축",
-        after: "현재까지 운영 중",
-        change: "4년+",
+        label: "포트폴리오 탐색 동선",
+        before: "유입과 문의가 끊겨 있음",
+        after: "SNS 유입 → 작업물 → 비즈니스 문의",
+        change: "동선 연결",
       },
     ],
     disclosure: { label: "공개 사이트", href: "http://www.common-mag.com/" },
