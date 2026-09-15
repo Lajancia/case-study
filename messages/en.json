@@ -62,6 +62,7 @@
       "performance": "Performance",
       "visualization": "3D & data visualization",
       "delivery": "CI/CD & deployment",
+      "migration": "Migration",
       "quality": "Testing & security"
     },
     "groups": {

@@ -41,6 +41,7 @@ export interface CaseStudyMeta {
 export type Capability =
   | "visualization"
   | "performance"
+  | "migration"
   | "quality"
   | "delivery";
 
@@ -48,6 +49,7 @@ export type Capability =
 export const CAPABILITY_ORDER: Capability[] = [
   "visualization",
   "performance",
+  "migration",
   "quality",
   "delivery",
 ];
@@ -55,6 +57,7 @@ export const CAPABILITY_ORDER: Capability[] = [
 const CAPABILITY_TAGS: Record<Capability, string[]> = {
   visualization: ["visualization"],
   performance: ["performance"],
+  migration: ["migration"],
   quality: ["testing", "security"],
   delivery: ["devops"],
 };
@@ -153,7 +156,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
       label: "Public repo",
       href: "https://github.com/Lajancia/Next14-R3F",
     },
-    capabilityTags: ["devops", "fullstack"],
+    capabilityTags: ["migration", "devops", "fullstack"],
     domains: ["infrastructure"],
     collaborations: [],
     draft: false,
@@ -270,7 +273,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "Internal infrastructure" },
-    capabilityTags: ["devops", "security", "testing"],
+    capabilityTags: ["migration", "devops", "security", "testing"],
     domains: ["platform"],
     collaborations: [],
     draft: false,
@@ -308,7 +311,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "Internal infrastructure" },
-    capabilityTags: ["devops"],
+    capabilityTags: ["migration", "devops"],
     domains: ["web"],
     collaborations: [],
     draft: false,
@@ -416,7 +419,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "Public site", href: "http://www.common-mag.com/" },
-    capabilityTags: ["frontend"],
+    capabilityTags: ["migration", "frontend"],
     domains: ["web"],
     collaborations: [],
     draft: false,
@@ -540,7 +543,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
       label: "공개 저장소",
       href: "https://github.com/Lajancia/Next14-R3F",
     },
-    capabilityTags: ["devops", "fullstack"],
+    capabilityTags: ["migration", "devops", "fullstack"],
     domains: ["infrastructure"],
     collaborations: [],
     draft: false,
@@ -655,7 +658,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "사내 인프라" },
-    capabilityTags: ["devops", "security", "testing"],
+    capabilityTags: ["migration", "devops", "security", "testing"],
     domains: ["platform"],
     collaborations: [],
     draft: false,
@@ -693,7 +696,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "사내 인프라" },
-    capabilityTags: ["devops"],
+    capabilityTags: ["migration", "devops"],
     domains: ["web"],
     collaborations: [],
     draft: false,
@@ -801,7 +804,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "공개 사이트", href: "http://www.common-mag.com/" },
-    capabilityTags: ["frontend"],
+    capabilityTags: ["migration", "frontend"],
     domains: ["web"],
     collaborations: [],
     draft: false,
