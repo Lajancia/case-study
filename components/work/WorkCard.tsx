@@ -16,7 +16,7 @@ export async function WorkCard({ study, locale }: WorkCardProps) {
         : 'border-gray-200 hover:border-blue-400 hover:shadow-lg hover:-translate-y-0.5 dark:border-gray-800 dark:hover:border-[#007DCC]'
     }`}>
       <div className="flex items-start justify-between gap-2 mb-2">
-        <div className={`text-xs font-medium uppercase tracking-wider ${study.draft ? 'text-gray-400 dark:text-gray-600' : 'text-indigo-600 dark:text-indigo-400'}`}>{study.industry}</div>
+        <div className={`text-xs font-medium uppercase tracking-wider ${study.draft ? 'text-gray-400 dark:text-gray-600' : 'text-blue-600 dark:text-blue-400'}`}>{study.industry}</div>
         {study.draft && (
           <span className="shrink-0 text-xs font-semibold text-gray-500 bg-gray-200 border border-gray-300 rounded-full px-2.5 py-0.5 leading-none dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700">
             {t('draft')}
@@ -39,7 +39,7 @@ export async function WorkCard({ study, locale }: WorkCardProps) {
       </div>
       <div className="flex flex-wrap gap-1.5 mb-4">
         {study.stack.map((tech) => (
-          <span key={tech} className="text-xs bg-[#00224D] text-[#F5EBDD] dark:bg-[#FF204E] dark:text-white px-2 py-0.5 rounded font-medium">{tech}</span>
+          <span key={tech} className="text-xs bg-[#00224D] text-[#F5EBDD] dark:bg-[#0284c7] dark:text-white px-2 py-0.5 rounded font-medium">{tech}</span>
         ))}
       </div>
       <Link

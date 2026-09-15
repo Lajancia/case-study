@@ -159,7 +159,7 @@ export default async function HomePage({
           ].map((item) => (
             <span
               key={item}
-              className="text-sm bg-[#00224D] text-[#F5EBDD] dark:bg-[#FF204E] dark:text-white px-3 py-1 rounded-full font-medium"
+              className="text-sm bg-[#00224D] text-[#F5EBDD] dark:bg-[#0284c7] dark:text-white px-3 py-1 rounded-full font-medium"
             >
               {item}
             </span>

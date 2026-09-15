@@ -50,9 +50,9 @@ export default async function WorkPage({
   const chipBase =
     'rounded-full border px-3 py-1.5 text-sm transition-colors whitespace-nowrap'
   const chipOn =
-    'border-[#00224D] bg-[#00224D] text-[#F5EBDD] dark:border-[#FF204E] dark:bg-[#FF204E] dark:text-white font-medium'
+    'border-[#00224D] bg-[#00224D] text-[#F5EBDD] dark:border-[#38bdf8] dark:bg-[#0284c7] dark:text-white font-medium'
   const chipOff =
-    'border-gray-300 text-gray-600 hover:border-[#00224D] hover:text-[#00224D] dark:border-gray-700 dark:text-gray-400 dark:hover:border-[#FF204E] dark:hover:text-[#FF204E]'
+    'border-gray-300 text-gray-600 hover:border-[#00224D] hover:text-[#00224D] dark:border-gray-700 dark:text-gray-400 dark:hover:border-[#38bdf8] dark:hover:text-[#38bdf8]'
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
