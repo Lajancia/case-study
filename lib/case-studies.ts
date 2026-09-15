@@ -2,7 +2,7 @@ export type Locale = "en" | "ko";
 
 export type Company =
   | "arontier"
-  | "illuminarian"
+  | "illuminarean"
   | "yura"
   | "common-srl"
   | "personal";
@@ -33,7 +33,7 @@ export interface CaseStudyMeta {
 
 export const COMPANY_ORDER: Company[] = [
   "arontier",
-  "illuminarian",
+  "illuminarean",
   "yura",
   "common-srl",
   "personal",
@@ -245,7 +245,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
     draft: false,
   },
   {
-    slug: "illuminarian-dockerization",
+    slug: "illuminarean-dockerization",
     title: "Frontend Dockerization and CI/CD Optimization",
     description:
       "Moving a Next.js 14 app to a standalone build with a pnpm migration, cutting the Docker image from 1.3GB to 500MB and deploy time from 15 minutes to under 3.",
@@ -253,7 +253,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
     role: "Deploy Pipeline & Build Structure",
     timeline: "Jul 2024 – Dec 2024",
     industry: "HR tech / Recruiting platform",
-    company: "illuminarian",
+    company: "illuminarean",
     stack: [
       "Next.js 14",
       "TypeScript",
@@ -284,7 +284,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
     draft: false,
   },
   {
-    slug: "illuminarian-hiring-platform",
+    slug: "illuminarean-hiring-platform",
     title: "Job Posting & Applicant Management Platform",
     description:
       "A Next.js 14 recruiting service and admin panel, built frontend-first against an MSW mock API before the backend was ready, with next-translate powering multilingual SSG pages.",
@@ -292,7 +292,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
     role: "Service & Admin Panel Development",
     timeline: "Nov 2024 – Jan 2025",
     industry: "HR tech / Recruiting platform",
-    company: "illuminarian",
+    company: "illuminarean",
     stack: [
       "Next.js 14",
       "React Query",
@@ -639,7 +639,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
     draft: false,
   },
   {
-    slug: "illuminarian-dockerization",
+    slug: "illuminarean-dockerization",
     title: "프론트엔드 Dockerization 및 CI/CD 최적화",
     description:
       "Next.js 14 Standalone 빌드와 pnpm 마이그레이션으로 Docker 이미지를 1.3GB에서 500MB로, 배포 시간을 15분에서 3분 이내로 줄인 과정.",
@@ -647,7 +647,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
     role: "배포 파이프라인 및 빌드 구조 개선",
     timeline: "2024년 7월 – 2024년 12월",
     industry: "HR 테크 / 채용 플랫폼",
-    company: "illuminarian",
+    company: "illuminarean",
     stack: [
       "Next.js 14",
       "TypeScript",
@@ -678,7 +678,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
     draft: false,
   },
   {
-    slug: "illuminarian-hiring-platform",
+    slug: "illuminarean-hiring-platform",
     title: "채용 공고·지원자 관리 서비스 및 관리자 페이지 개발",
     description:
       "백엔드 API 개발 전 MSW 목업으로 프론트엔드를 선행 개발한 Next.js 14 기반 채용 서비스와 관리자 페이지, next-translate 기반 다국어 SSG 페이지.",
@@ -686,7 +686,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
     role: "서비스/관리자 페이지 개발",
     timeline: "2024년 11월 – 2025년 1월",
     industry: "HR 테크 / 채용 플랫폼",
-    company: "illuminarian",
+    company: "illuminarean",
     stack: [
       "Next.js 14",
       "React Query",
@@ -919,7 +919,7 @@ const HIGHLIGHT_REFS: Array<{ slug: string; outcome: number }> = [
   { slug: "scientific-platform-performance", outcome: 0 },
   { slug: "scientific-platform-performance", outcome: 1 },
   { slug: "devsecops-pipeline", outcome: 0 },
-  { slug: "illuminarian-dockerization", outcome: 0 },
+  { slug: "illuminarean-dockerization", outcome: 0 },
 ];
 
 export function getHighlights(locale: Locale): Highlight[] {

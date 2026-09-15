@@ -2,7 +2,7 @@ export const metadata = {
   title: "Frontend Dockerization and CI/CD Optimization",
   description:
     "Moving a Next.js 14 app to a standalone build with a pnpm migration, cutting the Docker image from 1.3GB to 500MB and deploy time from 15 minutes to under 3.",
-  slug: "illuminarian-dockerization",
+  slug: "illuminarean-dockerization",
   publishedAt: "2026-XX-XX",
   role: "Deploy Pipeline & Build Structure",
   timeline: "Jul 2024 – Dec 2024",
@@ -69,7 +69,7 @@ I reworked the build order and configuration so that next-translate-based multil
 
 ## How a standalone build shrinks the image (measured on this site)
 
-*The actual Illuminarian Docker images aren't something I can reopen today, so I reproduced the same `output: 'standalone'` technique on this portfolio site itself and measured it layer by layer. The mechanism is identical.*
+*The actual Illuminarean Docker images aren't something I can reopen today, so I reproduced the same `output: 'standalone'` technique on this portfolio site itself and measured it layer by layer. The mechanism is identical.*
 
 This site uses Next.js `output: 'standalone'` in `next.config.ts`, which produces a minimal self-contained build with only the runtime dependencies needed to run the application.
 
@@ -131,7 +131,7 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 ```
 
-The key line is `COPY --from=builder /app/.next/standalone ./`. Next.js's standalone output strips `devDependencies`, build tools, and cached intermediates, keeping only the required runtime — the same mechanism behind the 62% image-size cut at Illuminarian.
+The key line is `COPY --from=builder /app/.next/standalone ./`. Next.js's standalone output strips `devDependencies`, build tools, and cached intermediates, keeping only the required runtime — the same mechanism behind the 62% image-size cut at Illuminarean.
 
 > **Note:** Docker daemon was not available on the measurement machine. The non-standalone estimate is based on typical `node_modules` footprint for a Next.js + MDX + Tailwind project. The standalone figure was measured from the actual `.next/standalone/` directory.
 
