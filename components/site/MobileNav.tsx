@@ -43,7 +43,7 @@ export function MobileNav({ links, contactHref, contactLabel, resumeUrl, resumeL
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full border-b border-gray-200 bg-white px-6 py-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+        <div className="absolute left-0 right-0 top-full z-50 border-b border-gray-200 bg-white px-6 py-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
           <nav className="flex flex-col gap-4 text-sm font-medium text-gray-600 dark:text-gray-400">
             {links.map((link) =>
               link.external ? (
