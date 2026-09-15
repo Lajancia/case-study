@@ -75,7 +75,7 @@ export default async function HirePage({
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+      <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-gray-900 dark:text-[#38bdf8]">
         {t("title")}
       </h1>
       <p className="text-lg text-gray-600 mb-6 dark:text-gray-400">

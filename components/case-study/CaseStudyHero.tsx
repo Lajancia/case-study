@@ -11,7 +11,7 @@ export async function CaseStudyHero({ study, locale }: CaseStudyHeroProps) {
   return (
     <section className="border-b border-gray-200 pb-8 mb-8 dark:border-gray-800">
       <div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-3 dark:text-blue-400">{study.industry}</div>
-      <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-4">{study.title}</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-4 text-gray-900 dark:text-white">{study.title}</h1>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
         <div>
           <div className="text-xs text-gray-500 mb-0.5 dark:text-gray-500">{t('role')}</div>
@@ -25,7 +25,7 @@ export async function CaseStudyHero({ study, locale }: CaseStudyHeroProps) {
           <div className="text-xs text-gray-500 mb-0.5 dark:text-gray-500">{t('stack')}</div>
           <div className="flex flex-wrap gap-1">
             {study.stack.map((tech) => (
-              <span key={tech} className="text-xs bg-[#00224D] text-[#F5EBDD] dark:bg-[#FF204E] dark:text-white px-2 py-0.5 rounded font-medium">{tech}</span>
+              <span key={tech} className="text-xs bg-[#00224D] text-[#F5EBDD] dark:bg-[#0284c7] dark:text-white px-2 py-0.5 rounded font-medium">{tech}</span>
             ))}
           </div>
         </div>
