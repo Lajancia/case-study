@@ -3,13 +3,13 @@ export const metadata = {
   description:
     "Rebuilding a Milan startup's static HTML site on Vue.js/Vuetify, and bringing its externally managed domain and server under the company's own name.",
   slug: "common-srl-website",
-  role: "Frontend rebuild & domain/server handover",
+  role: "Frontend rebuild & domain/hosting handover",
   timeline: "Nov 2021 – May 2022",
   industry: "Fashion / Media startup",
   stack: ["Vue.js", "Vuetify"],
   outcomes: [
     { label: "Codebase", before: "Static HTML", after: "Vue.js / Vuetify", change: "rebuilt" },
-    { label: "Domain & server", before: "Managed outside the company", after: "Hosted and registered under the company", change: "brought in-house" },
+    { label: "Domain & hosting", before: "In a contractor's personal accounts", after: "Moved to company accounts", change: "ownership recovered" },
   ],
   draft: false,
 }
@@ -20,7 +20,7 @@ export const metadata = {
 
 As an intern at a Milan-based startup, I owned the official website and the magazine platform — both the display side and the purchase flow — for a fashion-magazine and event-marketing service.
 
-Two things were true when I started. The site was **static HTML**, so every new page meant copying markup around. And the **domain and server were managed outside the company**. The company could not directly touch either the code of its own website or the place that code ran.
+Two things were true when I started. The site was **static HTML**, so every new page meant copying markup around. And the **domain and hosting account sat in a freelance contractor's personal name**. It was the company's website, but the company did not own it.
 
 The site is viewable at [common-mag.com](http://www.common-mag.com/).
 
@@ -30,11 +30,11 @@ The site is viewable at [common-mag.com](http://www.common-mag.com/).
 
 I broke the repeated markup into **Vue.js** components and rebuilt the official website and the magazine display and purchase pages on top of the **Vuetify** component library. The mobile, tablet, and desktop breakpoints went in during the rebuild — far cheaper than retrofitting responsive behaviour onto static HTML later, when the component structure was being redrawn anyway.
 
-### 2. Moved the domain and server in-house
+### 2. Moved the domain and hosting into company accounts
 
-With the domain and server managed externally, even a deploy had to go through a third party, and the company held no control over its own assets. I **hosted the server under the company's name and transferred the domain to the company**. Deploys and DNS changes end inside the company from then on.
+Both the domain and the hosting lived in the personal accounts of the contractor who had built the site before. If that person became unreachable, the company had no way to touch its own site.
 
-It was not a typical scope for an intern, but rebuilding a frontend while the company still cannot control where it runs only gets you halfway, so it belonged in the same piece of work.
+I **opened shared hosting on Hostinger under a company account and transferred the domain to the company**. Not technically hard, but rebuilding a frontend while the company does not own the place it runs only solves half the problem, so it went in the same piece of work.
 
 ### 3. Improved the portfolio navigation
 
@@ -66,14 +66,14 @@ I collaborated with the on-site Milan team, turning the fashion-magazine and eve
       <td>Mobile, tablet, desktop</td>
     </tr>
     <tr>
-      <td>Domain &amp; server</td>
-      <td>Managed outside the company</td>
-      <td>Company-hosted, domain transferred</td>
+      <td>Domain &amp; hosting</td>
+      <td>Contractor's personal accounts</td>
+      <td>Company account (Hostinger), domain transferred</td>
     </tr>
   </tbody>
 </table>
 
-It was the first project where I owned the full frontend arc — screen planning through implementation and delivery. What actually lasted is that the company ended up owning not just the code but the place it runs.
+It was the first project where I owned the full frontend arc — screen planning through implementation and delivery. What actually lasted is that the company ended up owning its domain and hosting, not just the code.
 
 {/*
 ## Need frontend development?
