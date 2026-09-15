@@ -54,11 +54,11 @@
   --color-gray-50: #001736;
   --color-gray-100: #0d356c;
   --color-gray-200: #1a457f;
-  --color-gray-300: #e2e8f0;
-  --color-gray-400: #f1f5f9;
-  --color-gray-500: #cbd5e1;
-  --color-gray-600: #94a3b8;
-  --color-gray-700: #f8fafc;
+  --color-gray-300: #ffffff;
+  --color-gray-400: #ffffff;
+  --color-gray-500: #ffffff;
+  --color-gray-600: #cbd8ec;
+  --color-gray-700: #ffffff;
   --color-gray-800: #062b5b;
   --color-gray-900: #001736;
   --color-gray-950: #001736;
@@ -77,7 +77,7 @@
   --color-foreground: #ffffff;
   --color-accent: #ff204e;
   --color-accent-hover: #ff5c7d;
-  --color-muted: #cbd5e1;
+  --color-muted: #ffffff;
   --color-border: #0d356c;
   --color-surface: #001736;
 
