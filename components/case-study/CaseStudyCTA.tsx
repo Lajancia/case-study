@@ -1,14 +1,14 @@
-import { getTranslations } from 'next-intl/server'
-import { siteConfig, mailtoUrl } from '@/lib/site'
-import type { Locale } from '@/lib/case-studies'
+import { getTranslations } from "next-intl/server";
+import { siteConfig, mailtoUrl } from "@/lib/site";
+import type { Locale } from "@/lib/case-studies";
 
 export async function CaseStudyCTA({ locale }: { locale: Locale }) {
-  const t = await getTranslations({ locale, namespace: 'caseStudyCta' })
+  const t = await getTranslations({ locale, namespace: "caseStudyCta" });
   return (
     <section className="rounded-lg bg-blue-50 p-8 text-center mt-12 dark:bg-blue-950/40">
-      <h2 className="text-2xl font-bold mb-2">{t('title')}</h2>
+      <h2 className="text-2xl font-bold mb-2">{t("title")}</h2>
       <p className="text-gray-600 mb-6 max-w-lg mx-auto dark:text-gray-400">
-        {t('body')}
+        {t("body")}
       </p>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
         {siteConfig.calendlyUrl ? (
@@ -18,20 +18,20 @@ export async function CaseStudyCTA({ locale }: { locale: Locale }) {
             rel="noopener noreferrer"
             className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
           >
-            {t('bookACall')}
+            {t("bookACall")}
           </a>
         ) : (
           <span className="inline-flex items-center rounded-full bg-gray-300 px-6 py-2.5 text-gray-500 font-medium cursor-not-allowed dark:bg-gray-700 dark:text-gray-400">
-            {t('bookingComingSoon')}
+            {t("bookingComingSoon")}
           </span>
         )}
         <a
-          href={mailtoUrl('Frontend performance audit inquiry')}
+          href={mailtoUrl("Frontend performance audit inquiry")}
           className="inline-flex items-center rounded-full border border-blue-600 px-6 py-2.5 text-blue-600 font-medium hover:bg-blue-50 transition-colors dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950/60"
         >
-          {t('emailSoomin')}
+          {t("emailSoomin")}
         </a>
       </div>
     </section>
-  )
+  );
 }

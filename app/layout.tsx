@@ -1,16 +1,6 @@
+import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
-
-const THEME_INIT_SCRIPT = `
-(function () {
-  try {
-    var stored = localStorage.getItem('theme');
-    var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.classList.toggle('dark', dark);
-  } catch (e) {}
-})();
-`;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,17 +12,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // The theme lives in a cookie so the server can put the class on <html>
+  // directly. A script could not do this: not-found and error boundaries
+  // render on the client, where a <script> element is never executed.
+  const theme = (await cookies()).get("theme")?.value;
+  const themeClass = theme === "dark" ? " dark" : theme === "light" ? " light" : "";
+
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}${themeClass}`} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
-        <Script id="theme-init" strategy="beforeInteractive">
-          {THEME_INIT_SCRIPT}
-        </Script>
         {children}
       </body>
     </html>

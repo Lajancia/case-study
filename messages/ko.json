@@ -54,6 +54,16 @@
 		"comingSoon": "준비 중",
 		"readCaseStudy": "케이스 스터디 읽기 →",
 		"draft": "초안",
+		"filterAria": "역량으로 필터",
+		"resultCount": "{count}건",
+		"clearFilter": "전체 보기",
+		"capabilities": {
+			"all": "전체",
+			"performance": "성능 최적화",
+			"visualization": "3D·데이터 시각화",
+			"delivery": "CI/CD·배포 자동화",
+			"quality": "테스트·보안 자동화"
+		},
 		"groups": {
 			"arontier": "㈜아론티어",
 			"illuminarean": "유한회사일루미나리안",
@@ -63,6 +73,7 @@
 		}
 	},
 	"hire": {
+		"seeAllWork": "{capability} 작업 전체 보기 ({count})",
 		"processTitle": "진행 절차",
 		"step1Title": "의뢰 검토",
 		"step1Timing": "1~2 영업일",

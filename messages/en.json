@@ -54,6 +54,16 @@
     "comingSoon": "Coming soon",
     "readCaseStudy": "Read case study →",
     "draft": "Draft",
+    "filterAria": "Filter by capability",
+    "resultCount": "{count, plural, =1 {# case study} other {# case studies}}",
+    "clearFilter": "Show all work",
+    "capabilities": {
+      "all": "All work",
+      "performance": "Performance",
+      "visualization": "3D & data visualization",
+      "delivery": "CI/CD & deployment",
+      "quality": "Testing & security"
+    },
     "groups": {
       "arontier": "Arontier Inc.",
       "illuminarean": "Illuminarean LLC",
@@ -63,6 +73,7 @@
     }
   },
   "hire": {
+    "seeAllWork": "See all {capability} work ({count})",
     "processTitle": "How a project runs",
     "step1Title": "Inquiry review",
     "step1Timing": "1-2 business days",

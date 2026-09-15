@@ -1,19 +1,19 @@
 export const metadata = {
 	title: '하나의 파이프라인, 세 개의 제품: CI/CD와 테스트 리포팅 표준화',
 	description:
-		'컨테이너화된 Cypress E2E, 전수 회귀 테스트, Snyk/SonarQube 리포트 자동화를 갖춘 공용 Jenkins Build-Test-Scan-Deploy 파이프라인을 구축해, 3개 프론트엔드 제품의 수동 회귀 테스트 시간을 5시간에서 1시간으로 줄인 과정.',
+		'세 코드베이스의 Jenkins 파이프라인 정의를 중앙 저장소 하나로 모아 스테이지 구조를 통일하고, E2E를 Cypress에서 Playwright로 전면 이관해 350개 테스트를 CI에서 자동 실행하도록 만든 과정.',
 	slug: 'devsecops-pipeline',
-	publishedAt: '2026-XX-XX',
 	role: 'CI/CD 파이프라인 설계 및 운영',
 	timeline: '2025년 4월 – 현재',
 	industry: '플랫폼 엔지니어링 / DevSecOps',
 	stack: [
 		'Jenkins',
+		'Groovy (Declarative Pipeline)',
 		'Docker',
-		'Cypress',
+		'Playwright',
 		'Snyk',
 		'SonarQube',
-		'Pipeline Script',
+		'OWASP ZAP',
 	],
 	outcomes: [
 		{
@@ -23,10 +23,10 @@ export const metadata = {
 			change: '−80%',
 		},
 		{
-			label: '보안/품질 리포팅',
-			before: '필요할 때만 수동',
-			after: '매 빌드 Snyk + SonarQube',
-			change: '자동화',
+			label: 'E2E 파이프라인 정의',
+			before: '314줄 (Cypress)',
+			after: '151줄 (Playwright)',
+			change: '−52%',
 		},
 	],
 	draft: false,
@@ -34,68 +34,138 @@ export const metadata = {
 
 ## 배경
 
-_이 케이스 스터디는 실제 프로젝트를 기법과 결과 수준으로 재구성한 것입니다. 내부 시스템명·비공개 세부사항은 생략했으며, 측정된 수치는 실제와 동일합니다._
+_이 케이스 스터디는 사내 인프라를 기법과 결과 수준으로 재구성한 것입니다. 배포 호스트명·레지스트리 주소·저장소 경로는 생략했고, 파이프라인 구조와 수치는 실제와 동일합니다._
 
-3개의 프론트엔드 제품을 하나의 작은 플랫폼 팀이 담당하고 있었지만, 공용 릴리즈 인프라는 없었습니다 — 제품마다 각자 수동 QA와 필요할 때만 돌리는 보안 점검이 뒤섞인 임기응변식 체계를 각자 키워온 상태였습니다.
+작은 플랫폼 팀이 세 개의 코드베이스를 담당하고 있었습니다 — [AD3](/ko/work/scientific-platform-performance)의 백엔드와 프론트엔드, 그리고 [ADC](/ko/work/adc-visualization)의 프론트엔드. 각각이 개발·스테이징·프로덕션 세 환경으로 나갑니다. 곱하면 배포 경로만 아홉 갈래고, 여기에 E2E·정적 분석·보안 스캔이 따로 붙습니다.
 
 ## 문제
 
-두 가지 증상이 계속 반복됐습니다:
+### 파이프라인이 코드가 아니었습니다
 
-1. **수동 회귀 테스트가 릴리즈 일정을 갉아먹었습니다.** 영향받은 제품의 UI 전체를 수동으로 한 바퀴 도는 데 릴리즈마다 약 5시간이 걸렸습니다 — 전체 커버리지를 믿고 맡길 수 있는 자동화 파이프라인이 없어서 손으로 직접 했습니다.
-2. **보안·품질 점검이 그때그때였습니다.** 의존성/컨테이너 스캔(Snyk), 정적 분석(SonarQube)은 누군가 예전에 한 번 세팅해둔 도구로만 존재했지, 모든 빌드가 거쳐가는 표준 단계는 아니었습니다. 릴리즈 범위 _밖의_ 코드 경로에서 생긴 회귀 — 무관한 변경에 의해 건드려진 공유 컴포넌트 같은 — 가 가끔 발견되지 않은 채 배포됐습니다. "그건 안 건드렸어야 하는데" 싶은 변경사항에 대해 전수 테스트를 다시 돌리는 장치가 없었기 때문입니다.
+빌드·배포 절차가 Jenkins job 설정 화면 안의 스크립트로 존재했습니다. 이 상태에서는 변경 이력을 볼 수 없고, 리뷰를 걸 수 없고, 잘못 바꿨을 때 되돌릴 방법이 job 설정의 백업뿐입니다. 제품이 늘어날 때마다 누군가 화면을 열어 기존 스크립트를 복사해 붙여넣는 식으로 번져나갔습니다.
+
+### 제품마다 스테이지 구조가 달랐습니다
+
+같은 "스테이징 배포"인데도 제품에 따라 이미지 검증 단계가 있기도 없기도 했고, 레지스트리 푸시 시점이 달랐습니다. 파이프라인을 읽는 사람이 매번 처음부터 읽어야 했습니다.
+
+### E2E가 신뢰 구간 밖에 있었습니다
+
+Cypress 기반 스위트가 있었지만 실행 환경이 머신마다 달라 결과가 흔들렸고, 그래서 릴리즈 판단의 근거로 쓰이지 못했습니다. 결국 릴리즈마다 사람이 UI를 한 바퀴 도는 수동 회귀가 남았습니다. 파이프라인 정의 자체도 314줄까지 불어나 있었습니다.
 
 ## 진행한 작업
 
-### 1. 재사용 가능한 Build-Test-Scan-Deploy Jenkinsfile 하나로 설계
+### 1. 파이프라인 정의를 전용 저장소로 분리
 
-제품마다 각자 파이프라인을 따로 관리하게 두는 대신, 세 저장소 중 어디에든 최소한의 프로젝트별 수정만으로 넣을 수 있는 선언형 Jenkinsfile 하나를 설계했습니다:
+모든 Jenkinsfile을 제품 저장소 밖의 **파이프라인 전용 저장소 하나**로 옮기고, Jenkins job은 전부 `Pipeline script from SCM`으로 전환했습니다. job 설정에는 "이 저장소의 이 경로를 읽어라"만 남습니다.
 
-```groovy
-pipeline {
-  agent { docker { image 'cypress/included:13.13.0' } }
-  options {
-    timeout(time: 30, unit: 'MINUTES')
-    timestamps()
-  }
-  stages {
-    stage('Install')   { steps { sh 'npm ci' } }
-    stage('Lint/Type') { steps { sh 'npm run lint && npm run typecheck' } }
-    stage('E2E (Cypress, full suite)') {
-      steps { sh 'npx cypress run --config-file cypress.config.ts' }
-      post {
-        always {
-          archiveArtifacts artifacts: 'cypress/screenshots/**, cypress/videos/**', allowEmptyArchive: true
-        }
-      }
-    }
-    stage('Security & Quality Scans') {
-      parallel {
-        stage('Snyk')      { steps { sh 'snyk container test $IMAGE_TAG || true' } }
-        stage('SonarQube') { steps { sh 'sonar-scanner' } }
-      }
-    }
-    stage('Report') { steps { junit 'cypress/results/**/*.xml' } }
-  }
-}
+```
+pipeline/
+├── ad3-backend/     daily · development · staging · production
+├── ad3-frontend/    development · staging · production
+│                    + playwright · sonarQube · zap · (cypress, 레거시)
+└── adc-frontend/    development · staging · production
+                     + playwright · sonarQube
 ```
 
-**install → lint/typecheck → 전수 Cypress E2E(컨테이너화) → 보안/품질 스캔 → 리포트/아티팩트**라는 4단계 구조가 공통 계약이 됐습니다. 이제 제품별 Jenkinsfile은 환경변수만 다르고, 구조 자체는 동일합니다.
+현재 19개의 파이프라인 정의가 이 저장소에서 버전 관리됩니다. 파이프라인 변경이 MR로 올라오고, 리뷰를 거치고, 문제가 생기면 `git revert`로 되돌아갑니다. 제품 코드와 배포 절차의 수명 주기가 다르다는 점에서, 이 분리는 제품 저장소마다 Jenkinsfile을 두는 것보다 이 팀 구조에 잘 맞았습니다.
 
-### 2. Cypress E2E 환경 컨테이너화
+### 2. 스테이지 구조를 제품 간 계약으로 고정
 
-기존 테스트 스위트는 머신마다 실행 결과가 들쭉날쭉했습니다 — "제 노트북에서는 됩니다"가 실제로 자주 발생하는 실패 유형이었습니다. 고정된 Docker 이미지(`cypress/included`) 안에서 Cypress를 실행하니 환경 차이가 완전히 사라졌습니다: CI와 로컬 개발 환경에서 동일한 브라우저 버전·의존성이 돌고, 어떤 엔지니어든 같은 이미지로 CI 실패를 로컬에서 재현할 수 있습니다.
+두 프론트엔드의 스테이징 파이프라인이 같은 순서를 따르도록 맞췄습니다:
 
-### 3. 보안·품질 리포팅 자동화
+```
+Notify Start → Clone → .env 생성 → Compose 파일 준비
+  → Docker Build → Image Verification → Snyk Scan
+  → Private Registry Push → 배포 호스트 저장소·.env 갱신
+  → 이미지 Pull & Compose Up
+```
 
-- **Snyk**는 빌드된 컨테이너 이미지의 알려진 취약점을 파이프라인이 돌 때마다 스캔합니다 — 가끔 하는 수동 점검이 아니라.
-- **SonarQube**는 매 빌드마다 정해진 품질 프로파일 기준으로 정적 분석을 수행하고, 합의된 임계치를 넘으면 빌드를 실패시킬 수 있는 Quality Gate를 갖고 있습니다.
+두 제품의 스테이징 정의는 각각 352줄과 350줄입니다. 차이는 제품별 값(이미지 이름, 대상 호스트, 컴포즈 파일)뿐이고 구조는 동일합니다. 한쪽에서 단계를 추가하면 다른 쪽에도 같은 자리에 들어갑니다.
 
-이 중 어느 것도 진짜 보안 리뷰를 대체하지는 않습니다. 하지만 "누가 스캐너를 돌렸나"를 "스캐너는 매번 돌고, 매번 리포트를 만든다"로 바꾼 것만으로도, 사람이 기억해서 수동으로 해야 했던 점검의 공백을 메웠습니다.
+프로덕션은 여기에 두 가지가 더 붙습니다 — **GitLab Release 자동 생성**, 그리고 사내 레지스트리와 GitLab 레지스트리로의 **이중 이미지 푸시**. 사내 네트워크가 끊겨도 외부 레지스트리에서 이미지를 받을 수 있게 하기 위한 것입니다.
 
-### 4. diff만이 아니라 전수 스위트 실행
+### 3. Cypress → Playwright 전면 이관
 
-가장 가치 있었던 습관 변화는 도구가 아니라, 릴리즈에 명시된 변경 범위에 대응하는 테스트만이 아니라 **전체** E2E 스위트를 정기적으로 돌리는 것이었습니다. 이 방식은 한 번이 아니라 여러 번, 누구도 의도적으로 건드리지 않은 기능의 회귀를 잡아냈습니다: 프론트엔드 공유 컴포넌트나 백엔드 API 응답 형태가 한 기능을 위해 바뀌면서, 거기 의존하던 다른 기능을 조용히 망가뜨린 경우였습니다. 이걸 자동화된 전수 실행으로 릴리즈 전에 잡는 것은, 배포 후 사용자 신고로 알게 되는 것보다 근본적으로 훨씬 저렴한 실패 방식입니다.
+E2E 28개 앱 스위트를 Playwright로 전부 옮겼습니다. 옮기면서 단순 이식에 그치지 않고 앱별 Edit/Share/Unshare/Cancel 경로와 워크스페이스 교차 링크 검증까지 넓혔습니다.
+
+<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th>Cypress</th>
+			<th>Playwright</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>테스트 수</td>
+			<td>28개 앱</td>
+			<td>
+				<strong>350 passed / 0 skipped / 0 failed</strong>
+			</td>
+		</tr>
+		<tr>
+			<td>실행 시간</td>
+			<td>—</td>
+			<td>로컬 ~9분 / Jenkins ~12–15분</td>
+		</tr>
+		<tr>
+			<td>파이프라인 정의</td>
+			<td>314줄</td>
+			<td>
+				<strong>151줄</strong>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+테스트는 Playwright 공식 이미지 안에서 실행합니다. 다만 Jenkins의 `agent { docker { ... } }` 대신 컨테이너를 직접 다루는 쪽을 택했습니다:
+
+```groovy
+CONTAINER=$(docker create --ipc host \
+  -e PLAYWRIGHT_BASE_URL="${PLAYWRIGHT_BASE_URL}" -e CI=true \
+  --workdir /workspace ${PLAYWRIGHT_IMAGE} \
+  sh -c 'yarn install --immutable && yarn test:e2e ${testArgs}; EXIT=$?; \
+         chmod -R 777 node_modules playwright-report test-results 2>/dev/null || true; \
+         exit $EXIT')
+
+docker cp frontend/. $CONTAINER:/workspace/
+docker start -a $CONTAINER || true
+EXIT_CODE=$(docker inspect $CONTAINER --format '{{.State.ExitCode}}')
+
+docker cp $CONTAINER:/workspace/playwright-report/. frontend/playwright-report/ 2>/dev/null || true
+docker cp $CONTAINER:/workspace/test-results/. frontend/test-results/ 2>/dev/null || true
+docker rm $CONTAINER || true
+exit $EXIT_CODE
+```
+
+이렇게 한 이유는 세 가지입니다. 워크스페이스를 컨테이너 안으로 넣고 **리포트와 trace를 다시 꺼내와야** 아티팩트로 남길 수 있고, 컨테이너 안에서 생성된 파일의 소유권 때문에 Jenkins가 정리에 실패하는 것을 `chmod`로 막아야 했고, 무엇보다 `docker start -a`의 결과를 삼키고 **`docker inspect`로 실제 종료 코드를 꺼내 그대로 반환**해야 리포트 회수에 실패하더라도 테스트 실패가 빌드 실패로 정확히 이어지기 때문입니다.
+
+### 4. 선택 실행과 "항상 도는 최소 집합"
+
+전수 실행은 12~15분이 걸립니다. 앱 하나만 고친 변경에 매번 전수를 강요하면 사람들이 파이프라인을 우회하기 시작합니다. 그래서 Jenkins UI 파라미터로 앱 모듈을 골라 돌릴 수 있게 하되, **선택 실행일 때도 항상 함께 도는 집합**을 코드에 고정했습니다:
+
+```groovy
+def defaultNonAppPaths = [
+    'e2e/database/',
+    'e2e/workspace/libraries.spec.ts',
+    'e2e/workspace/targets.spec.ts',
+    'e2e/workspace/targets-create.spec.ts',
+    'e2e/app/jobs-filters.spec.ts',
+]
+```
+
+데이터베이스 검색, 워크스페이스 기본 동작, 잡 목록 필터 — 거의 모든 앱이 딛고 서 있는 공유 경로입니다. 앱 하나를 고치다 공유 컴포넌트나 API 응답 형태를 건드려 다른 기능을 조용히 망가뜨리는 사고가 여기서 걸립니다. 파라미터를 비우면 전수 실행입니다.
+
+### 5. 보안·품질 스캔을 파이프라인 안으로
+
+그때그때 수동으로 돌리던 점검 도구들을 파이프라인의 정해진 자리에 넣어, 사람이 기억해야 돌아가는 일이 아니게 만들었습니다.
+
+- **Snyk** — 스테이징에서 이미지 빌드 직후, 레지스트리 푸시 직전에 컨테이너 이미지를 스캔하고 Critical 발견 시 Slack으로 알립니다.
+- **SonarQube** — 별도 job으로 공용 서버에 정적 분석 리포트를 올립니다.
+- **OWASP ZAP** — 스테이징 환경을 대상으로 동적 보안 스캔을 돌립니다.
+
+세 가지 모두 현재는 리포팅 단계이고, 배포를 차단하는 게이트로 올리는 것은 누적된 Critical을 정리한 다음으로 잡아두었습니다 — 상시 빨간불이 되면 팀이 게이트를 꺼버리기 때문입니다.
 
 ## 결과
 
@@ -116,27 +186,39 @@ pipeline {
 			<td>−80%</td>
 		</tr>
 		<tr>
-			<td>E2E 환경</td>
-			<td>로컬, 머신별 차이 존재</td>
-			<td>컨테이너화, 재현 가능</td>
+			<td>E2E 자동 실행</td>
+			<td>로컬, 머신별 편차</td>
+			<td>350 tests, CI에서 12–15분</td>
+			<td>재현 가능</td>
+		</tr>
+		<tr>
+			<td>E2E 파이프라인 정의</td>
+			<td>314줄 (Cypress)</td>
+			<td>151줄 (Playwright)</td>
+			<td>−52%</td>
+		</tr>
+		<tr>
+			<td>파이프라인 정의 위치</td>
+			<td>Jenkins job 설정에 산재</td>
+			<td>전용 저장소 19개 파일</td>
+			<td>버전 관리</td>
+		</tr>
+		<tr>
+			<td>스테이징 스테이지 구조</td>
+			<td>제품마다 상이</td>
+			<td>두 프론트엔드 동일 (352 / 350줄)</td>
 			<td>표준화</td>
 		</tr>
 		<tr>
-			<td>보안/품질 리포팅</td>
-			<td>수동, 필요할 때만</td>
-			<td>매 빌드 Snyk + SonarQube</td>
-			<td>자동화</td>
-		</tr>
-		<tr>
-			<td>파이프라인 유지보수</td>
-			<td>제품마다 별도 구성</td>
-			<td>하나의 공용 Jenkinsfile</td>
-			<td>표준화</td>
+			<td>취약점 스캔</td>
+			<td>필요할 때 수동</td>
+			<td>스테이징 빌드마다 자동 스캔</td>
+			<td>상시화</td>
 		</tr>
 	</tbody>
 </table>
 
-수동 테스트 시간이 80% 줄어든 건 테스트를 덜 해서가 아니라, 같은 범위를 손으로 하는 대신 자동으로 검증하게 됐기 때문입니다. 그렇게 확보한 시간은 자동화가 여전히 커버 못 하는 영역 — 탐색적 테스트, 전수 실행이 실제로 무엇을 잡아냈는지 리뷰하는 작업 — 에 쓸 수 있게 됐습니다.
+수동 테스트 시간이 줄어든 건 테스트를 덜 해서가 아니라, 같은 범위를 사람 대신 자동으로 검증하게 됐기 때문입니다. 확보한 시간은 자동화가 여전히 커버하지 못하는 영역 — 탐색적 테스트, 그리고 전수 실행이 실제로 무엇을 잡아냈는지 읽는 작업 — 으로 옮겨갔습니다.
 
 {/*
 
