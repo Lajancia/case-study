@@ -8,21 +8,23 @@ import { ThemeInit } from '@/components/site/ThemeInit'
 // app/[locale]/not-found.tsx instead.
 export default function RootNotFound() {
   return (
-    <div className="mx-auto max-w-4xl px-6 py-24 text-center">
+    <div className="flex flex-1 items-center justify-center px-6 py-24">
       <ThemeInit />
-      <p className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-        404
-      </p>
-      <h1 className="mt-4 text-3xl font-bold">Page not found</h1>
-      <p className="mt-4 text-gray-600 dark:text-gray-400">
-        The page you&rsquo;re looking for doesn&rsquo;t exist or has moved.
-      </p>
-      <Link
-        href={`/${routing.defaultLocale}`}
-        className="mt-10 inline-block rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300"
-      >
-        Back to home
-      </Link>
+      <div className="w-full max-w-4xl text-center">
+        <p className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+          404
+        </p>
+        <h1 className="mt-4 text-3xl font-bold">Page not found</h1>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">
+          The page you&rsquo;re looking for doesn&rsquo;t exist or has moved.
+        </p>
+        <Link
+          href={`/${routing.defaultLocale}`}
+          className="mt-10 inline-block rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300"
+        >
+          Back to home
+        </Link>
+      </div>
     </div>
   )
 }
