@@ -62,8 +62,7 @@
       "performance": "Performance",
       "visualization": "3D & data visualization",
       "delivery": "CI/CD & deployment",
-      "quality": "Testing & security",
-      "product": "Full-stack product"
+      "quality": "Testing & security"
     },
     "groups": {
       "arontier": "Arontier Inc.",

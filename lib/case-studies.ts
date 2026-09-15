@@ -33,30 +33,30 @@ export interface CaseStudyMeta {
 /**
  * Buyer-facing groupings over `capabilityTags`. The raw tags stay as they are;
  * these decide what the Work page offers as filters, so each one has to hold
- * enough case studies to be worth clicking. The first three intentionally match
- * the three services on the hire page.
+ * enough case studies to be worth clicking, and none may claim more than the
+ * work supports — there is no full-stack grouping because the backends on those
+ * projects were not mine. Case studies outside every grouping still show in the
+ * unfiltered list.
  */
 export type Capability =
-  | "performance"
   | "visualization"
-  | "delivery"
+  | "performance"
   | "quality"
-  | "product";
+  | "delivery";
 
+/** Frontend work first; the DevOps side is real but secondary, so it sits last. */
 export const CAPABILITY_ORDER: Capability[] = [
-  "performance",
   "visualization",
-  "delivery",
+  "performance",
   "quality",
-  "product",
+  "delivery",
 ];
 
 const CAPABILITY_TAGS: Record<Capability, string[]> = {
-  performance: ["performance"],
   visualization: ["visualization"],
-  delivery: ["devops"],
+  performance: ["performance"],
   quality: ["testing", "security"],
-  product: ["fullstack", "frontend"],
+  delivery: ["devops"],
 };
 
 export function isCapability(value: unknown): value is Capability {

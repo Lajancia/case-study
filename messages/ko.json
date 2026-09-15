@@ -62,8 +62,7 @@
 			"performance": "성능 최적화",
 			"visualization": "3D·데이터 시각화",
 			"delivery": "CI/CD·배포 자동화",
-			"quality": "테스트·보안 자동화",
-			"product": "풀스택 제품 개발"
+			"quality": "테스트·보안 자동화"
 		},
 		"groups": {
 			"arontier": "㈜아론티어",
