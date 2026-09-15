@@ -46,7 +46,7 @@
 :root {
   /* Light theme: Custom Warm Cream & Deep Navy */
   --color-gray-50: #d8c4a6;
-  --color-gray-100: #e2d2ba;
+  --color-gray-100: #111827;
   --color-gray-200: #c9b497;
   --color-gray-300: #bfa888;
   --color-gray-400: #7b8ea6;
@@ -54,7 +54,7 @@
   --color-gray-600: #315b8c;
   --color-gray-700: #1b4273;
   --color-gray-800: #0d305c;
-  --color-gray-900: #042147;
+  --color-gray-900: #00224d;
   --color-gray-950: #001736;
 
   --color-blue-50: #e8d8be;
@@ -87,15 +87,15 @@
     Accents: Crisp blue palette (#38bdf8 / #0284c7)
   */
   --color-gray-50: #131f3d;      /* Card/Box surface */
-  --color-gray-100: #1a2a50;     /* Pill / Tag background */
+  --color-gray-100: #38bdf8;     /* Bright accent blue for heading highlights */
   --color-gray-200: #233765;     /* Card border / divider */
-  --color-gray-300: #e2e8f0;     /* Secondary strong text */
+  --color-gray-300: #7dd3fc;     /* Secondary strong light-blue/cyan text */
   --color-gray-400: #cbd5e1;     /* Main descriptions & body */
   --color-gray-500: #94a3b8;     /* Metadata / labels */
   --color-gray-600: #64748b;     /* Tertiary / disabled */
   --color-gray-700: #f8fafc;     /* Emphasis text */
   --color-gray-800: #1a2a50;     /* Dark component backings */
-  --color-gray-900: #0b1329;     /* Deep sections */
+  --color-gray-900: #38bdf8;     /* Bright blue for titles/headings */
   --color-gray-950: #050b18;     /* Darkest base */
 
   --color-blue-50: #172554;

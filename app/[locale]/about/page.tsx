@@ -30,7 +30,7 @@ export default async function AboutPage({
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-3xl font-bold mb-3">{t("title")}</h1>
+      <h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-[#38bdf8]">{t("title")}</h1>
       <p className="text-lg text-gray-600 max-w-xl mb-4 dark:text-gray-400">
         {tSite("tagline")}
       </p>

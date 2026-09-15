@@ -18,7 +18,7 @@ export default async function HomePage({
     <div className="mx-auto max-w-4xl px-6">
       {/* Hero */}
       <section className="py-20 sm:py-28">
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight mb-4">
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight mb-4 text-gray-900 dark:text-[#38bdf8]">
           {tSite("tagline")}
         </h1>
         <p className="text-lg text-gray-600 max-w-xl mb-6 dark:text-gray-400">
@@ -69,7 +69,7 @@ export default async function HomePage({
                 <div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2 dark:text-blue-400">
                   {study.industry}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2">
+                <h3 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-900 dark:text-[#38bdf8]">
                   {study.title}
                 </h3>
                 <p className="text-gray-600 text-sm mb-4 dark:text-gray-400">

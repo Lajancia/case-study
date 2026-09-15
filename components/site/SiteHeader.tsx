@@ -20,7 +20,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
   return (
     <header className="relative z-50 border-b border-gray-200 dark:border-gray-800">
       <div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="text-lg font-semibold tracking-tight text-gray-900 hover:text-blue-600 transition-colors dark:text-gray-100 dark:hover:text-blue-400">
+        <Link href="/" className="text-lg font-semibold tracking-tight text-gray-900 hover:text-blue-600 transition-colors dark:text-[#38bdf8] dark:hover:text-[#7dd3fc]">
           {siteConfig.name}
         </Link>
         <nav className="hidden sm:flex items-center gap-6 text-sm font-medium text-gray-600 dark:text-gray-400">

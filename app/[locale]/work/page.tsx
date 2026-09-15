@@ -56,7 +56,7 @@ export default async function WorkPage({
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-3xl font-bold mb-6">{t('title')}</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-[#38bdf8]">{t('title')}</h1>
 
       <nav aria-label={t('filterAria')} className="mb-10 flex flex-wrap gap-2">
         <Link
