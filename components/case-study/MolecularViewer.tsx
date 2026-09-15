@@ -143,23 +143,22 @@ export default function MolecularViewer() {
           <span className="text-xs text-gray-400 ml-2 dark:text-gray-600">Aspirin (C₉H₈O₄)</span>
         </div>
         <div
-          className="flex items-center justify-center bg-white dark:bg-gray-950"
+          className="flex items-center justify-center bg-white"
           style={{ minHeight: 400 }}
         >
           {rdkitStatus === 'loading' && (
-            <div className="text-gray-400 text-sm animate-pulse px-4 text-center dark:text-gray-600">
+            <div className="text-gray-400 text-sm animate-pulse px-4 text-center">
               <p>Loading RDKit.js (~2.5 MB WASM) from CDN...</p>
               <p className="text-xs mt-2">This library loads on-demand — zero bytes on other pages.</p>
             </div>
           )}
-          {/* RDKit renders its SVG with dark, fixed-color bonds/atoms — invert+hue-rotate
-              flips it to light-on-dark while keeping element colors roughly on-hue. */}
+          {/* RDKit renders fixed-color SVG optimized for white background */}
           <div
             ref={rdkitSvgRef}
-            className={`items-center justify-center p-6 w-full dark:invert dark:hue-rotate-180 ${rdkitStatus === 'ready' ? 'flex' : 'hidden'}`}
+            className={`items-center justify-center p-6 w-full ${rdkitStatus === 'ready' ? 'flex' : 'hidden'}`}
           />
           {rdkitStatus === 'error' && (
-            <div className="text-red-500 text-sm text-center p-4 dark:text-red-400">
+            <div className="text-red-500 text-sm text-center p-4">
               <p>Failed to load RDKit.js</p>
               {errorDetail && <p className="text-xs mt-1 text-gray-400 break-all dark:text-gray-600">{errorDetail}</p>}
               <p className="text-xs mt-2 text-gray-400 dark:text-gray-600">

@@ -23,7 +23,7 @@ export async function ResultsAtAGlance({ locale }: { locale: Locale }) {
           <Link
             key={`${highlight.slug}-${highlight.label}`}
             href={`/work/${highlight.slug}`}
-            className="group bg-white p-5 transition-colors hover:bg-gray-50 dark:bg-gray-950 dark:hover:bg-gray-900"
+            className="group bg-[#f6ecdd] p-5 transition-colors hover:bg-[#ebdcc8] dark:bg-[#001736] dark:hover:bg-[#00224D]"
           >
             <div className="text-xs text-gray-500 mb-2 dark:text-gray-500">
               {highlight.label}

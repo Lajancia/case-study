@@ -18,7 +18,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
   ]
 
   return (
-    <header className="relative border-b border-gray-200 dark:border-gray-800">
+    <header className="relative z-50 border-b border-gray-200 dark:border-gray-800">
       <div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between">
         <Link href="/" className="text-lg font-semibold tracking-tight text-gray-900 hover:text-blue-600 transition-colors dark:text-gray-100 dark:hover:text-blue-400">
           {siteConfig.name}
