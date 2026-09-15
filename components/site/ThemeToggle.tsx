@@ -3,19 +3,55 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365
+
+// The root layout reads this cookie and renders the class server-side, so the
+// theme is right on the first paint of every page, 404s included.
+function applyTheme(dark: boolean) {
+  const root = document.documentElement
+  root.classList.toggle('dark', dark)
+  root.classList.toggle('light', !dark)
+  document.cookie = `theme=${dark ? 'dark' : 'light'}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`
+}
+
 export function ThemeToggle() {
   const t = useTranslations('theme')
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
-    setIsDark(document.documentElement.classList.contains('dark'))
+    const root = document.documentElement
+    const chosen = root.classList.contains('dark')
+      ? true
+      : root.classList.contains('light')
+        ? false
+        : null
+
+    // Visitors from before the cookie switch still have their choice in
+    // localStorage. Move it over once, then let the cookie drive.
+    let carriedOver: boolean | null = null
+    try {
+      const stored = localStorage.getItem('theme')
+      if (stored) {
+        localStorage.removeItem('theme')
+        if (chosen === null) carriedOver = stored === 'dark'
+      }
+    } catch {}
+
+    if (carriedOver !== null) {
+      applyTheme(carriedOver)
+      setIsDark(carriedOver)
+      return
+    }
+
+    setIsDark(
+      chosen ?? window.matchMedia('(prefers-color-scheme: dark)').matches,
+    )
   }, [])
 
   function toggle() {
     const next = !isDark
     setIsDark(next)
-    document.documentElement.classList.toggle('dark', next)
-    localStorage.setItem('theme', next ? 'dark' : 'light')
+    applyTheme(next)
   }
 
   return (

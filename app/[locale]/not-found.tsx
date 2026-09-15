@@ -1,13 +1,11 @@
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { ThemeInit } from '@/components/site/ThemeInit'
 
 export default async function LocaleNotFound() {
   const t = await getTranslations('notFound')
 
   return (
     <div className="flex flex-1 items-center justify-center px-6 py-24">
-      <ThemeInit />
       <div className="w-full max-w-4xl text-center">
         <p className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
           404

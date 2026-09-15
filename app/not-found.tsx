@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { routing } from '@/i18n/routing'
-import { ThemeInit } from '@/components/site/ThemeInit'
 
 // Fallback for paths the proxy skips (files with an extension, /api/*) and for
 // notFound() thrown by app/[locale]/layout.tsx itself, where the locale layout
@@ -9,7 +8,6 @@ import { ThemeInit } from '@/components/site/ThemeInit'
 export default function RootNotFound() {
   return (
     <div className="flex flex-1 items-center justify-center px-6 py-24">
-      <ThemeInit />
       <div className="w-full max-w-4xl text-center">
         <p className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
           404
