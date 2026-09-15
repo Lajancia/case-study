@@ -210,7 +210,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
     title:
       "One Pipeline, Three Products: Standardizing CI/CD and Test Reporting",
     description:
-      "Building a shared Jenkins Build-Test-Scan-Deploy pipeline — containerized Cypress E2E, full-suite regression runs, and Snyk/SonarQube report automation — that cut manual regression testing from 5 hours to 1 across three frontend products.",
+      "Moving the Jenkins pipeline definitions for three codebases into one central repository, converging their stage structure, and migrating E2E from Cypress to Playwright so 350 tests run automatically in CI.",
     publishedAt: "2026-XX-XX",
     role: "CI/CD Pipeline Design & Operations",
     timeline: "Apr 2025 – present",
@@ -218,11 +218,12 @@ const caseStudiesEn: CaseStudyMeta[] = [
     company: "arontier",
     stack: [
       "Jenkins",
+      "Groovy (Declarative Pipeline)",
       "Docker",
-      "Cypress",
+      "Playwright",
       "Snyk",
       "SonarQube",
-      "Pipeline Script",
+      "OWASP ZAP",
     ],
     outcomes: [
       {
@@ -232,10 +233,10 @@ const caseStudiesEn: CaseStudyMeta[] = [
         change: "−80%",
       },
       {
-        label: "Security/quality reporting",
-        before: "ad hoc, manual",
-        after: "Snyk + SonarQube every build",
-        change: "automated",
+        label: "E2E pipeline definition",
+        before: "314 lines (Cypress)",
+        after: "151 lines (Playwright)",
+        change: "−52%",
       },
     ],
     disclosure: { label: "Internal infrastructure" },
@@ -604,7 +605,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
     slug: "devsecops-pipeline",
     title: "하나의 파이프라인, 세 개의 제품: CI/CD와 테스트 리포팅 표준화",
     description:
-      "컨테이너화된 Cypress E2E, 전수 회귀 테스트, Snyk/SonarQube 리포트 자동화를 갖춘 공용 Jenkins Build-Test-Scan-Deploy 파이프라인을 구축해, 3개 프론트엔드 제품의 수동 회귀 테스트 시간을 5시간에서 1시간으로 줄인 과정.",
+      "세 코드베이스의 Jenkins 파이프라인 정의를 중앙 저장소 하나로 모아 스테이지 구조를 통일하고, E2E를 Cypress에서 Playwright로 전면 이관해 350개 테스트를 CI에서 자동 실행하도록 만든 과정.",
     publishedAt: "2026-XX-XX",
     role: "CI/CD 파이프라인 설계 및 운영",
     timeline: "2025년 4월 – 현재",
@@ -612,11 +613,12 @@ const caseStudiesKo: CaseStudyMeta[] = [
     company: "arontier",
     stack: [
       "Jenkins",
+      "Groovy (Declarative Pipeline)",
       "Docker",
-      "Cypress",
+      "Playwright",
       "Snyk",
       "SonarQube",
-      "Pipeline Script",
+      "OWASP ZAP",
     ],
     outcomes: [
       {
@@ -626,10 +628,10 @@ const caseStudiesKo: CaseStudyMeta[] = [
         change: "−80%",
       },
       {
-        label: "보안/품질 리포팅",
-        before: "필요할 때만 수동",
-        after: "매 빌드 Snyk + SonarQube",
-        change: "자동화",
+        label: "E2E 파이프라인 정의",
+        before: "314줄 (Cypress)",
+        after: "151줄 (Playwright)",
+        change: "−52%",
       },
     ],
     disclosure: { label: "사내 인프라" },

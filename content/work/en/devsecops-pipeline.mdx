@@ -1,7 +1,7 @@
 export const metadata = {
 	title: 'One Pipeline, Three Products: Standardizing CI/CD and Test Reporting',
 	description:
-		'Building a shared Jenkins Build-Test-Scan-Deploy pipeline — containerized Cypress E2E, full-suite regression runs, and Snyk/SonarQube report automation — that cut manual regression testing from 5 hours to 1 across three frontend products.',
+		'Moving the Jenkins pipeline definitions for three codebases into one central repository, converging their stage structure, and migrating E2E from Cypress to Playwright so 350 tests run automatically in CI.',
 	slug: 'devsecops-pipeline',
 	publishedAt: '2026-XX-XX',
 	role: 'CI/CD Pipeline Design & Operations',
@@ -9,24 +9,25 @@ export const metadata = {
 	industry: 'Platform engineering / DevSecOps',
 	stack: [
 		'Jenkins',
+		'Groovy (Declarative Pipeline)',
 		'Docker',
-		'Cypress',
+		'Playwright',
 		'Snyk',
 		'SonarQube',
-		'Pipeline Script',
+		'OWASP ZAP',
 	],
 	outcomes: [
 		{
 			label: 'Manual regression',
-			before: '~5 hours/release',
-			after: '~1 hour/release',
+			before: '~5 hours per release',
+			after: '~1 hour per release',
 			change: '−80%',
 		},
 		{
-			label: 'Security/quality reporting',
-			before: 'ad hoc, manual',
-			after: 'Snyk + SonarQube every build',
-			change: 'automated',
+			label: 'E2E pipeline definition',
+			before: '314 lines (Cypress)',
+			after: '151 lines (Playwright)',
+			change: '−52%',
 		},
 	],
 	draft: false,
@@ -34,68 +35,138 @@ export const metadata = {
 
 ## Context
 
-_This case study reconstructs real work at the level of technique and outcome. Internal system names and non-public details are omitted; the measured figures are as recorded._
+_This case study reconstructs internal infrastructure at the level of technique and result. Deploy hostnames, registry addresses, and repository paths are omitted; the pipeline structure and the numbers are as they are._
 
-Three frontend products shared one small platform team, but no shared release infrastructure — each had grown its own ad hoc mix of manual QA passes and security checks that ran only when someone remembered to run them.
+A small platform team owned three codebases — the backend and frontend of [AD3](/en/work/scientific-platform-performance), plus the frontend of [ADC](/en/work/adc-visualization). Each ships through development, staging, and production. That is nine deployment paths before you count the E2E, static analysis, and security scan jobs hanging off them.
 
-## Problem
+## The problem
 
-Two symptoms kept recurring:
+### Pipelines were not code
 
-1. **Manual regression ate the release calendar.** A full manual pass across the affected product's UI took roughly 5 hours before every release — done by hand because there was no reliable automated pipeline to trust for full coverage.
-2. **Security and quality checks were opportunistic.** Dependency/container scanning (Snyk) and static analysis (SonarQube) existed as tools someone had set up once, not as a standard step every build produced a report from. Regressions in code paths _outside_ a release's stated scope — a shared component touched by an unrelated change — occasionally shipped undetected, because nothing re-ran the full suite against changes that "shouldn't have touched that."
+Build and deploy steps lived as scripts inside Jenkins job configuration screens. In that shape there is no change history, nothing to review, and no way back from a bad edit except a job-config backup. Every new product spread the problem further: someone opened the screen and pasted a copy of the previous script.
+
+### Stage structure differed per product
+
+Two jobs both called "staging deploy" would have an image verification step in one and not the other, and push to the registry at different points. Anyone reading a pipeline had to read it from the top every time.
+
+### E2E was outside the trust boundary
+
+A Cypress suite existed, but it behaved differently from machine to machine, so its result was never solid enough to gate a release on. What remained was a human walking the UI before every release. The pipeline definition itself had grown to 314 lines.
 
 ## What I did
 
-### 1. Design one reusable Build-Test-Scan-Deploy Jenkinsfile
+### 1. Moved pipeline definitions into a dedicated repository
 
-Rather than let each product maintain its own bespoke pipeline, I designed one declarative Jenkinsfile meant to be dropped into any of the three repos with minimal per-project changes:
+Every Jenkinsfile moved out of the product repositories into **one pipeline repository**, and every Jenkins job switched to `Pipeline script from SCM`. What stays in the job config is a repository and a path.
 
-```groovy
-pipeline {
-  agent { docker { image 'cypress/included:13.13.0' } }
-  options {
-    timeout(time: 30, unit: 'MINUTES')
-    timestamps()
-  }
-  stages {
-    stage('Install')   { steps { sh 'npm ci' } }
-    stage('Lint/Type') { steps { sh 'npm run lint && npm run typecheck' } }
-    stage('E2E (Cypress, full suite)') {
-      steps { sh 'npx cypress run --config-file cypress.config.ts' }
-      post {
-        always {
-          archiveArtifacts artifacts: 'cypress/screenshots/**, cypress/videos/**', allowEmptyArchive: true
-        }
-      }
-    }
-    stage('Security & Quality Scans') {
-      parallel {
-        stage('Snyk')      { steps { sh 'snyk container test $IMAGE_TAG || true' } }
-        stage('SonarQube') { steps { sh 'sonar-scanner' } }
-      }
-    }
-    stage('Report') { steps { junit 'cypress/results/**/*.xml' } }
-  }
-}
+```
+pipeline/
+├── ad3-backend/     daily · development · staging · production
+├── ad3-frontend/    development · staging · production
+│                    + playwright · sonarQube · zap · (cypress, legacy)
+└── adc-frontend/    development · staging · production
+                     + playwright · sonarQube
 ```
 
-The four-stage shape — **install → lint/typecheck → full-suite Cypress E2E (containerized) → security/quality scans → report/artifact** — became the common contract. Each product's Jenkinsfile now differs only in environment variables, not in structure.
+Nineteen pipeline definitions are versioned there today. Pipeline changes arrive as merge requests, get reviewed, and revert with `git revert`. Given that deployment procedure and product code change on different clocks, this separation fit the team better than a Jenkinsfile per product repo.
 
-### 2. Containerize the Cypress E2E environment
+### 2. Made the stage structure a contract between products
 
-The existing suite ran inconsistently across machines — "works on my laptop" was a real failure mode. Running Cypress inside a pinned Docker image (`cypress/included`) removed environment drift entirely: the same browser version and dependencies run in CI as in local dev, and any engineer can reproduce a CI failure locally with the same image.
+The staging pipelines for both frontends now follow the same sequence:
 
-### 3. Automate security and quality reporting
+```
+Notify Start → Clone → write .env → prepare compose file
+  → Docker Build → Image Verification → Snyk Scan
+  → push to private registry → update repo and .env on the deploy host
+  → pull image and compose up
+```
 
-- **Snyk** scans the built container image for known vulnerabilities as part of every pipeline run, instead of as a manual, occasional check.
-- **SonarQube** runs static analysis against a defined quality profile on every build, with a Quality Gate that can fail the build once issues cross an agreed threshold.
+The two staging definitions are 352 and 350 lines. What differs is product-specific values — image name, target host, compose file — not shape. Add a stage on one side and it goes in the same slot on the other.
 
-None of these replace a real security review, but turning "did anyone run the scanner" into "the scanner runs, and produces a report, every time" closed the gap where checks depended on someone remembering to do them manually.
+Production adds two things on top: **automatic GitLab Release creation**, and a **dual image push** to both the private registry and the GitLab registry, so an image is still reachable when the internal network is not.
 
-### 4. Run the full suite, not just the diff
+### 3. Migrated E2E from Cypress to Playwright
 
-The most valuable habit change wasn't a tool — it was running the **full** E2E suite on a regular cadence, not just the tests that map to a release's stated change set. More than once, this caught a regression in a feature nobody had touched intentionally: a frontend-side shared component, or a backend API response shape, had changed for one feature and silently broken another that depended on it. Catching that pre-release, from an automated full-suite run, is a fundamentally cheaper failure mode than catching it from a user report after deployment.
+All 28 app suites moved to Playwright. The migration was not a straight port — it also widened coverage to per-app Edit/Share/Unshare/Cancel paths and workspace cross-link checks.
+
+<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th>Cypress</th>
+			<th>Playwright</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Tests</td>
+			<td>28 apps</td>
+			<td>
+				<strong>350 passed / 0 skipped / 0 failed</strong>
+			</td>
+		</tr>
+		<tr>
+			<td>Runtime</td>
+			<td>—</td>
+			<td>~9 min local / ~12–15 min on Jenkins</td>
+		</tr>
+		<tr>
+			<td>Pipeline definition</td>
+			<td>314 lines</td>
+			<td>
+				<strong>151 lines</strong>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+Tests run inside the official Playwright image, but driving the container directly rather than through Jenkins' `agent { docker { ... } }`:
+
+```groovy
+CONTAINER=$(docker create --ipc host \
+  -e PLAYWRIGHT_BASE_URL="${PLAYWRIGHT_BASE_URL}" -e CI=true \
+  --workdir /workspace ${PLAYWRIGHT_IMAGE} \
+  sh -c 'yarn install --immutable && yarn test:e2e ${testArgs}; EXIT=$?; \
+         chmod -R 777 node_modules playwright-report test-results 2>/dev/null || true; \
+         exit $EXIT')
+
+docker cp frontend/. $CONTAINER:/workspace/
+docker start -a $CONTAINER || true
+EXIT_CODE=$(docker inspect $CONTAINER --format '{{.State.ExitCode}}')
+
+docker cp $CONTAINER:/workspace/playwright-report/. frontend/playwright-report/ 2>/dev/null || true
+docker cp $CONTAINER:/workspace/test-results/. frontend/test-results/ 2>/dev/null || true
+docker rm $CONTAINER || true
+exit $EXIT_CODE
+```
+
+Three reasons for that shape. The workspace has to go in and the **report and traces have to come back out** to be archived as artifacts. Files created inside the container are owned in a way that made Jenkins cleanup fail, which the `chmod` prevents. And most importantly, `docker start -a` is allowed to fail so the **real exit code is read back with `docker inspect` and re-raised** — a failed artifact copy must not turn a failing test run into a green build, and a failing test run must not be lost behind one.
+
+### 4. Selective runs with an always-on core
+
+A full run takes 12–15 minutes. Force that on every one-app change and people start routing around the pipeline. So a Jenkins UI parameter selects which app modules to run — but the set that **always runs alongside a selection** is fixed in code:
+
+```groovy
+def defaultNonAppPaths = [
+    'e2e/database/',
+    'e2e/workspace/libraries.spec.ts',
+    'e2e/workspace/targets.spec.ts',
+    'e2e/workspace/targets-create.spec.ts',
+    'e2e/app/jobs-filters.spec.ts',
+]
+```
+
+Database search, workspace basics, job list filters — the shared paths nearly every app stands on. This is where you catch the change that fixed one app and quietly broke another through a shared component or an altered API response shape. Leave the parameter empty and the full suite runs.
+
+### 5. Pulled security and quality scanning into the pipeline
+
+Checks that used to be run by hand, when someone remembered, now sit at fixed points in the pipeline.
+
+- **Snyk** scans the container image in staging, right after the build and right before the registry push, and reports critical findings to Slack.
+- **SonarQube** runs as its own job and publishes static analysis to a shared server.
+- **OWASP ZAP** runs a dynamic security scan against the staging environment.
+
+All three report today; promoting them to gates that block a deploy is sequenced after the backlog of critical findings is cleared — a permanently red gate is a gate the team switches off.
 
 ## Results
 
@@ -110,37 +181,49 @@ The most valuable habit change wasn't a tool — it was running the **full** E2E
 	</thead>
 	<tbody>
 		<tr>
-			<td>Manual regression testing</td>
-			<td>~5 hours/release</td>
-			<td>~1 hour/release</td>
+			<td>Manual regression</td>
+			<td>~5 hours per release</td>
+			<td>~1 hour per release</td>
 			<td>−80%</td>
 		</tr>
 		<tr>
-			<td>E2E environment</td>
-			<td>local, per-machine drift</td>
-			<td>containerized, reproducible</td>
+			<td>Automated E2E</td>
+			<td>Local, varies by machine</td>
+			<td>350 tests, 12–15 min in CI</td>
+			<td>reproducible</td>
+		</tr>
+		<tr>
+			<td>E2E pipeline definition</td>
+			<td>314 lines (Cypress)</td>
+			<td>151 lines (Playwright)</td>
+			<td>−52%</td>
+		</tr>
+		<tr>
+			<td>Where pipelines live</td>
+			<td>Scattered in Jenkins job config</td>
+			<td>19 files in a dedicated repo</td>
+			<td>version controlled</td>
+		</tr>
+		<tr>
+			<td>Staging stage structure</td>
+			<td>Different per product</td>
+			<td>Identical across both frontends (352 / 350 lines)</td>
 			<td>standardized</td>
 		</tr>
 		<tr>
-			<td>Security/quality reporting</td>
-			<td>manual, ad hoc</td>
-			<td>Snyk + SonarQube every build</td>
-			<td>automated</td>
-		</tr>
-		<tr>
-			<td>Pipeline maintenance</td>
-			<td>bespoke per product</td>
-			<td>one shared Jenkinsfile</td>
-			<td>standardized</td>
+			<td>Vulnerability scanning</td>
+			<td>Manual, when remembered</td>
+			<td>Automatic scan on every staging build</td>
+			<td>continuous</td>
 		</tr>
 	</tbody>
 </table>
 
-The 80% reduction in manual testing time didn't come from testing less — it came from testing the same surface automatically instead of by hand, freeing the reclaimed hours for the cases automation still can't cover: exploratory testing and reviewing what the full-suite runs actually caught.
+Manual testing time fell because the same ground is now covered automatically, not because less of it is covered. The time freed up moved to what automation still does not reach — exploratory testing, and actually reading what the full runs caught.
 
 {/*
 
-## Interested in a CI/CD or test-automation audit?
+## Need a CI/CD or test automation audit?
 
-If manual QA is eating your release calendar, or security scanning is something that happens "when someone remembers," a fixed-scope pipeline audit can identify the highest-leverage first steps.
+If manual QA is eating your release schedule, or security scanning happens only when someone remembers, a fixed-scope pipeline audit can point at the highest-leverage fixes.
 */}
