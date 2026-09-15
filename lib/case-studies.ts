@@ -831,49 +831,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     collaborations: [],
     draft: false,
   },
-  {
-    slug: "cicd-pipeline",
-    title: "커밋에서 프로덕션까지: Jenkins + K3s + ArgoCD GitOps 파이프라인",
-    description:
-      "GitHub → Jenkins 빌드 → GHCR push → GitOps 저장소 업데이트 → ArgoCD를 통한 K3s 클러스터 배포까지 완전 자동화한 CI/CD 파이프라인.",
-    publishedAt: "2026-XX-XX",
-    role: "DevOps 엔지니어 (단독)",
-    timeline: "2024년 1월 – 현재",
-    industry: "DevOps / 클라우드 인프라",
-    company: "personal",
-    stack: [
-      "Jenkins",
-      "Docker",
-      "GitHub Container Registry",
-      "K3s",
-      "ArgoCD",
-      "GitOps",
-      "Nginx",
-      "Tailscale",
-    ],
-    outcomes: [
-      {
-        label: "배포",
-        before: "수동 SSH",
-        after: "5분 이내 자동",
-        change: "완전 자동화",
-      },
-      {
-        label: "인프라",
-        before: "단일 VPS",
-        after: "K3s 클러스터",
-        change: "고가용성",
-      },
-    ],
-    disclosure: {
-      label: "공개 저장소",
-      href: "https://github.com/Lajancia/Next14-R3F",
-    },
-    capabilityTags: ["devops", "fullstack"],
-    domains: ["infrastructure"],
-    collaborations: [],
-    draft: false,
-  },
 ];
 
 const caseStudiesByLocale: Record<Locale, CaseStudyMeta[]> = {
