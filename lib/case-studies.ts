@@ -11,7 +11,6 @@ export interface CaseStudyMeta {
   slug: string;
   title: string;
   description: string;
-  publishedAt: string;
   role: string;
   timeline: string;
   industry: string;
@@ -31,6 +30,42 @@ export interface CaseStudyMeta {
   draft: boolean;
 }
 
+/**
+ * Buyer-facing groupings over `capabilityTags`. The raw tags stay as they are;
+ * these decide what the Work page offers as filters, so each one has to hold
+ * enough case studies to be worth clicking. The first three intentionally match
+ * the three services on the hire page.
+ */
+export type Capability =
+  | "performance"
+  | "visualization"
+  | "delivery"
+  | "quality"
+  | "product";
+
+export const CAPABILITY_ORDER: Capability[] = [
+  "performance",
+  "visualization",
+  "delivery",
+  "quality",
+  "product",
+];
+
+const CAPABILITY_TAGS: Record<Capability, string[]> = {
+  performance: ["performance"],
+  visualization: ["visualization"],
+  delivery: ["devops"],
+  quality: ["testing", "security"],
+  product: ["fullstack", "frontend"],
+};
+
+export function isCapability(value: unknown): value is Capability {
+  return (
+    typeof value === "string" &&
+    (CAPABILITY_ORDER as string[]).includes(value)
+  );
+}
+
 export const COMPANY_ORDER: Company[] = [
   "arontier",
   "illuminarean",
@@ -46,7 +81,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
       "AD3 Protein Structure Platform: 3D Visualization and an 80% Bundle Cut",
     description:
       "Route-scoped loading for Molstar/RDKit and runtime rendering fixes that cut a scientific React platform's main bundle from 32MB to 6.5MB and moved two heavyweight visualization libraries to on-demand loading.",
-    publishedAt: "2026-08-XX",
     role: "Frontend Engineer (sole frontend owner)",
     timeline: "Mar 2025 – present",
     industry: "Biotech / AI drug discovery",
@@ -87,7 +121,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
     title: "From Commit to Production: Jenkins + K3s + ArgoCD GitOps Pipeline",
     description:
       "A fully automated CI/CD pipeline that takes code from GitHub, builds and pushes Docker images via Jenkins, and deploys to a K3s cluster using ArgoCD with GitOps principles.",
-    publishedAt: "2026-XX-XX",
     role: "DevOps Engineer (solo)",
     timeline: "Jan 2024 – present",
     industry: "DevOps / Cloud infrastructure",
@@ -131,7 +164,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
       "PATH Digital Pathology Platform: WSI Viewer and Pre-Delivery Security Checks",
     description:
       "Building the viewer/interaction UI for a whole-slide-image (WSI) pathology platform on OpenSeadragon, and establishing an OWASP ZAP scan of the authentication flow before an on-premise hospital delivery.",
-    publishedAt: "2026-XX-XX",
     role: "Frontend Development / Security Checks",
     timeline: "Jun 2025 – May 2026",
     industry: "Medical AI / Digital pathology",
@@ -170,7 +202,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
     title: "ADC Visualization: 3D/2D Molecular Viewers on Next.js 16",
     description:
       "Building 3D protein-structure and 2D chemical-structure viewers (Molstar + RDKit) for an antibody-drug-conjugate (ADC) data platform, and introducing a Claude Code-based workflow for generating Playwright E2E tests.",
-    publishedAt: "2026-XX-XX",
     role: "UI Development / Test Automation",
     timeline: "Mar 2026 – May 2026",
     industry: "Biotech / Antibody-drug conjugates (ADC)",
@@ -211,7 +242,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
       "One Pipeline, Three Products: Standardizing CI/CD and Test Reporting",
     description:
       "Moving the Jenkins pipeline definitions for three codebases into one central repository, converging their stage structure, and migrating E2E from Cypress to Playwright so 350 tests run automatically in CI.",
-    publishedAt: "2026-XX-XX",
     role: "CI/CD Pipeline Design & Operations",
     timeline: "Apr 2025 – present",
     industry: "Platform engineering / DevSecOps",
@@ -250,7 +280,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
     title: "Frontend Dockerization and CI/CD Optimization",
     description:
       "Moving a Next.js 14 app to a standalone build with a pnpm migration, cutting the Docker image from 1.3GB to 500MB and deploy time from 15 minutes to under 3.",
-    publishedAt: "2026-XX-XX",
     role: "Deploy Pipeline & Build Structure",
     timeline: "Jul 2024 – Dec 2024",
     industry: "HR tech / Recruiting platform",
@@ -289,7 +318,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
     title: "Job Posting & Applicant Management Platform",
     description:
       "A Next.js 14 recruiting service and admin panel, built frontend-first against an MSW mock API before the backend was ready, with next-translate powering multilingual SSG pages.",
-    publishedAt: "2026-XX-XX",
     role: "Service & Admin Panel Development",
     timeline: "Nov 2024 – Jan 2025",
     industry: "HR tech / Recruiting platform",
@@ -329,7 +357,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
     title: "Smart Factory Monitoring for a Serbian Production Plant",
     description:
       "A chart-based monitoring dashboard (ApexCharts, Plotly) for AOI process yield at an overseas production plant, built end-to-end from Figma design through a Spring Boot API — process visibility that helped cut the AOI defect rate by roughly 20%.",
-    publishedAt: "2026-XX-XX",
     role: "UI/UX Design, Frontend & API Development",
     timeline: "Oct 2022 – May 2024",
     industry: "Manufacturing / Smart factory",
@@ -369,7 +396,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
     title: "Official Website & Magazine Display/Purchase Platform",
     description:
       "A responsive Vue.js/Vuetify site for a Milan-based startup's official website and fashion-magazine display/purchase platform, built with a multinational team.",
-    publishedAt: "2026-XX-XX",
     role: "Responsive Web Implementation",
     timeline: "Nov 2021 – May 2022",
     industry: "Fashion / Media startup",
@@ -400,7 +426,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
     title: "Building an Immersive 3D Portfolio: Next.js 14 + React Three Fiber",
     description:
       "A bilingual 3D portfolio site with interactive WebGL scenes (keyboard, motorcycle), Panda CSS styling, and a full CI/CD pipeline from Jenkins to K3s.",
-    publishedAt: "2026-XX-XX",
     role: "Frontend Engineer (solo)",
     timeline: "Dec 2023 – present",
     industry: "Personal portfolio / 3D web",
@@ -443,7 +468,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "AD3 단백질 구조 분석 플랫폼: 3D 시각화 고도화와 번들 80% 감축",
     description:
       "Molstar/RDKit 라우트 단위 로딩과 런타임 렌더링 개선으로 과학 분야 React 플랫폼의 메인 번들을 32MB에서 6.5MB로 줄이고, 두 개의 대형 시각화 라이브러리를 온디맨드 로딩으로 전환한 과정.",
-    publishedAt: "2026-08-XX",
     role: "프론트엔드 엔지니어 (단독 프론트엔드 담당)",
     timeline: "2025년 3월 – 현재",
     industry: "바이오테크 / AI 신약 개발",
@@ -484,7 +508,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "커밋에서 프로덕션까지: Jenkins + K3s + ArgoCD GitOps 파이프라인",
     description:
       "GitHub → Jenkins 빌드 → GHCR push → GitOps 저장소 업데이트 → ArgoCD를 통한 K3s 클러스터 배포까지 완전 자동화한 CI/CD 파이프라인.",
-    publishedAt: "2026-XX-XX",
     role: "DevOps 엔지니어 (단독)",
     timeline: "2024년 1월 – 현재",
     industry: "DevOps / 클라우드 인프라",
@@ -527,7 +550,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "PATH 병리 이미지(WSI) 분석 플랫폼: 뷰어 개발과 납품 전 보안 점검",
     description:
       "OpenSeadragon 기반 WSI(Whole Slide Image) 뷰어·인터랙션 UI를 개발하고, 의료기관 온프레미스 납품에 앞서 OWASP ZAP으로 인증 플로우를 점검하는 절차를 만든 과정.",
-    publishedAt: "2026-XX-XX",
     role: "프론트엔드 개발 / 보안 점검",
     timeline: "2025년 6월 – 2026년 5월",
     industry: "의료 AI / 디지털 병리",
@@ -566,7 +588,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "ADC 데이터 시각화: Next.js 16 기반 3D/2D 분자 뷰어",
     description:
       "항체-약물 접합체(ADC) 데이터 플랫폼에 Molstar·RDKit 기반 3D 단백질/2D 화학구조 뷰어를 구현하고, Claude Code 기반 Playwright E2E 테스트 자동 생성 워크플로우를 도입한 과정.",
-    publishedAt: "2026-XX-XX",
     role: "UI 개발 / 테스트 자동화",
     timeline: "2026년 3월 – 2026년 5월",
     industry: "바이오테크 / 항체-약물 접합체(ADC)",
@@ -606,7 +627,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "하나의 파이프라인, 세 개의 제품: CI/CD와 테스트 리포팅 표준화",
     description:
       "세 코드베이스의 Jenkins 파이프라인 정의를 중앙 저장소 하나로 모아 스테이지 구조를 통일하고, E2E를 Cypress에서 Playwright로 전면 이관해 350개 테스트를 CI에서 자동 실행하도록 만든 과정.",
-    publishedAt: "2026-XX-XX",
     role: "CI/CD 파이프라인 설계 및 운영",
     timeline: "2025년 4월 – 현재",
     industry: "플랫폼 엔지니어링 / DevSecOps",
@@ -645,7 +665,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "프론트엔드 Dockerization 및 CI/CD 최적화",
     description:
       "Next.js 14 Standalone 빌드와 pnpm 마이그레이션으로 Docker 이미지를 1.3GB에서 500MB로, 배포 시간을 15분에서 3분 이내로 줄인 과정.",
-    publishedAt: "2026-XX-XX",
     role: "배포 파이프라인 및 빌드 구조 개선",
     timeline: "2024년 7월 – 2024년 12월",
     industry: "HR 테크 / 채용 플랫폼",
@@ -684,7 +703,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "채용 공고·지원자 관리 서비스 및 관리자 페이지 개발",
     description:
       "백엔드 API 개발 전 MSW 목업으로 프론트엔드를 선행 개발한 Next.js 14 기반 채용 서비스와 관리자 페이지, next-translate 기반 다국어 SSG 페이지.",
-    publishedAt: "2026-XX-XX",
     role: "서비스/관리자 페이지 개발",
     timeline: "2024년 11월 – 2025년 1월",
     industry: "HR 테크 / 채용 플랫폼",
@@ -724,7 +742,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "세르비아 생산 공장 스마트팩토리 모니터링 시스템",
     description:
       "ApexCharts·Plotly 기반 차트로 해외 생산 공장의 AOI 공정 데이터를 시각화한 모니터링 대시보드. Figma 설계부터 Spring Boot API까지 전 과정을 맡아, AOI 불량률을 약 20% 낮춘 과정.",
-    publishedAt: "2026-XX-XX",
     role: "UI/UX 설계, 화면 구현, API 개발",
     timeline: "2022년 10월 – 2024년 5월",
     industry: "제조 / 스마트팩토리",
@@ -764,7 +781,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "공식 웹사이트 및 매거진 디스플레이·구매 플랫폼 개발",
     description:
       "밀라노 소재 스타트업의 공식 웹사이트와 패션 매거진 디스플레이·구매 플랫폼을 Vue.js/Vuetify로 구현한, 다국적 팀과의 반응형 웹 프로젝트.",
-    publishedAt: "2026-XX-XX",
     role: "반응형 웹 화면 구현",
     timeline: "2021년 11월 – 2022년 5월",
     industry: "패션 / 미디어 스타트업",
@@ -795,7 +811,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     title: "몰입형 3D 포트폴리오 구축하기: Next.js 14 + React Three Fiber",
     description:
       "인터랙티브 WebGL 씬, 매크로 키보드 컨트롤, Panda CSS, 그리고 Jenkins부터 K3s까지 이어지는 완전한 CI/CD 파이프라인을 갖춘 이중언어 3D 포트폴리오 사이트.",
-    publishedAt: "2026-XX-XX",
     role: "프론트엔드 엔지니어 (단독)",
     timeline: "2023년 12월 – 현재",
     industry: "개인 포트폴리오 / 3D 웹",
@@ -853,6 +868,41 @@ export function getCaseStudy(
 
 export function getPublishedCaseStudies(locale: Locale): CaseStudyMeta[] {
   return getCaseStudies(locale).filter((c) => !c.draft);
+}
+
+export function hasCapability(
+  study: CaseStudyMeta,
+  capability: Capability,
+): boolean {
+  return CAPABILITY_TAGS[capability].some((tag) =>
+    study.capabilityTags.includes(tag),
+  );
+}
+
+/** Published case studies for one capability, in the curated list order. */
+export function getCaseStudiesByCapability(
+  locale: Locale,
+  capability: Capability,
+): CaseStudyMeta[] {
+  return getPublishedCaseStudies(locale).filter((study) =>
+    hasCapability(study, capability),
+  );
+}
+
+/** How many published case studies each capability would show. */
+export function getCapabilityCounts(
+  locale: Locale,
+): Record<Capability, number> {
+  const published = getPublishedCaseStudies(locale);
+  return CAPABILITY_ORDER.reduce(
+    (counts, capability) => {
+      counts[capability] = published.filter((study) =>
+        hasCapability(study, capability),
+      ).length;
+      return counts;
+    },
+    {} as Record<Capability, number>,
+  );
 }
 
 export function getAllSlugs(): string[] {

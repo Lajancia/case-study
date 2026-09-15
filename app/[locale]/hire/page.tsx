@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { mailtoUrl } from "@/lib/site";
 import type { Locale } from "@/lib/case-studies";
 import { ResultsAtAGlance } from "@/components/site/ResultsAtAGlance";
+import { getCapabilityCounts, type Capability } from "@/lib/case-studies";
 
 export async function generateMetadata({
   params,
@@ -25,25 +26,38 @@ export default async function HirePage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "hire" });
+  const tWork = await getTranslations({ locale, namespace: "work" });
+  const counts = getCapabilityCounts(locale);
 
-  const services = [
+  // Each service also opens the matching slice of the work page, so a visitor
+  // who wants more than the one linked case study has somewhere to go.
+  const services: Array<{
+    title: string;
+    body: string;
+    link: string;
+    href: "/work/adc-visualization" | "/work/scientific-platform-performance" | "/work/devsecops-pipeline";
+    capability: Capability;
+  }> = [
     {
       title: t("service1Title"),
       body: t("service1Body"),
       link: t("service1Link"),
-      href: "/work/adc-visualization" as const,
+      href: "/work/adc-visualization",
+      capability: "visualization",
     },
     {
       title: t("service2Title"),
       body: t("service2Body"),
       link: t("service2Link"),
-      href: "/work/scientific-platform-performance" as const,
+      href: "/work/scientific-platform-performance",
+      capability: "performance",
     },
     {
       title: t("service3Title"),
       body: t("service3Body"),
       link: t("service3Link"),
-      href: "/work/devsecops-pipeline" as const,
+      href: "/work/devsecops-pipeline",
+      capability: "delivery",
     },
   ];
 
@@ -83,12 +97,26 @@ export default async function HirePage({
               <p className="text-sm text-gray-600 mb-3 dark:text-gray-400">
                 {service.body}
               </p>
-              <Link
-                href={service.href}
-                className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300"
-              >
-                {service.link}
-              </Link>
+              <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                <Link
+                  href={service.href}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                  {service.link}
+                </Link>
+                <Link
+                  href={{
+                    pathname: "/work",
+                    query: { do: service.capability },
+                  }}
+                  className="text-sm text-gray-500 underline underline-offset-4 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:text-gray-100"
+                >
+                  {t("seeAllWork", {
+                    capability: tWork(`capabilities.${service.capability}`),
+                    count: counts[service.capability],
+                  })}
+                </Link>
+              </div>
             </div>
           ))}
         </div>
