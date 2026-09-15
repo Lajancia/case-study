@@ -1,45 +1,77 @@
 export const metadata = {
   title: "Official Website & Magazine Display/Purchase Platform",
   description:
-    "A responsive Vue.js/Vuetify site for a Milan-based startup's official website and fashion-magazine display/purchase platform, built with a multinational team.",
+    "Rebuilding a Milan startup's static HTML site on Vue.js/Vuetify, and bringing its externally managed domain and server under the company's own name.",
   slug: "common-srl-website",
-  role: "Responsive Web Implementation",
+  role: "Frontend rebuild & domain/hosting handover",
   timeline: "Nov 2021 – May 2022",
   industry: "Fashion / Media startup",
   stack: ["Vue.js", "Vuetify"],
   outcomes: [
-    { label: "Still in service", before: "Built 2022", after: "Live today", change: "4+ years" },
+    { label: "Codebase", before: "Static HTML", after: "Vue.js / Vuetify", change: "rebuilt" },
+    { label: "Domain & hosting", before: "In a contractor's personal accounts", after: "Moved to company accounts", change: "ownership recovered" },
   ],
   draft: false,
 }
 
 ## Context
 
-*This case study reconstructs real work at the level of technique and outcome. Internal system names and non-public details are omitted; the measured figures are as recorded.*
+As an intern at a Milan-based startup, I owned the official website and the magazine platform — both the display side and the purchase flow — for a fashion-magazine and event-marketing service.
 
-As an intern at a Milan-based startup, I helped build the official website and the magazine platform — both the display side and the purchase flow — for a fashion-magazine and event-marketing service, working with a multinational team from screen planning through implementation.
+Two things were true when I started. The site was **static HTML**, so every new page meant copying markup around. And the **domain and hosting account sat in a freelance contractor's personal name**. It was the company's website, but the company did not own it.
 
-The site I built is **still running** at [common-mag.com](http://www.common-mag.com/).
+The site is viewable at [common-mag.com](http://www.common-mag.com/).
 
 ## What I did
 
-### 1. Responsive implementation with Vue.js/Vuetify
+### 1. Rebuilt static HTML on Vue.js/Vuetify
 
-I built the official website and the magazine display and purchase pages with **Vue.js** and the **Vuetify** component library, designing the responsive layout for mobile, tablet, and desktop from the start rather than retrofitting it later.
+I broke the repeated markup into **Vue.js** components and rebuilt the official website and the magazine display and purchase pages on top of the **Vuetify** component library. The mobile, tablet, and desktop breakpoints went in during the rebuild — far cheaper than retrofitting responsive behaviour onto static HTML later, when the component structure was being redrawn anyway.
 
-### 2. Portfolio UX improvements
+### 2. Moved the domain and hosting into company accounts
 
-I improved the navigation flow of the portfolio pages so that visitors arriving from social media could review the studio's work and follow through to a business inquiry.
+Both the domain and the hosting lived in the personal accounts of the contractor who had built the site before. If that person became unreachable, the company had no way to touch its own site.
 
-### 3. Working with a multinational team
+I **opened shared hosting on Hostinger under a company account and transferred the domain to the company**. Not technically hard, but rebuilding a frontend while the company does not own the place it runs only solves half the problem, so it went in the same piece of work.
 
-I collaborated with the on-site Milan team to translate the fashion-magazine and event-marketing service's requirements into screens.
+### 3. Improved the portfolio navigation
+
+I reworked the navigation flow of the portfolio pages so that visitors arriving from social media could review the studio's work and follow through to a business inquiry.
+
+### 4. Worked with a multinational team
+
+I collaborated with the on-site Milan team, turning the fashion-magazine and event-marketing service's requirements into agreed screens and then into implementation.
 
 ## Results
 
-The site I built in 2022 is **still running four years later** — you can check it yourself at [common-mag.com](http://www.common-mag.com/). For an early-career project that is the result worth reporting: it was built to last and nobody has needed to replace it.
+<table>
+  <thead>
+    <tr>
+      <th>Area</th>
+      <th>Before</th>
+      <th>After</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Codebase</td>
+      <td>Static HTML, markup copied per page</td>
+      <td>Vue.js + Vuetify components</td>
+    </tr>
+    <tr>
+      <td>Responsive</td>
+      <td>None</td>
+      <td>Mobile, tablet, desktop</td>
+    </tr>
+    <tr>
+      <td>Domain &amp; hosting</td>
+      <td>Contractor's personal accounts</td>
+      <td>Company account (Hostinger), domain transferred</td>
+    </tr>
+  </tbody>
+</table>
 
-It was also where I worked the full frontend arc for the first time — screen planning, implementation, and delivery — with a multinational team in an overseas startup.
+It was the first project where I owned the full frontend arc — screen planning through implementation and delivery. What actually lasted is that the company ended up owning its domain and hosting, not just the code.
 
 {/*
 ## Need frontend development?

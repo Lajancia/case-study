@@ -41,6 +41,7 @@ export interface CaseStudyMeta {
 export type Capability =
   | "visualization"
   | "performance"
+  | "migration"
   | "quality"
   | "delivery";
 
@@ -48,6 +49,7 @@ export type Capability =
 export const CAPABILITY_ORDER: Capability[] = [
   "visualization",
   "performance",
+  "migration",
   "quality",
   "delivery",
 ];
@@ -55,6 +57,7 @@ export const CAPABILITY_ORDER: Capability[] = [
 const CAPABILITY_TAGS: Record<Capability, string[]> = {
   visualization: ["visualization"],
   performance: ["performance"],
+  migration: ["migration"],
   quality: ["testing", "security"],
   delivery: ["devops"],
 };
@@ -153,7 +156,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
       label: "Public repo",
       href: "https://github.com/Lajancia/Next14-R3F",
     },
-    capabilityTags: ["devops", "fullstack"],
+    capabilityTags: ["migration", "devops", "fullstack"],
     domains: ["infrastructure"],
     collaborations: [],
     draft: false,
@@ -270,7 +273,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "Internal infrastructure" },
-    capabilityTags: ["devops", "security", "testing"],
+    capabilityTags: ["migration", "devops", "security", "testing"],
     domains: ["platform"],
     collaborations: [],
     draft: false,
@@ -308,7 +311,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "Internal infrastructure" },
-    capabilityTags: ["devops"],
+    capabilityTags: ["migration", "devops"],
     domains: ["web"],
     collaborations: [],
     draft: false,
@@ -395,22 +398,28 @@ const caseStudiesEn: CaseStudyMeta[] = [
     slug: "common-srl-website",
     title: "Official Website & Magazine Display/Purchase Platform",
     description:
-      "A responsive Vue.js/Vuetify site for a Milan-based startup's official website and fashion-magazine display/purchase platform, built with a multinational team.",
-    role: "Responsive Web Implementation",
+      "Rebuilding a Milan startup's static HTML site on Vue.js/Vuetify, and moving the domain and hosting out of a contractor's personal accounts into the company's own.",
+    role: "Frontend rebuild & domain/hosting handover",
     timeline: "Nov 2021 – May 2022",
     industry: "Fashion / Media startup",
     company: "common-srl",
     stack: ["Vue.js", "Vuetify"],
     outcomes: [
       {
-        label: "Still in service",
-        before: "Built 2022",
-        after: "Live today",
-        change: "4+ years",
+        label: "Codebase",
+        before: "Static HTML",
+        after: "Vue.js / Vuetify",
+        change: "rebuilt",
+      },
+      {
+        label: "Domain & hosting",
+        before: "In a contractor's accounts",
+        after: "Moved to company accounts",
+        change: "ownership recovered",
       },
     ],
     disclosure: { label: "Public site", href: "http://www.common-mag.com/" },
-    capabilityTags: ["frontend"],
+    capabilityTags: ["migration", "frontend"],
     domains: ["web"],
     collaborations: [],
     draft: false,
@@ -534,7 +543,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
       label: "공개 저장소",
       href: "https://github.com/Lajancia/Next14-R3F",
     },
-    capabilityTags: ["devops", "fullstack"],
+    capabilityTags: ["migration", "devops", "fullstack"],
     domains: ["infrastructure"],
     collaborations: [],
     draft: false,
@@ -649,7 +658,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "사내 인프라" },
-    capabilityTags: ["devops", "security", "testing"],
+    capabilityTags: ["migration", "devops", "security", "testing"],
     domains: ["platform"],
     collaborations: [],
     draft: false,
@@ -687,7 +696,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
       },
     ],
     disclosure: { label: "사내 인프라" },
-    capabilityTags: ["devops"],
+    capabilityTags: ["migration", "devops"],
     domains: ["web"],
     collaborations: [],
     draft: false,
@@ -774,22 +783,28 @@ const caseStudiesKo: CaseStudyMeta[] = [
     slug: "common-srl-website",
     title: "공식 웹사이트 및 매거진 디스플레이·구매 플랫폼 개발",
     description:
-      "밀라노 소재 스타트업의 공식 웹사이트와 패션 매거진 디스플레이·구매 플랫폼을 Vue.js/Vuetify로 구현한, 다국적 팀과의 반응형 웹 프로젝트.",
-    role: "반응형 웹 화면 구현",
+      "밀라노 소재 스타트업의 정적 HTML 사이트를 Vue.js/Vuetify 기반으로 재구축하고, 외주 프리랜서 개인 명의로 있던 도메인과 호스팅을 회사 계정으로 이관한 프로젝트.",
+    role: "프론트엔드 재구축 및 도메인·호스팅 이관",
     timeline: "2021년 11월 – 2022년 5월",
     industry: "패션 / 미디어 스타트업",
     company: "common-srl",
     stack: ["Vue.js", "Vuetify"],
     outcomes: [
       {
-        label: "운영 지속",
-        before: "2022년 구축",
-        after: "현재까지 운영 중",
-        change: "4년+",
+        label: "코드베이스",
+        before: "정적 HTML",
+        after: "Vue.js / Vuetify",
+        change: "전면 재구축",
+      },
+      {
+        label: "도메인·호스팅",
+        before: "외주 프리랜서 개인 명의",
+        after: "회사 계정으로 이전",
+        change: "소유권 회수",
       },
     ],
     disclosure: { label: "공개 사이트", href: "http://www.common-mag.com/" },
-    capabilityTags: ["frontend"],
+    capabilityTags: ["migration", "frontend"],
     domains: ["web"],
     collaborations: [],
     draft: false,
