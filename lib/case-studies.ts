@@ -224,10 +224,10 @@ const caseStudiesEn: CaseStudyMeta[] = [
         change: "workflow adopted",
       },
       {
-        label: "Stack",
-        before: "n/a (new product)",
-        after: "Next.js 16 App Router + Tailwind CSS",
-        change: "current gen",
+        label: "E2E standard",
+        before: "Cypress, set per product",
+        after: "Playwright conventions reused for AD3's 28-app migration",
+        change: "standard set",
       },
     ],
     disclosure: { label: "Public product", href: "https://adc.arontier.co/" },
@@ -403,12 +403,6 @@ const caseStudiesEn: CaseStudyMeta[] = [
     stack: ["Vue.js", "Vuetify"],
     outcomes: [
       {
-        label: "Device coverage",
-        before: "n/a (new build)",
-        after: "Mobile, tablet, desktop",
-        change: "fully responsive",
-      },
-      {
         label: "Still in service",
         before: "Built 2022",
         after: "Live today",
@@ -442,10 +436,10 @@ const caseStudiesEn: CaseStudyMeta[] = [
     ],
     outcomes: [
       {
-        label: "3D scenes",
-        before: "0",
-        after: "2 (keyboard, motorcycle)",
-        change: "interactive WebGL",
+        label: "Browser 3D",
+        before: "Static portfolio page",
+        after: "Interactive R3F scenes, live",
+        change: "self-built WebGL",
       },
       {
         label: "Pipeline deployment",
@@ -610,10 +604,10 @@ const caseStudiesKo: CaseStudyMeta[] = [
         change: "워크플로우 도입",
       },
       {
-        label: "스택",
-        before: "해당 없음 (신규 제품)",
-        after: "Next.js 16 App Router + Tailwind CSS",
-        change: "최신 스택",
+        label: "E2E 표준",
+        before: "제품마다 제각각 Cypress",
+        after: "AD3 28개 앱 이관의 기준이 된 Playwright 컨벤션",
+        change: "표준 수립",
       },
     ],
     disclosure: { label: "공개 제품", href: "https://adc.arontier.co/" },
@@ -788,12 +782,6 @@ const caseStudiesKo: CaseStudyMeta[] = [
     stack: ["Vue.js", "Vuetify"],
     outcomes: [
       {
-        label: "디바이스 대응",
-        before: "해당 없음 (신규 구축)",
-        after: "모바일·태블릿·데스크톱",
-        change: "전 디바이스 반응형",
-      },
-      {
         label: "운영 지속",
         before: "2022년 구축",
         after: "현재까지 운영 중",
@@ -827,10 +815,10 @@ const caseStudiesKo: CaseStudyMeta[] = [
     ],
     outcomes: [
       {
-        label: "3D 씬",
-        before: "0",
-        after: "2개 (키보드, 바이크)",
-        change: "인터랙티브 WebGL",
+        label: "브라우저 3D",
+        before: "정적 포트폴리오 페이지",
+        after: "인터랙티브 R3F 씬, 실서비스 중",
+        change: "WebGL 직접 구현",
       },
       {
         label: "파이프라인 배포",
