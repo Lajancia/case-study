@@ -31,7 +31,7 @@ const EXPERIENCE_EN: Role[] = [
     ],
   },
   {
-    company: "Illuminarian",
+    company: "Illuminarean",
     title: "Frontend Engineer",
     period: "Jun 2024 – Feb 2025 · 9 months · Remote",
     bullets: [
