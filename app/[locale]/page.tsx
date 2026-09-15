@@ -69,7 +69,7 @@ export default async function HomePage({
 								<div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2 dark:text-blue-400">
 									{study.industry}
 								</div>
-								<h3 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-900 dark:text-[#38bdf8]">
+								<h3 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-900 dark:text-white">
 									{study.title}
 								</h3>
 								<p className="text-gray-600 text-sm mb-4 dark:text-gray-400">

@@ -26,7 +26,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
 			<div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between">
 				<Link
 					href="/"
-					className="text-lg font-semibold tracking-tight text-gray-900 hover:text-blue-600 transition-colors dark:text-white dark:hover:text-[#7dd3fc]"
+					className="text-lg font-semibold tracking-tight text-gray-900 hover:text-blue-600 transition-colors dark:text-white dark:hover:text-gray-100"
 				>
 					{siteConfig.name}
 				</Link>
