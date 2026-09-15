@@ -9,8 +9,42 @@
   --color-red: #ff204e;
   --color-blue: #315b8c;
 
-  /* Gray Palette Mapping (Tailwind v4 override to match warm cream / navy mood) */
-  /* Card / Box background: #d8c4a6 in light mode */
+  /* Bind color utilities to CSS variables for dynamic dark/light switching */
+  --color-gray-50: var(--color-gray-50);
+  --color-gray-100: var(--color-gray-100);
+  --color-gray-200: var(--color-gray-200);
+  --color-gray-300: var(--color-gray-300);
+  --color-gray-400: var(--color-gray-400);
+  --color-gray-500: var(--color-gray-500);
+  --color-gray-600: var(--color-gray-600);
+  --color-gray-700: var(--color-gray-700);
+  --color-gray-800: var(--color-gray-800);
+  --color-gray-900: var(--color-gray-900);
+  --color-gray-950: var(--color-gray-950);
+
+  --color-blue-50: var(--color-blue-50);
+  --color-blue-100: var(--color-blue-100);
+  --color-blue-400: var(--color-blue-400);
+  --color-blue-500: var(--color-blue-500);
+  --color-blue-600: var(--color-blue-600);
+  --color-blue-700: var(--color-blue-700);
+  --color-blue-800: var(--color-blue-800);
+  --color-blue-950: var(--color-blue-950);
+
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+  --color-surface: var(--color-surface);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  /* Light theme values */
   --color-gray-50: #d8c4a6;
   --color-gray-100: #e2d2ba;
   --color-gray-200: #c9b497;
@@ -23,7 +57,6 @@
   --color-gray-900: #042147;
   --color-gray-950: #001736;
 
-  /* Blue Palette Mapping (Points & Accents) */
   --color-blue-50: #e8d8be;
   --color-blue-100: #d8c4a6;
   --color-blue-400: #ff5c7d;
@@ -33,7 +66,6 @@
   --color-blue-800: #315b8c;
   --color-blue-950: #001f45;
 
-  /* Semantic Variables */
   --color-background: #f5ebdd;
   --color-foreground: #00224d;
   --color-accent: #ff204e;
@@ -42,28 +74,24 @@
   --color-border: #c9b497;
   --color-surface: #d8c4a6;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-
   --scrollbar-thumb: #c9b497;
   --scrollbar-thumb-hover: #315b8c;
 }
 
 .dark {
-  /* Gray Palette in Dark Mode (pure white/light-gray text for sharp legibility) */
+  /* Dark theme values: crisp white for high contrast */
   --color-gray-50: #001736;
   --color-gray-100: #0d356c;
   --color-gray-200: #1a457f;
   --color-gray-300: #ffffff;
   --color-gray-400: #ffffff;
   --color-gray-500: #ffffff;
-  --color-gray-600: #cbd8ec;
+  --color-gray-600: #ffffff;
   --color-gray-700: #ffffff;
   --color-gray-800: #062b5b;
   --color-gray-900: #001736;
   --color-gray-950: #001736;
 
-  /* Blue Palette in Dark Mode */
   --color-blue-50: #001736;
   --color-blue-100: #0d356c;
   --color-blue-400: #ff5c7d;
