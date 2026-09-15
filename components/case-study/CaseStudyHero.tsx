@@ -25,7 +25,7 @@ export async function CaseStudyHero({ study, locale }: CaseStudyHeroProps) {
           <div className="text-xs text-gray-500 mb-0.5 dark:text-gray-500">{t('stack')}</div>
           <div className="flex flex-wrap gap-1">
             {study.stack.map((tech) => (
-              <span key={tech} className="text-xs bg-[#00224D] text-[#F5EBDD] dark:bg-[#FF204E] dark:text-white px-2 py-0.5 rounded font-medium">{tech}</span>
+              <span key={tech} className="text-xs bg-[#00224D] text-[#F5EBDD] dark:bg-gray-800 dark:text-gray-400 px-2 py-0.5 rounded font-medium">{tech}</span>
             ))}
           </div>
         </div>
