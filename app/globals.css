@@ -44,9 +44,11 @@
 }
 
 :root {
-  /* Light theme: Custom Warm Cream & Deep Navy */
-  --color-gray-50: #d8c4a6;
-  --color-gray-100: #111827;
+  /* Light theme: white page, warm cream surfaces, deep navy ink.
+     The page stays white so cards, code blocks and the accent red keep
+     their contrast; the cream carries the brand warmth on surfaces. */
+  --color-gray-50: #f5ebdd;
+  --color-gray-100: #ece0cd;  /* hover surface — must stay between 50 and 200 */
   --color-gray-200: #c9b497;
   --color-gray-300: #bfa888;
   --color-gray-400: #7b8ea6;
@@ -57,7 +59,7 @@
   --color-gray-900: #00224d;
   --color-gray-950: #001736;
 
-  --color-blue-50: #e8d8be;
+  --color-blue-50: #f5ebdd;  /* CTA panel — same cream surface, one tone only */
   --color-blue-100: #d8c4a6;
   --color-blue-400: #ff5c7d;
   --color-blue-500: #ff204e;
@@ -66,13 +68,13 @@
   --color-blue-800: #315b8c;
   --color-blue-950: #001f45;
 
-  --color-background: #f5ebdd;
+  --color-background: #ffffff;
   --color-foreground: #00224d;
   --color-accent: #ff204e;
   --color-accent-hover: #315b8c;
   --color-muted: #556c88;
   --color-border: #c9b497;
-  --color-surface: #d8c4a6;
+  --color-surface: #f5ebdd;
 
   --scrollbar-thumb: #c9b497;
   --scrollbar-thumb-hover: #315b8c;
