@@ -1,5 +1,7 @@
+import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import { HIRE_TRACK_COOKIE } from '@/proxy';
 import { siteConfig } from '@/lib/site';
 import type { Locale } from '@/lib/case-studies';
 import { ThemeToggle } from '@/components/site/ThemeToggle';
@@ -11,9 +13,15 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
 	const contactHref = siteConfig.calendlyUrl || `mailto:${siteConfig.email}`;
 	const resumeUrl = `/resume_${locale}.pdf`;
 
+	// Set by the proxy when someone lands on /hire. The page is unlinked by
+	// design, so this is the only way back to it once they follow a link out.
+	const onHireTrack =
+		(await cookies()).get(HIRE_TRACK_COOKIE)?.value === 'hire';
+
 	const navLinks = [
 		{ label: t('about'), href: '/about' as const },
 		{ label: t('work'), href: '/work' as const },
+		...(onHireTrack ? [{ label: t('hire'), href: '/hire' as const }] : []),
 		{
 			label: t('technicalWriting'),
 			href: siteConfig.social.medium,
@@ -43,6 +51,14 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
 					>
 						{t('work')}
 					</Link>
+					{onHireTrack && (
+						<Link
+							href="/hire"
+							className="hover:text-gray-900 transition-colors dark:hover:text-gray-100"
+						>
+							{t('hire')}
+						</Link>
+					)}
 					<a
 						href={siteConfig.social.medium}
 						target="_blank"
