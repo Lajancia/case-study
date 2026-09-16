@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, lazy, Suspense } from 'react'
+import { useState, useEffect, useRef, useSyncExternalStore, lazy, Suspense } from 'react'
 import { DEMO_PDB, DEMO_LIGAND_SMILES } from '@/lib/molecular-demo'
 
 const RDKIT_CDN = 'https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2025.3.4-1.0.0/dist/RDKit_minimal.js'
@@ -8,6 +8,18 @@ const RDKIT_BASE = 'https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2025.3.4-1.0.0/dis
 
 // route-scoped: molstar (npm) only enters the bundle when this component renders
 const MolstarViewer = lazy(() => import('./molstar/MolstarViewer'))
+
+// Whether hydration has happened. The viewers touch WebGL and the DOM, so
+// nothing here may render on the server. This is the sanctioned way to ask:
+// the server snapshot is false, the client one is true, and no effect has to
+// push the answer into state.
+const neverChanges = () => () => {}
+const useHydrated = () =>
+  useSyncExternalStore(
+    neverChanges,
+    () => true,
+    () => false,
+  )
 
 /**
  * RDKit 2D chemical structure viewer — loaded from CDN on demand.
@@ -20,16 +32,14 @@ const MolstarViewer = lazy(() => import('./molstar/MolstarViewer'))
  */
 
 export default function MolecularViewer() {
-  const [mounted, setMounted] = useState(false)
+  const hydrated = useHydrated()
   const [rdkitStatus, setRdkitStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [errorDetail, setErrorDetail] = useState<string | null>(null)
   const rdkitSvgRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => setMounted(true), [])
-
   // ── Load RDKit.js from CDN (route-scoped) ──
   useEffect(() => {
-    if (!mounted) return
+    if (!hydrated) return
 
     const w = window as any
 
@@ -98,10 +108,9 @@ export default function MolecularViewer() {
         setErrorDetail(e?.message || 'render error')
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted])
+  }, [hydrated])
 
-  if (!mounted) return null
+  if (!hydrated) return null
 
   return (
     <div className="not-prose my-10 space-y-8">

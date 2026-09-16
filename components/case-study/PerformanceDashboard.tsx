@@ -1,8 +1,25 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useSyncExternalStore } from 'react'
 import dynamic from 'next/dynamic'
 import { siteMetrics } from '@/lib/metrics'
+
+// The theme is a class on <html>, which React does not own. Subscribing to it
+// through useSyncExternalStore reads the value during render, so the chart is
+// built with the right theme the first time instead of being painted light and
+// corrected by an effect. Declared at module scope so the subscription is not
+// torn down and rebuilt on every render.
+function subscribeToTheme(onStoreChange: () => void) {
+  const observer = new MutationObserver(onStoreChange)
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class'],
+  })
+  return () => observer.disconnect()
+}
+
+const isDarkNow = () => document.documentElement.classList.contains('dark')
+const isDarkOnServer = () => false
 
 /**
  * ApexCharts loaded DYNAMICALLY — zero bytes on pages without this component.
@@ -18,17 +35,7 @@ const Chart = dynamic(() => import('react-apexcharts'), {
 })
 
 export default function PerformanceDashboard() {
-  const [mounted, setMounted] = useState(false)
-  const [isDark, setIsDark] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-    const root = document.documentElement
-    setIsDark(root.classList.contains('dark'))
-    const observer = new MutationObserver(() => setIsDark(root.classList.contains('dark')))
-    observer.observe(root, { attributes: true, attributeFilter: ['class'] })
-    return () => observer.disconnect()
-  }, [])
+  const isDark = useSyncExternalStore(subscribeToTheme, isDarkNow, isDarkOnServer)
 
   const { comparisons, currentSiteBundle, docker } = siteMetrics
 
@@ -57,33 +64,31 @@ export default function PerformanceDashboard() {
           The &ldquo;before&rdquo; state recreates the AD3 anti-pattern: an eager 3D library import on every route
           plus a non-standalone Docker build. Measured from the <code>perf/before-optimization</code> branch.
         </p>
-        {mounted && (
-          <Chart
-            type="bar"
-            options={{
-              chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
-              theme: { mode: isDark ? 'dark' : 'light' },
-              plotOptions: { bar: { horizontal: false, borderRadius: 4 } },
-              colors: ['#EF4444', '#22c55e'],
-              xaxis: {
-                categories: compLabels,
-                labels: { style: { fontSize: '11px' } },
-              },
-              yaxis: {
-                title: { text: compUnit },
-              },
-              dataLabels: {
-                enabled: true,
-                formatter: (val: number) => `${val}${compUnit === 'KB' ? ' KB' : ' MB'}`,
-                style: { fontSize: '10px' },
-              },
-              legend: { position: 'top' },
-              grid: { borderColor: isDark ? '#27272a' : '#e5e7eb' },
-            }}
-            series={comparisonSeries}
-            height={260}
-          />
-        )}
+        <Chart
+          type="bar"
+          options={{
+            chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
+            theme: { mode: isDark ? 'dark' : 'light' },
+            plotOptions: { bar: { horizontal: false, borderRadius: 4 } },
+            colors: ['#EF4444', '#22c55e'],
+            xaxis: {
+              categories: compLabels,
+              labels: { style: { fontSize: '11px' } },
+            },
+            yaxis: {
+              title: { text: compUnit },
+            },
+            dataLabels: {
+              enabled: true,
+              formatter: (val: number) => `${val}${compUnit === 'KB' ? ' KB' : ' MB'}`,
+              style: { fontSize: '10px' },
+            },
+            legend: { position: 'top' },
+            grid: { borderColor: isDark ? '#27272a' : '#e5e7eb' },
+          }}
+          series={comparisonSeries}
+          height={260}
+        />
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
           {comparisons.map((c) => (
             <div key={c.label} className="text-xs">

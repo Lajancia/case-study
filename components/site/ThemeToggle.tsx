@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365
@@ -14,44 +14,59 @@ function applyTheme(dark: boolean) {
   document.cookie = `theme=${dark ? 'dark' : 'light'}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`
 }
 
+// The theme lives on <html> and in a cookie, both outside React, so the button
+// subscribes to them rather than keeping its own copy. Writing the class is
+// enough to update the button: the observer below sees the change.
+function subscribeToTheme(onStoreChange: () => void) {
+  const observer = new MutationObserver(onStoreChange)
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class'],
+  })
+  // With no explicit choice the OS preference decides, so a change there has to
+  // reach the button too.
+  const media = window.matchMedia('(prefers-color-scheme: dark)')
+  media.addEventListener('change', onStoreChange)
+  return () => {
+    observer.disconnect()
+    media.removeEventListener('change', onStoreChange)
+  }
+}
+
+function isDarkNow() {
+  const root = document.documentElement
+  if (root.classList.contains('dark')) return true
+  if (root.classList.contains('light')) return false
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+}
+
+const isDarkOnServer = () => false
+
 export function ThemeToggle() {
   const t = useTranslations('theme')
-  const [isDark, setIsDark] = useState(false)
+  const isDark = useSyncExternalStore(subscribeToTheme, isDarkNow, isDarkOnServer)
 
+  // Visitors from before the cookie switch still have their choice in
+  // localStorage. Move it over once, then let the cookie drive. This only
+  // writes to the outside world; the subscription above reports the result.
   useEffect(() => {
-    const root = document.documentElement
-    const chosen = root.classList.contains('dark')
-      ? true
-      : root.classList.contains('light')
-        ? false
-        : null
-
-    // Visitors from before the cookie switch still have their choice in
-    // localStorage. Move it over once, then let the cookie drive.
-    let carriedOver: boolean | null = null
+    let stored: string | null = null
     try {
-      const stored = localStorage.getItem('theme')
-      if (stored) {
-        localStorage.removeItem('theme')
-        if (chosen === null) carriedOver = stored === 'dark'
-      }
+      stored = localStorage.getItem('theme')
+      if (stored) localStorage.removeItem('theme')
     } catch {}
+    if (!stored) return
 
-    if (carriedOver !== null) {
-      applyTheme(carriedOver)
-      setIsDark(carriedOver)
-      return
-    }
+    const root = document.documentElement
+    const alreadyChosen =
+      root.classList.contains('dark') || root.classList.contains('light')
+    if (alreadyChosen) return
 
-    setIsDark(
-      chosen ?? window.matchMedia('(prefers-color-scheme: dark)').matches,
-    )
+    applyTheme(stored === 'dark')
   }, [])
 
   function toggle() {
-    const next = !isDark
-    setIsDark(next)
-    applyTheme(next)
+    applyTheme(!isDark)
   }
 
   return (
