@@ -21,7 +21,7 @@ export async function CaseStudyCTA({ locale }: { locale: Locale }) {
             {t("bookACall")}
           </a>
         ) : (
-          <span className="inline-flex items-center rounded-full bg-gray-300 px-6 py-2.5 text-gray-500 font-medium cursor-not-allowed dark:bg-gray-700 dark:text-gray-400">
+          <span className="inline-flex items-center rounded-full bg-gray-300 px-6 py-2.5 text-gray-500 font-medium cursor-not-allowed dark:bg-gray-800 dark:text-gray-500">
             {t("bookingComingSoon")}
           </span>
         )}
