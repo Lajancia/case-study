@@ -4,6 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { ContactFab } from "@/components/site/ContactFab";
 import { HtmlLangSync } from "@/components/site/HtmlLangSync";
 import { siteConfig } from "@/lib/site";
 import { routing } from "@/i18n/routing";
@@ -53,6 +54,7 @@ export default async function LocaleLayout({
         {children}
       </main>
       <SiteFooter locale={locale} />
+      <ContactFab locale={locale} />
     </NextIntlClientProvider>
   );
 }

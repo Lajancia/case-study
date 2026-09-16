@@ -7,7 +7,9 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-gray-200 dark:border-gray-800">
-      <div className="mx-auto max-w-4xl px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-500">
+      {/* Extra room at the bottom on narrow screens: the contact button floats
+          over this corner, and without it the last link sits underneath. */}
+      <div className="mx-auto max-w-4xl px-6 pt-8 pb-24 sm:pb-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-500">
         <p>
           © {year} {siteConfig.name}. {t("rights")}
         </p>
