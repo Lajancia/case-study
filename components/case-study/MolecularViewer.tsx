@@ -22,6 +22,32 @@ const useHydrated = () =>
   )
 
 /**
+ * The slice of RDKit.js this demo actually touches. The CDN build ships no
+ * type declarations, so this describes the surface used here rather than
+ * pulling in the full @rdkit/rdkit package just for types.
+ */
+interface RDKitMol {
+  get_svg(width: number, height: number): string
+  delete(): void
+}
+
+interface RDKitModule {
+  get_mol(smiles: string): RDKitMol | null
+}
+
+interface RDKitWindow extends Window {
+  RDKitModule?: RDKitModule
+  initRDKitModule?: (options: {
+    locateFile: (path: string) => string
+  }) => Promise<RDKitModule>
+  /** Keeps a second mount from kicking off a second WASM init. */
+  _rdkitLoading?: boolean
+}
+
+const messageOf = (error: unknown, fallback: string) =>
+  error instanceof Error && error.message ? error.message : fallback
+
+/**
  * RDKit 2D chemical structure viewer — loaded from CDN on demand.
  * Molstar 3D viewer — loaded from the `molstar` npm package via
  * React.lazy(), so it code-splits into its own chunk instead of shipping
@@ -41,24 +67,27 @@ export default function MolecularViewer() {
   useEffect(() => {
     if (!hydrated) return
 
-    const w = window as any
+    const w = window as unknown as RDKitWindow
 
     // Already loaded + initialized
     if (w.RDKitModule) {
-      renderRdkItSvg(w.RDKitModule)
+      renderRdkitSvg(w.RDKitModule)
       return
     }
 
     // Script loaded but WASM init already in progress
-    if (typeof w.initRDKitModule === 'function' && !w._rdkitLoading) {
+    const loadedInit = w.initRDKitModule
+    if (loadedInit && !w._rdkitLoading) {
       w._rdkitLoading = true
-      w.initRDKitModule({ locateFile: (path: string) => `${RDKIT_BASE}/${path}` }).then((Module: any) => {
-        w.RDKitModule = Module
-        renderRdkItSvg(Module)
-      }).catch((e: any) => {
-        setRdkitStatus('error')
-        setErrorDetail(e?.message || 'WASM init failed')
-      })
+      loadedInit({ locateFile: (path) => `${RDKIT_BASE}/${path}` })
+        .then((Module) => {
+          w.RDKitModule = Module
+          renderRdkitSvg(Module)
+        })
+        .catch((e: unknown) => {
+          setRdkitStatus('error')
+          setErrorDetail(messageOf(e, 'WASM init failed'))
+        })
       return
     }
 
@@ -70,27 +99,30 @@ export default function MolecularViewer() {
       script.async = true
       script.onload = () => {
         // initRDKitModule is a global async function that returns the Module
-        if (typeof w.initRDKitModule === 'function') {
-          w.initRDKitModule({ locateFile: (path: string) => `${RDKIT_BASE}/${path}` }).then((Module: any) => {
-            w.RDKitModule = Module
-            renderRdkItSvg(Module)
-          }).catch((e: any) => {
-            setRdkitStatus('error')
-            setErrorDetail(`WASM: ${e?.message || 'unknown'}`)
-          })
+        const init = w.initRDKitModule
+        if (init) {
+          init({ locateFile: (path) => `${RDKIT_BASE}/${path}` })
+            .then((Module) => {
+              w.RDKitModule = Module
+              renderRdkitSvg(Module)
+            })
+            .catch((e: unknown) => {
+              setRdkitStatus('error')
+              setErrorDetail(`WASM: ${messageOf(e, 'unknown')}`)
+            })
         } else {
           setRdkitStatus('error')
           setErrorDetail('initRDKitModule not found on window')
         }
       }
-      script.onerror = (e) => {
+      script.onerror = () => {
         setRdkitStatus('error')
         setErrorDetail('Script load failed')
       }
       document.head.appendChild(script)
     }
 
-    function renderRdkItSvg(Module: any) {
+    function renderRdkitSvg(Module: RDKitModule) {
       try {
         if (!rdkitSvgRef.current) return
         const mol = Module.get_mol(DEMO_LIGAND_SMILES)
@@ -103,9 +135,9 @@ export default function MolecularViewer() {
           setRdkitStatus('error')
           setErrorDetail('get_mol returned null')
         }
-      } catch (e: any) {
+      } catch (e) {
         setRdkitStatus('error')
-        setErrorDetail(e?.message || 'render error')
+        setErrorDetail(messageOf(e, 'render error'))
       }
     }
   }, [hydrated])

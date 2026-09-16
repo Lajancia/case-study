@@ -38,10 +38,6 @@ export default async function OGImage({
   }
 
   const hasOutcomes = study.outcomes.length > 0
-  const outcomeMetric = hasOutcomes
-    ? `${study.outcomes[0].label}: ${study.outcomes[0].before} → ${study.outcomes[0].after}`
-    : ''
-
   return new ImageResponse(
     (
       <div

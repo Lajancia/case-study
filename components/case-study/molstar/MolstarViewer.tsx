@@ -94,7 +94,6 @@ export default function MolstarViewer({ pdbId, height = 480 }: MolstarViewerProp
       pluginRef.current?.dispose()
       pluginRef.current = null
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pdbId])
 
   async function selectPreset(index: number) {
