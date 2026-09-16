@@ -46,7 +46,10 @@ export default async function LocaleLayout({
         Skip to main content
       </a>
       <SiteHeader locale={locale} />
-      <main id="main-content" className="flex flex-1 flex-col">
+      {/* Children are flex items in a column: without a definite width they
+          take their cross size from content, so one wide code block or chart
+          stretches the whole page past the viewport on mobile. */}
+      <main id="main-content" className="flex flex-1 flex-col [&>*]:w-full">
         {children}
       </main>
       <SiteFooter locale={locale} />
