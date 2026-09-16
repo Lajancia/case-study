@@ -11,7 +11,9 @@ export async function CaseStudyCTA({ locale }: { locale: Locale }) {
         {t("body")}
       </p>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-        {siteConfig.calendlyUrl ? (
+        {/* No booking link configured yet: show nothing rather than a
+            disabled "coming soon" button, which reads as unfinished. */}
+        {siteConfig.calendlyUrl && (
           <a
             href={siteConfig.calendlyUrl}
             target="_blank"
@@ -20,10 +22,6 @@ export async function CaseStudyCTA({ locale }: { locale: Locale }) {
           >
             {t("bookACall")}
           </a>
-        ) : (
-          <span className="inline-flex items-center rounded-full bg-gray-300 px-6 py-2.5 text-gray-500 font-medium cursor-not-allowed dark:bg-gray-800 dark:text-gray-500">
-            {t("bookingComingSoon")}
-          </span>
         )}
         <a
           href={mailtoUrl("Frontend performance audit inquiry")}

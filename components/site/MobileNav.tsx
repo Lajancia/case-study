@@ -11,15 +11,14 @@ interface NavLink {
 
 interface MobileNavProps {
   links: NavLink[]
-  contactHref: string
-  contactLabel: string
-  resumeUrl: string
+  /** null on the contract track, where a resume is off message. */
+  resumeUrl: string | null
   resumeLabel: string
   openLabel: string
   closeLabel: string
 }
 
-export function MobileNav({ links, contactHref, contactLabel, resumeUrl, resumeLabel, openLabel, closeLabel }: MobileNavProps) {
+export function MobileNav({ links, resumeUrl, resumeLabel, openLabel, closeLabel }: MobileNavProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -68,24 +67,19 @@ export function MobileNav({ links, contactHref, contactLabel, resumeUrl, resumeL
                 </Link>
               )
             )}
-            <a
-              href={resumeUrl}
-              download
-              onClick={() => setOpen(false)}
-              className="inline-flex items-center gap-1.5 hover:text-gray-900 transition-colors dark:hover:text-gray-100"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-              </svg>
-              {resumeLabel}
-            </a>
-            <a
-              href={contactHref}
-              onClick={() => setOpen(false)}
-              className="inline-flex items-center justify-center rounded-full bg-blue-600 px-4 py-1.5 text-white text-sm font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
-            >
-              {contactLabel}
-            </a>
+            {resumeUrl && (
+              <a
+                href={resumeUrl}
+                download
+                onClick={() => setOpen(false)}
+                className="inline-flex items-center gap-1.5 hover:text-gray-900 transition-colors dark:hover:text-gray-100"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                </svg>
+                {resumeLabel}
+              </a>
+            )}
           </nav>
         </div>
       )}
