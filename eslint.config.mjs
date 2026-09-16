@@ -12,6 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Playwright output.
+    "playwright-report/**",
+    "test-results/**",
+    // Kilocode agent worktrees: a checkout of this same repo nested inside it.
+    // Git already excludes them (.git/info/exclude); without this ESLint reports
+    // every finding twice, once from a stale copy.
+    ".kilo/**",
+    ".kilocode/**",
   ]),
 ]);
 
