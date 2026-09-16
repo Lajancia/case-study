@@ -130,7 +130,12 @@ export default function PerformanceDashboard() {
       {/* Code snippet */}
       <div className="border border-yellow-200 bg-yellow-50 rounded-lg p-4 dark:border-yellow-900 dark:bg-yellow-950/30">
         <h5 className="text-sm font-semibold text-yellow-800 mb-2 dark:text-yellow-400">Route-scoped loading in action</h5>
-        <pre className="text-xs text-yellow-900 overflow-x-auto dark:text-yellow-300"><code>{`// ApexCharts loaded ONLY on this page:
+        <pre
+          role="region"
+          aria-label="Route-scoped loading code sample"
+          tabIndex={0}
+          className="text-xs text-yellow-900 overflow-x-auto dark:text-yellow-300"
+        ><code>{`// ApexCharts loaded ONLY on this page:
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 // In the "before" branch, three.js was eagerly loaded in layout.tsx:

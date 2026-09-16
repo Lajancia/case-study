@@ -213,14 +213,24 @@ body {
   padding: 0;
   border-radius: 0;
 }
-.prose table {
-  display: block;
+/*
+  The wrapper scrolls, not the table. `display: block` on a <table> drops its
+  table semantics for assistive tech, and a scroll container has to be
+  focusable to be usable from a keyboard — which a <table> should not be.
+*/
+.prose .table-scroll {
   overflow-x: auto;
-  width: 100%;
-  border-collapse: collapse;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
   -webkit-overflow-scrolling: touch;
+}
+.prose .table-scroll:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
 }
 .prose th,
 .prose td {

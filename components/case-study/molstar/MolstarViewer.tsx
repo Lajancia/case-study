@@ -3,11 +3,31 @@ import { useEffect, useRef, useState } from 'react'
 import { createPluginUI } from 'molstar/lib/mol-plugin-ui'
 import { renderReact18 } from 'molstar/lib/mol-plugin-ui/react18'
 import { DefaultPluginUISpec } from 'molstar/lib/mol-plugin-ui/spec'
+import { ViewportCanvas } from 'molstar/lib/mol-plugin-ui/viewport/canvas'
 import { PluginConfig } from 'molstar/lib/mol-plugin/config'
 import type { PluginUIContext } from 'molstar/lib/mol-plugin-ui/context'
 import type { StateObjectRef } from 'molstar/lib/mol-state'
 import type { PluginStateObject } from 'molstar/lib/mol-plugin-state/objects'
 import { CASE_STUDY_PRESETS } from './presets'
+
+/**
+ * Mol*'s own viewport renders its attribution link with no text, which reaches
+ * a screen reader as an unnamed link, and without rel="noopener". There is no
+ * config flag for the logo — it is hardwired into the default Viewport — but
+ * the spec accepts a replacement viewport, so the link keeps the attribution it
+ * deserves and gains a name.
+ */
+const NamedLogo = () => (
+  <a
+    className="msp-logo"
+    href="https://molstar.org"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Mol* — molstar.org"
+  />
+)
+
+const AccessibleViewport = () => <ViewportCanvas logo={NamedLogo} />
 
 interface MolstarViewerProps {
   pdbId: string
@@ -48,6 +68,7 @@ export default function MolstarViewer({ pdbId, height = 480 }: MolstarViewerProp
               layout: { initial: { controlsDisplay: 'reactive' } },
               components: {
                 controls: { left: 'none', right: 'none', top: 'none', bottom: 'none' },
+                viewport: { view: AccessibleViewport },
               },
               config: [
                 [PluginConfig.VolumeStreaming.Enabled, false],

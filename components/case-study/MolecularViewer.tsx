@@ -188,7 +188,9 @@ export default function MolecularViewer() {
           style={{ minHeight: 400 }}
         >
           {rdkitStatus === 'loading' && (
-            <div className="text-gray-400 text-sm animate-pulse px-4 text-center">
+            // Fixed greys, not tokens: this panel is white in both themes, and
+            // .dark remaps the grey scale to light values meant for dark backings.
+            <div className="text-[#4b5563] text-sm animate-pulse px-4 text-center">
               <p>Loading RDKit.js (~2.5 MB WASM) from CDN...</p>
               <p className="text-xs mt-2">This library loads on-demand — zero bytes on other pages.</p>
             </div>
@@ -199,10 +201,10 @@ export default function MolecularViewer() {
             className={`items-center justify-center p-6 w-full ${rdkitStatus === 'ready' ? 'flex' : 'hidden'}`}
           />
           {rdkitStatus === 'error' && (
-            <div className="text-red-500 text-sm text-center p-4">
+            <div className="text-[#b91c1c] text-sm text-center p-4">
               <p>Failed to load RDKit.js</p>
-              {errorDetail && <p className="text-xs mt-1 text-gray-400 break-all dark:text-gray-600">{errorDetail}</p>}
-              <p className="text-xs mt-2 text-gray-400 dark:text-gray-600">
+              {errorDetail && <p className="text-xs mt-1 text-[#4b5563] break-all">{errorDetail}</p>}
+              <p className="text-xs mt-2 text-[#4b5563]">
                 CDN: {RDKIT_CDN}
               </p>
             </div>
