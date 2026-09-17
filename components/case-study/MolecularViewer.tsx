@@ -3,8 +3,11 @@
 import { useState, useEffect, useRef, useSyncExternalStore, lazy, Suspense } from 'react'
 import { DEMO_PDB, DEMO_LIGAND_SMILES } from '@/lib/molecular-demo'
 
-const RDKIT_CDN = 'https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2025.3.4-1.0.0/dist/RDKit_minimal.js'
-const RDKIT_BASE = 'https://cdn.jsdelivr.net/npm/@rdkit/rdkit@2025.3.4-1.0.0/dist'
+// Self-hosted, the way AD3 serves RDKit from its own /rdkit/ path. The files
+// are copied out of the @rdkit/rdkit package into public/rdkit/ by
+// scripts/copy-rdkit.mjs; RDKIT_BASE is where the loader finds the .wasm.
+const RDKIT_SRC = '/rdkit/RDKit_minimal.js'
+const RDKIT_BASE = '/rdkit'
 
 // route-scoped: molstar (npm) only enters the bundle when this component renders
 const MolstarViewer = lazy(() => import('./molstar/MolstarViewer'))
@@ -22,9 +25,10 @@ const useHydrated = () =>
   )
 
 /**
- * The slice of RDKit.js this demo actually touches. The CDN build ships no
- * type declarations, so this describes the surface used here rather than
- * pulling in the full @rdkit/rdkit package just for types.
+ * The slice of RDKit.js this demo actually touches. @rdkit/rdkit is a
+ * dependency for its asset files alone — importing it, even only for its type
+ * declarations, risks pulling the library into a bundle and undoing the
+ * route-scoped loading this page is about. So the surface is described here.
  */
 interface RDKitMol {
   get_svg(width: number, height: number): string
@@ -48,7 +52,7 @@ const messageOf = (error: unknown, fallback: string) =>
   error instanceof Error && error.message ? error.message : fallback
 
 /**
- * RDKit 2D chemical structure viewer — loaded from CDN on demand.
+ * RDKit 2D chemical structure viewer — self-hosted WASM, loaded on demand.
  * Molstar 3D viewer — loaded from the `molstar` npm package via
  * React.lazy(), so it code-splits into its own chunk instead of shipping
  * with every route.
@@ -63,7 +67,7 @@ export default function MolecularViewer() {
   const [errorDetail, setErrorDetail] = useState<string | null>(null)
   const rdkitSvgRef = useRef<HTMLDivElement>(null)
 
-  // ── Load RDKit.js from CDN (route-scoped) ──
+  // ── Load RDKit.js from this origin (route-scoped) ──
   useEffect(() => {
     if (!hydrated) return
 
@@ -91,11 +95,11 @@ export default function MolecularViewer() {
       return
     }
 
-    // Not loaded yet — fetch CDN script
+    // Not loaded yet — fetch the script
     if (!w._rdkitLoading) {
       w._rdkitLoading = true
       const script = document.createElement('script')
-      script.src = RDKIT_CDN
+      script.src = RDKIT_SRC
       script.async = true
       script.onload = () => {
         // initRDKitModule is a global async function that returns the Module
@@ -191,7 +195,7 @@ export default function MolecularViewer() {
             // Fixed greys, not tokens: this panel is white in both themes, and
             // .dark remaps the grey scale to light values meant for dark backings.
             <div className="text-[#4b5563] text-sm animate-pulse px-4 text-center">
-              <p>Loading RDKit.js (~2.5 MB WASM) from CDN...</p>
+              <p>Loading RDKit.js (~2.5 MB WASM, served from this origin)...</p>
               <p className="text-xs mt-2">This library loads on-demand — zero bytes on other pages.</p>
             </div>
           )}
@@ -205,7 +209,7 @@ export default function MolecularViewer() {
               <p>Failed to load RDKit.js</p>
               {errorDetail && <p className="text-xs mt-1 text-[#4b5563] break-all">{errorDetail}</p>}
               <p className="text-xs mt-2 text-[#4b5563]">
-                CDN: {RDKIT_CDN}
+                Source: {RDKIT_SRC}
               </p>
             </div>
           )}
@@ -215,7 +219,7 @@ export default function MolecularViewer() {
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 dark:text-gray-600">
         <span>PDB data: <a href={`https://files.rcsb.org/download/${DEMO_PDB}.pdb`} target="_blank" rel="noopener noreferrer" className="underline">RCSB</a></span>
         <span>&middot;</span>
-        <span>RDKit.js: v2025.3.4, loaded on-demand</span>
+        <span>RDKit.js: v2025.3.4, self-hosted, loaded on-demand</span>
         <span>&middot;</span>
         <span>Molstar: npm package, loaded via React.lazy()</span>
       </div>

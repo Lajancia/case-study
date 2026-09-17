@@ -110,11 +110,11 @@ const RdkitDepiction = dynamic(() => import('@/components/chem/RdkitDepiction'))
 
 <MolecularViewer />
 
-두 라이브러리 모두 흉내만 낸 게 아니라 실제로 번들링·코드 스플리팅되어 있습니다: RDKit.js(~2.5MB WASM)는 CDN에서 로드되고, Molstar는 `molstar` npm 패키지에서 `React.lazy()`를 통해 로드됩니다 — AD3 자체가 뷰어 컴포넌트에 쓰는 것과 같은 패턴입니다.
+두 라이브러리 모두 흉내만 낸 게 아니라 실제로 번들링·코드 스플리팅되어 있습니다: RDKit.js(~2.5MB WASM)는 이 사이트가 직접 서빙하는 `/rdkit/` 경로에서 로드되고, Molstar는 `molstar` npm 패키지에서 `React.lazy()`를 통해 로드됩니다 — AD3 자체가 뷰어 컴포넌트에 쓰는 것과 같은 패턴입니다.
 
 **왜 `next/dynamic` 대신 Molstar에 `React.lazy()`를 썼나?** `next/dynamic`은 단일 React 컴포넌트를 지연 로드하기 위한 것인데, Mol*의 프로덕션 통합 방식은 명령형입니다(`createPluginUI`가 DOM 컨테이너에 직접 마운트되지, Next가 알아서 코드 스플리팅할 수 있는 컴포넌트 트리를 통하지 않습니다). 모듈 전체를 `React.lazy(() => import('./MolstarViewer'))` + `Suspense`로 감싸면 이 컴포넌트가 렌더링될 때까지 `molstar` 청크 전체를 지연시킬 수 있습니다.
 
-**RDKit.js는 왜 번들링 대신 CDN을 썼나?** RDKit.js는 어떻게 import하든 런타임에 fetch·컴파일해야 하는 WebAssembly 바이너리입니다. CDN 스크립트 태그로 로드하는 게 가장 투명한 방식이고, DevTools에서 라우트 단위 로딩을 검증하기도 쉽습니다.
+**RDKit.js는 왜 번들링도 CDN도 아닌 자체 서빙인가?** RDKit.js는 어떻게 import하든 런타임에 fetch·컴파일해야 하는 WebAssembly 바이너리입니다. 그래서 고정 URL을 가리키는 `<script>` 태그로 싣는 게 가장 정직한 방식입니다 — 요청이 DevTools에 읽을 수 있는 이름으로 그대로 찍히므로, 라우트 단위 로딩이 주장이 아니라 검증 가능한 사실이 됩니다. 다만 그 URL은 CDN이 아니라 이 사이트 자신입니다. `/rdkit/`에서 직접 서빙하면 페이지의 크리티컬 패스에서 서드파티가 빠지고, `script-src`·`connect-src`에 허용할 출처가 하나 줄며, 어떤 빌드를 쓰는지가 URL이 아니라 `package.json`에 고정됩니다. AD3가 하는 방식이기도 합니다 — AD3도 자체 `/rdkit/` location에서 RDKit을 서빙하고, 그 nginx 블록에 보안 헤더를 반복해 둡니다. 빌드 단계에서 `@rdkit/rdkit` 패키지의 파일 두 개를 `public/`으로 복사할 뿐, 코드에서 패키지를 import하지는 않습니다. import하는 순간 RDKit이 다시 번들에 들어가 이 글이 말하는 분리가 무너지기 때문입니다.
 
 ## 결과
 
@@ -149,7 +149,7 @@ const RdkitDepiction = dynamic(() => import('@/components/chem/RdkitDepiction'))
     <tr>
       <td>RDKit.js (WASM)</td>
       <td>즉시 번들링</td>
-      <td>CDN 온디맨드</td>
+      <td>자체 서빙 온디맨드</td>
       <td>지연 로딩 (<code>&lt;script&gt;</code> 삽입)</td>
     </tr>
   </tbody>

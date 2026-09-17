@@ -25,7 +25,10 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: `npx next build && npx next start --port ${PORT}`,
+    // `npm run build`, not `npx next build`: the prebuild hook copies the
+    // self-hosted RDKit assets into public/, and the route-scoped specs fail
+    // without them.
+    command: `npm run build && npx next start --port ${PORT}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

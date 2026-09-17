@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/copy-rdkit.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/copy-rdkit.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -16,6 +18,7 @@
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.3.3",
+    "@rdkit/rdkit": "2025.3.4-1.0.0",
     "@types/mdx": "^2.0.14",
     "apexcharts": "^7.0.0",
     "molstar": "^5.11.0",

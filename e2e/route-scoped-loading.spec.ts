@@ -59,8 +59,8 @@ test.describe('route-scoped chunks', () => {
   }
 
   test('no route but the demo requests RDKit', async ({ page }) => {
-    // RDKit comes from a CDN, so unlike the bundled chunks it has a stable,
-    // readable URL and can be matched by name.
+    // RDKit is served from /rdkit/, so unlike the hashed bundle chunks it has a
+    // stable, readable URL and can be matched by name.
     for (const route of LIGHT_ROUTES) {
       const requests: string[] = []
       page.on('request', (request) => requests.push(request.url()))

@@ -15,6 +15,9 @@ const eslintConfig = defineConfig([
     // Playwright output.
     "playwright-report/**",
     "test-results/**",
+    // Vendored RDKit.js build, copied in by scripts/copy-rdkit.mjs. Minified
+    // Emscripten output — not ours to lint.
+    "public/rdkit/**",
     // Kilocode agent worktrees: a checkout of this same repo nested inside it.
     // Git already excludes them (.git/info/exclude); without this ESLint reports
     // every finding twice, once from a stale copy.

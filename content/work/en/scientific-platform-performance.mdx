@@ -110,11 +110,11 @@ The panel below demonstrates both libraries loading on-demand. Open DevTools →
 
 <MolecularViewer />
 
-Both libraries are genuinely bundled and code-split, not simulated: RDKit.js (~2.5 MB WASM) loads from CDN, and Molstar loads from the `molstar` npm package via `React.lazy()` — the same pattern AD3 itself uses for its viewer component.
+Both libraries are genuinely bundled and code-split, not simulated: RDKit.js (~2.5 MB WASM) is served from this site's own `/rdkit/` path, and Molstar loads from the `molstar` npm package via `React.lazy()` — the same pattern AD3 itself uses for its viewer component.
 
 **Why `React.lazy()` for Molstar instead of `next/dynamic`?** `next/dynamic` is built for lazy-loading a single React component; Mol*'s production integration is imperative (`createPluginUI` mounts directly into a DOM container, not through a component tree Next can code-split on its own). Splitting the whole module behind `React.lazy(() => import('./MolstarViewer'))` + `Suspense` defers the entire `molstar` chunk until this component renders.
 
-**Why CDN for RDKit.js instead of bundling?** RDKit.js is a WebAssembly binary that must be fetched and compiled at runtime regardless of how it's imported. Loading via CDN script tag is the most transparent approach and makes it easy to verify route-scoped loading in DevTools.
+**Why self-host RDKit.js instead of bundling it — or pulling it from a CDN?** RDKit.js is a WebAssembly binary that has to be fetched and compiled at runtime no matter how it's imported, so a `<script>` tag pointed at a fixed URL is the honest way to load it: the request shows up in DevTools under a readable name, which makes route-scoped loading verifiable rather than merely claimed. That URL is this origin, not a CDN. Serving it from `/rdkit/` keeps a third party off the critical path of the page, leaves the `script-src` and `connect-src` policies with one fewer origin to allow, and pins the exact build through `package.json` instead of a URL. It is also what AD3 does — it serves RDKit from its own `/rdkit/` location, with the security headers repeated on that nginx block. A build step copies the two files out of the `@rdkit/rdkit` package into `public/`; nothing imports the package, since an import would put RDKit back in a bundle and undo the split this page is about.
 
 ## Results
 
@@ -149,7 +149,7 @@ Both libraries are genuinely bundled and code-split, not simulated: RDKit.js (~2
     <tr>
       <td>RDKit.js (WASM)</td>
       <td>Eager bundling</td>
-      <td>CDN on-demand</td>
+      <td>Self-hosted, on-demand</td>
       <td>lazy-loaded (<code>&lt;script&gt;</code> injection)</td>
     </tr>
   </tbody>
