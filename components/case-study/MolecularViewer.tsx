@@ -194,10 +194,14 @@ export default function MolecularViewer() {
           {/* RDKit renders fixed-color SVG optimized for white background */}
           <div
             ref={rdkitSvgRef}
+            // Named so a test can assert on RDKit's own output. Reaching for
+            // the first <svg> on the page finds the theme toggle in the header
+            // and passes whatever RDKit did.
+            data-testid="rdkit-depiction"
             className={`items-center justify-center p-6 w-full ${rdkitStatus === 'ready' ? 'flex' : 'hidden'}`}
           />
           {rdkitStatus === 'error' && (
-            <div className="text-[#b91c1c] text-sm text-center p-4">
+            <div data-testid="rdkit-error" className="text-[#b91c1c] text-sm text-center p-4">
               <p>Failed to load RDKit.js</p>
               {errorDetail && <p className="text-xs mt-1 text-[#4b5563] break-all">{errorDetail}</p>}
               <p className="text-xs mt-2 text-[#4b5563]">

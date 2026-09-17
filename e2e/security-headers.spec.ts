@@ -110,3 +110,61 @@ test.describe('content security policy', () => {
     }
   })
 })
+
+/**
+ * A policy that blocks the site's own code is worse than no policy: it fails in
+ * the browser, not in the build. And it fails quietly — a CSP violation is not
+ * a console error, so a spec that watches the console cannot see it. Only the
+ * securitypolicyviolation event can, which is what this listens for.
+ *
+ * This exists because the RDKit route shipped broken: 'wasm-unsafe-eval' let
+ * the module compile, but Emscripten's embind builds its invokers with
+ * `new Function`, and nothing caught the difference until it was live.
+ */
+
+interface ViolationWindow extends Window {
+  __cspViolations?: string[]
+}
+
+const collectViolations = () => {
+  document.addEventListener('securitypolicyviolation', (event) => {
+    const w = window as ViolationWindow
+    w.__cspViolations ??= []
+    w.__cspViolations.push(
+      `${event.violatedDirective} blocked ${event.blockedURI} from ${event.sourceFile || 'inline'}`,
+    )
+  })
+}
+
+const violationsOn = (page: import('@playwright/test').Page) =>
+  page.evaluate(() => (window as ViolationWindow).__cspViolations ?? [])
+
+test.describe('the policy does not block the site itself', () => {
+  for (const route of ROUTES) {
+    test(`${route} renders with no policy violations`, async ({ page }) => {
+      await page.addInitScript(collectViolations)
+      await page.goto(route)
+      await page.waitForLoadState('networkidle')
+
+      expect(await violationsOn(page)).toEqual([])
+    })
+  }
+
+  test('the RDKit viewer runs under the policy', async ({ page, isMobile }) => {
+    // Mol* shares the route and needs WebGL, which headless mobile emulation
+    // does not reliably provide; the RDKit half is what matters here.
+    test.skip(!!isMobile)
+
+    await page.addInitScript(collectViolations)
+    await page.goto(WASM_ROUTE)
+
+    // Waiting for the depiction rather than for the network: the failure this
+    // guards against leaves the page idle with an error panel showing.
+    await expect(page.getByTestId('rdkit-depiction').locator('svg')).toBeVisible({
+      timeout: 30_000,
+    })
+    await expect(page.getByTestId('rdkit-error')).toHaveCount(0)
+
+    expect(await violationsOn(page)).toEqual([])
+  })
+})

@@ -15,9 +15,9 @@ const HIRE_PATH = new RegExp(`^/(?:(?:${routing.locales.join('|')})/)?hire/?$`)
 // the site as a recruiter — the exact leak the split is there to avoid.
 export const HIRE_TRACK_COOKIE = 'track'
 
-// The one route that compiles WebAssembly: the RDKit demo in the case study.
-// Nothing else on the site needs it, so the allowance stops here.
-const WASM_PATH = new RegExp(
+// The one route that runs RDKit. Nothing else on the site needs what it needs,
+// so the allowance stops here.
+const RDKIT_PATH = new RegExp(
   `^/(?:(?:${routing.locales.join('|')})/)?work/scientific-platform-performance/?$`,
 )
 
@@ -42,16 +42,22 @@ const isProduction = process.env.NODE_ENV === 'production'
  * policy, and it is paid deliberately: see "Rendering mode" in the README for
  * what it buys and what it would take to undo.
  */
-function contentSecurityPolicy(nonce: string, allowWasm: boolean) {
-  // 'wasm-unsafe-eval' buys WebAssembly.instantiate and nothing more: eval()
-  // and new Function() stay blocked on this route as on every other. Without
-  // it the browser refuses to compile the RDKit module at all — which is what
-  // the e2e console-error spec catches.
+function contentSecurityPolicy(nonce: string, allowRdkit: boolean) {
+  // RDKit needs both, and this was learned the hard way. 'wasm-unsafe-eval'
+  // lets the browser compile the module; without it nothing loads at all. But
+  // the Emscripten embind layer then builds its method invokers with
+  // `new Function(...)`, so 'unsafe-eval' is required too.
+  //
+  // That is a real concession — it lets already-trusted code turn strings into
+  // code — and it is why this is scoped to the single route that renders the
+  // viewer. 'strict-dynamic' still governs what may run in the first place, so
+  // an injected script has no way in; what is relaxed here is what the code we
+  // shipped may do, not who may ship code.
   const scriptExtras = [
-    allowWasm ? " 'wasm-unsafe-eval'" : '',
+    allowRdkit ? " 'wasm-unsafe-eval' 'unsafe-eval'" : '',
     // React's, in development only: it reconstructs server stacks in the
-    // browser. Production needs no eval.
-    isProduction ? '' : " 'unsafe-eval'",
+    // browser. Production needs no eval of its own.
+    isProduction || allowRdkit ? '' : " 'unsafe-eval'",
   ].join('')
 
   return [
@@ -79,7 +85,7 @@ function contentSecurityPolicy(nonce: string, allowWasm: boolean) {
 
 export function proxy(request: NextRequest) {
   const nonce = crypto.randomUUID().replaceAll('-', '')
-  const csp = contentSecurityPolicy(nonce, WASM_PATH.test(request.nextUrl.pathname))
+  const csp = contentSecurityPolicy(nonce, RDKIT_PATH.test(request.nextUrl.pathname))
 
   // next-intl copies the incoming headers onto the response it forwards
   // downstream, so the policy has to be on the request before it runs: that

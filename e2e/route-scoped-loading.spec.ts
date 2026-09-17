@@ -101,9 +101,14 @@ test.describe('the live demo actually renders', () => {
   test('Molstar draws a structure and RDKit draws a molecule', async ({ page }) => {
     await page.goto(DEMO_ROUTE)
 
-    await expect(page.getByText('Loading RDKit.js')).toBeHidden({ timeout: 30_000 })
-    // RDKit writes its depiction into the container as inline SVG.
-    await expect(page.locator('svg').first()).toBeVisible()
+    // Assert on RDKit's own output, by name. An earlier version waited for the
+    // loading text to disappear and then checked the first <svg> on the page:
+    // the text also disappears when RDKit fails, and the first <svg> is the
+    // theme toggle in the header, so the test passed while the viewer was
+    // showing an error in production.
+    const depiction = page.getByTestId('rdkit-depiction')
+    await expect(depiction.locator('svg')).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByTestId('rdkit-error')).toHaveCount(0)
 
     // Mol* renders into a canvas and exposes its preset switcher once ready.
     await expect(page.locator('canvas').first()).toBeVisible({ timeout: 30_000 })
