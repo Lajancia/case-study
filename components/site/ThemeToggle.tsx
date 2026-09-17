@@ -11,7 +11,10 @@ function applyTheme(dark: boolean) {
   const root = document.documentElement
   root.classList.toggle('dark', dark)
   root.classList.toggle('light', !dark)
-  document.cookie = `theme=${dark ? 'dark' : 'light'}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`
+  // Secure only over HTTPS: a Secure cookie set on plain http:// is discarded,
+  // which would silently break the theme on a local dev server.
+  const secure = location.protocol === 'https:' ? '; secure' : ''
+  document.cookie = `theme=${dark ? 'dark' : 'light'}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax${secure}`
 }
 
 // The theme lives on <html> and in a cookie, both outside React, so the button

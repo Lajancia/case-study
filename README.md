@@ -50,9 +50,17 @@ browsers installed once via `npx playwright install chromium`.
 
 1. Build: `docker compose build` — `NEXT_PUBLIC_SITE_URL` is a **build arg** (see `docker-compose.yml`), because Next inlines `NEXT_PUBLIC_*` at build time. Setting it only at runtime leaves `localhost:3000` baked into og:image, canonical, and sitemap URLs.
 2. Run: `docker compose up -d`
-3. Configure nginx with the provided `nginx/case-studies.conf` (serves `soominlab.com`, redirects `www` → apex)
+3. Configure nginx with the provided `nginx/case-studies.conf` (serves `soominlab.com`, redirects `www` → apex). This file is copied onto the host by hand, so it drifts: whenever it changes here, update the server's copy and `nginx -t && nginx -s reload`. It deliberately sets no security headers — those ship with the image (see below), so a missed copy cannot take them down with it.
 4. Expand Let's Encrypt certificate to cover `soominlab.com` and `www.soominlab.com`
 5. Create DNS A record pointing to the VPS
+
+## Security headers
+
+`next.config.ts` sets the headers that never change — `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` — and turns off `X-Powered-By`. `proxy.ts` builds a per-request Content-Security-Policy around a fresh nonce, which Next stamps onto the scripts it emits; injected script arrives without one and never runs. `'strict-dynamic'` extends that trust to the chunks the runtime appends itself.
+
+Locale negotiation already makes every route dynamic, so the nonce costs no static rendering. Two directives are deliberate concessions: `style-src 'unsafe-inline'`, because a nonce cannot cover the style *attributes* React writes for every `style={{ ... }}` prop, and `'wasm-unsafe-eval'` on the RDKit case-study route alone, because the browser will not compile WebAssembly without it. Neither `eval()` nor `new Function()` is allowed anywhere.
+
+`e2e/security-headers.spec.ts` asserts all of this against real responses. It exists because the headers previously lived only in the nginx config and had silently stopped reaching production.
 
 ## Content
 

@@ -1,5 +1,5 @@
 import createMiddleware from 'next-intl/middleware'
-import type { NextRequest } from 'next/server'
+import { NextRequest } from 'next/server'
 import { routing } from './i18n/routing'
 
 const handleI18nRouting = createMiddleware(routing)
@@ -15,13 +15,91 @@ const HIRE_PATH = new RegExp(`^/(?:(?:${routing.locales.join('|')})/)?hire/?$`)
 // the site as a recruiter — the exact leak the split is there to avoid.
 export const HIRE_TRACK_COOKIE = 'track'
 
+// The one route that compiles WebAssembly: the RDKit demo in the case study.
+// Nothing else on the site needs it, so the allowance stops here.
+const WASM_PATH = new RegExp(
+  `^/(?:(?:${routing.locales.join('|')})/)?work/scientific-platform-performance/?$`,
+)
+
+const isProduction = process.env.NODE_ENV === 'production'
+
+/**
+ * A per-request Content-Security-Policy.
+ *
+ * Next emits inline <script> tags to hand the RSC payload to the client, so a
+ * source list alone leaves only the two useless choices: allow every inline
+ * script, or break the page. A nonce distinguishes them — Next reads this
+ * header while rendering and stamps the matching value onto its own scripts,
+ * so anything injected into the markup arrives without one and never runs.
+ *
+ * 'strict-dynamic' extends that trust to the chunks the Next runtime appends
+ * itself, which exist too late to carry a nonce of their own. It also makes
+ * browsers ignore the source list for scripts, which is the stronger rule:
+ * trust follows the chain rather than the hostname.
+ *
+ * The nonce has to be unguessable and fresh per response, which normally costs
+ * static rendering. Locale negotiation already makes every route dynamic here,
+ * so that bill is paid.
+ */
+function contentSecurityPolicy(nonce: string, allowWasm: boolean) {
+  // 'wasm-unsafe-eval' buys WebAssembly.instantiate and nothing more: eval()
+  // and new Function() stay blocked on this route as on every other. Without
+  // it the browser refuses to compile the RDKit module at all — which is what
+  // the e2e console-error spec catches.
+  const scriptExtras = [
+    allowWasm ? " 'wasm-unsafe-eval'" : '',
+    // React's, in development only: it reconstructs server stacks in the
+    // browser. Production needs no eval.
+    isProduction ? '' : " 'unsafe-eval'",
+  ].join('')
+
+  return [
+    `default-src 'self'`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${scriptExtras}`,
+    // A nonce cannot cover style *attributes*, and React writes those for every
+    // style={{ ... }} prop. Style injection is far weaker than script
+    // injection, so this is the usual place to stop.
+    `style-src 'self' 'unsafe-inline'`,
+    `img-src 'self' data: blob:`,
+    // next/font downloads the Geist families at build time and serves them from
+    // /_next/static, so no font host is needed.
+    `font-src 'self'`,
+    // Mol* fetches the demo structure straight from RCSB.
+    `connect-src 'self' https://files.rcsb.org`,
+    `object-src 'none'`,
+    `base-uri 'self'`,
+    `form-action 'self'`,
+    // The modern replacement for X-Frame-Options, which stays in next.config.ts
+    // only for browsers that never implemented this.
+    `frame-ancestors 'none'`,
+    `upgrade-insecure-requests`,
+  ].join('; ')
+}
+
 export function proxy(request: NextRequest) {
-  const response = handleI18nRouting(request)
+  const nonce = crypto.randomUUID().replaceAll('-', '')
+  const csp = contentSecurityPolicy(nonce, WASM_PATH.test(request.nextUrl.pathname))
+
+  // next-intl copies the incoming headers onto the response it forwards
+  // downstream, so the policy has to be on the request before it runs: that
+  // forwarded copy is what Next reads to find the nonce at render time.
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('content-security-policy', csp)
+  requestHeaders.set('x-nonce', nonce)
+
+  const response = handleI18nRouting(
+    new NextRequest(request, { headers: requestHeaders }),
+  )
+  response.headers.set('Content-Security-Policy', csp)
 
   if (HIRE_PATH.test(request.nextUrl.pathname)) {
     response.cookies.set(HIRE_TRACK_COOKIE, 'hire', {
       path: '/',
       sameSite: 'lax',
+      // Only the server reads this, in SiteHeader, so script has no business
+      // seeing it.
+      httpOnly: true,
+      secure: isProduction,
     })
   }
 
