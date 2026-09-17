@@ -38,7 +38,7 @@ npm run dev
 | `npm run build` | Production build |
 | `npm run start` | Start production server |
 | `npm run lint` | ESLint check |
-| `npm run typecheck` | TypeScript check |
+| `npm run typecheck` | TypeScript check (runs `next typegen` first, so it works on a fresh clone without a build) |
 | `npm test` | Unit tests (Vitest) |
 | `npm run test:watch` | Unit tests in watch mode |
 | `npm run test:e2e` | End-to-end tests (Playwright + axe) |
