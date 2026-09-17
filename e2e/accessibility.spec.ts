@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 import { KNOWN_CONTRAST_FAILURES } from './contrast-baseline'
+import { KNOWN_NON_CONTRAST_EXCEPTIONS } from './known-non-contrast-exceptions'
 
 /**
  * The site sells frontend competence to people who will judge it by the site
@@ -8,8 +9,10 @@ import { KNOWN_CONTRAST_FAILURES } from './contrast-baseline'
  * engineering quality costs more here than it would anywhere else.
  *
  * Two gates:
- *   1. Any violation that is not colour-contrast fails outright. There are
- *      none today, so this holds the line at zero.
+ *   1. Any violation that is not colour-contrast fails, unless the specific
+ *      node matches an entry in known-non-contrast-exceptions.ts. A rule id
+ *      alone is not enough to earn a pass there — the exception is scoped to
+ *      the exact element it was written for.
  *   2. Colour-contrast failures are allowed only for the exact foreground /
  *      background pairs recorded in contrast-baseline.ts. A new one fails.
  *
@@ -47,9 +50,18 @@ async function audit(page: Page, route: string) {
 
   const { violations } = await new AxeBuilder({ page }).withTags(TAGS).analyze()
 
-  const other = violations
-    .filter((v) => v.id !== 'color-contrast')
-    .map((v) => `${v.id} (${v.nodes.length}): ${v.help}`)
+  const other: string[] = []
+  for (const violation of violations.filter((v) => v.id !== 'color-contrast')) {
+    const unexcepted = violation.nodes.filter(
+      (node) =>
+        !KNOWN_NON_CONTRAST_EXCEPTIONS.some(
+          (exception) => exception.ruleId === violation.id && exception.matches(node),
+        ),
+    )
+    if (unexcepted.length > 0) {
+      other.push(`${violation.id} (${unexcepted.length}): ${violation.help}`)
+    }
+  }
 
   const contrast: ContrastFailure[] = []
   for (const violation of violations.filter((v) => v.id === 'color-contrast')) {
