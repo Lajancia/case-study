@@ -13,7 +13,7 @@ export async function ContactFab({ locale }: { locale: Locale }) {
 			href={`mailto:${siteConfig.email}`}
 			aria-label={t('contact')}
 			title={t('contact')}
-			className="fixed bottom-6 right-6 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
+			className="fixed bottom-6 right-6 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 hover:shadow-xl active:scale-90 hover:scale-105 transition dark:bg-blue-500 dark:hover:bg-blue-600"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

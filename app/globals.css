@@ -304,3 +304,28 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
 }
+
+/* Motion: every animation/transition added below is subject to this. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* translate-only: animating opacity here would put text under WCAG contrast
+   threshold for part of the transition (caught by e2e/accessibility.spec.ts). */
+@keyframes slide-up {
+  from {
+    translate: 0 12px;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out both;
+}
