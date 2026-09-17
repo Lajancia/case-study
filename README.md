@@ -58,9 +58,23 @@ browsers installed once via `npx playwright install chromium`.
 
 `next.config.ts` sets the headers that never change — `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` — and turns off `X-Powered-By`. `proxy.ts` builds a per-request Content-Security-Policy around a fresh nonce, which Next stamps onto the scripts it emits; injected script arrives without one and never runs. `'strict-dynamic'` extends that trust to the chunks the runtime appends itself.
 
-Locale negotiation already makes every route dynamic, so the nonce costs no static rendering. Two directives are deliberate concessions: `style-src 'unsafe-inline'`, because a nonce cannot cover the style *attributes* React writes for every `style={{ ... }}` prop, and `'wasm-unsafe-eval'` on the RDKit case-study route alone, because the browser will not compile WebAssembly without it. Neither `eval()` nor `new Function()` is allowed anywhere.
+Two directives are deliberate concessions: `style-src 'unsafe-inline'`, because a nonce cannot cover the style *attributes* React writes for every `style={{ ... }}` prop, and `'wasm-unsafe-eval'` on the RDKit case-study route alone, because the browser will not compile WebAssembly without it. Neither `eval()` nor `new Function()` is allowed anywhere.
 
 `e2e/security-headers.spec.ts` asserts all of this against real responses. It exists because the headers previously lived only in the nginx config and had silently stopped reaching production.
+
+## Rendering mode
+
+Every route renders on demand. That is a consequence of the CSP: the nonce must be fresh per response, so the document can be neither prerendered nor held in a shared cache. The root layout reads it from `headers()` to hand to next-themes, which makes the dynamic dependency explicit rather than incidental.
+
+What it costs is smaller than it sounds. Measured against production, the server spends ~30ms rendering a page, and the document is 12.7 KB of a 250 KB page — the other 95% is hashed assets under `_next/static`, served `immutable` and cacheable anywhere regardless of rendering mode. There is no CDN in front of the site today, so prerendering would not save a request either way. Lighthouse scores 100 on desktop and 95 on mobile as it stands.
+
+`generateStaticParams()` is still declared in `app/[locale]/layout.tsx` and `app/[locale]/work/[slug]/page.tsx`. It does nothing today and is kept deliberately, because going back is a short walk rather than a rewrite: drop the nonce from the CSP, move the hire-track cookie read out of `SiteHeader`, and add next-intl's `setRequestLocale()`. Worth revisiting if the site ever sits behind a CDN, or to adopt Cache Components — Partial Prerendering and nonce-based CSP are mutually exclusive.
+
+## Theming
+
+`next-themes` with `attribute="class"`, matching the `dark` variant `globals.css` declares. The choice lives in localStorage and is applied by an inline script before first paint, which is why the root layout passes it the request's CSP nonce.
+
+This replaced a `theme` cookie that the root layout read to render the class server-side. That version ignored the operating system: with no cookie it emitted no class, and the stylesheet has no `prefers-color-scheme` rule, so a visitor whose OS was dark got a light page while the toggle drew itself as though the page were dark. `e2e/theme.spec.ts` covers the behaviour that replaced it.
 
 ## Content
 

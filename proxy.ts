@@ -37,9 +37,10 @@ const isProduction = process.env.NODE_ENV === 'production'
  * browsers ignore the source list for scripts, which is the stronger rule:
  * trust follows the chain rather than the hostname.
  *
- * The nonce has to be unguessable and fresh per response, which normally costs
- * static rendering. Locale negotiation already makes every route dynamic here,
- * so that bill is paid.
+ * The nonce has to be unguessable and fresh per response, so the document
+ * cannot be prerendered or shared by a cache. That is the real price of this
+ * policy, and it is paid deliberately: see "Rendering mode" in the README for
+ * what it buys and what it would take to undo.
  */
 function contentSecurityPolicy(nonce: string, allowWasm: boolean) {
   // 'wasm-unsafe-eval' buys WebAssembly.instantiate and nothing more: eval()

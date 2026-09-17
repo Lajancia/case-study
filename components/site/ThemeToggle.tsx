@@ -1,75 +1,22 @@
 'use client'
 
-import { useEffect, useSyncExternalStore } from 'react'
+import { useTheme } from 'next-themes'
 import { useTranslations } from 'next-intl'
-
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 365
-
-// The root layout reads this cookie and renders the class server-side, so the
-// theme is right on the first paint of every page, 404s included.
-function applyTheme(dark: boolean) {
-  const root = document.documentElement
-  root.classList.toggle('dark', dark)
-  root.classList.toggle('light', !dark)
-  // Secure only over HTTPS: a Secure cookie set on plain http:// is discarded,
-  // which would silently break the theme on a local dev server.
-  const secure = location.protocol === 'https:' ? '; secure' : ''
-  document.cookie = `theme=${dark ? 'dark' : 'light'}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax${secure}`
-}
-
-// The theme lives on <html> and in a cookie, both outside React, so the button
-// subscribes to them rather than keeping its own copy. Writing the class is
-// enough to update the button: the observer below sees the change.
-function subscribeToTheme(onStoreChange: () => void) {
-  const observer = new MutationObserver(onStoreChange)
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class'],
-  })
-  // With no explicit choice the OS preference decides, so a change there has to
-  // reach the button too.
-  const media = window.matchMedia('(prefers-color-scheme: dark)')
-  media.addEventListener('change', onStoreChange)
-  return () => {
-    observer.disconnect()
-    media.removeEventListener('change', onStoreChange)
-  }
-}
-
-function isDarkNow() {
-  const root = document.documentElement
-  if (root.classList.contains('dark')) return true
-  if (root.classList.contains('light')) return false
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-}
-
-const isDarkOnServer = () => false
+import { useHydrated } from '@/lib/use-hydrated'
 
 export function ThemeToggle() {
   const t = useTranslations('theme')
-  const isDark = useSyncExternalStore(subscribeToTheme, isDarkNow, isDarkOnServer)
+  const { resolvedTheme, setTheme } = useTheme()
 
-  // Visitors from before the cookie switch still have their choice in
-  // localStorage. Move it over once, then let the cookie drive. This only
-  // writes to the outside world; the subscription above reports the result.
-  useEffect(() => {
-    let stored: string | null = null
-    try {
-      stored = localStorage.getItem('theme')
-      if (stored) localStorage.removeItem('theme')
-    } catch {}
-    if (!stored) return
-
-    const root = document.documentElement
-    const alreadyChosen =
-      root.classList.contains('dark') || root.classList.contains('light')
-    if (alreadyChosen) return
-
-    applyTheme(stored === 'dark')
-  }, [])
+  // next-themes reads localStorage during its first client render, so its
+  // answer can differ from the server's before hydration finishes. Waiting for
+  // hydration keeps the two renders identical and lets the real value arrive
+  // afterwards — the button carries an accessible name throughout either way.
+  const hydrated = useHydrated()
+  const isDark = hydrated && resolvedTheme === 'dark'
 
   function toggle() {
-    applyTheme(!isDark)
+    setTheme(isDark ? 'light' : 'dark')
   }
 
   return (

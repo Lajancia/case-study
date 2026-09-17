@@ -1,5 +1,6 @@
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,16 +18,30 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // The theme lives in a cookie so the server can put the class on <html>
-  // directly. A script could not do this: not-found and error boundaries
-  // render on the client, where a <script> element is never executed.
-  const theme = (await cookies()).get("theme")?.value;
-  const themeClass = theme === "dark" ? " dark" : theme === "light" ? " light" : "";
+  // next-themes settles the theme from localStorage in an inline script that
+  // runs before first paint. Under this site's CSP that script only executes if
+  // it carries the request's nonce, which proxy.ts puts on the request as
+  // x-nonce. Without it the page would paint light and then correct itself.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}${themeClass}`} suppressHydrationWarning>
+    // suppressHydrationWarning: the inline script adds the theme class to this
+    // element before React hydrates, so the server's markup is expected to
+    // differ here and only here.
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
-        {children}
+        {/* attribute="class" to match the `dark` variant globals.css declares.
+            The stylesheet has no .light rule — light is the :root default — so
+            the class next-themes adds for it is simply inert. */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          nonce={nonce}
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
