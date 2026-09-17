@@ -29,7 +29,7 @@
     "portfolio": "Interactive portfolio"
   },
   "home": {
-    "heroSubtitle": "I specialize in frontend development — building the fast, polished screens your users see — and handle the deployment pipeline too.",
+    "heroSubtitle": "I specialize in frontend development — building screens that handle large datasets while keeping bundle size and rendering performance in check — and I handle the deployment pipeline too.",
     "viewCaseStudy": "View case study",
     "bookACall": "Book a call",
     "emailSoomin": "Email Soomin",
