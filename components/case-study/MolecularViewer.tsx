@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef, useSyncExternalStore, lazy, Suspense } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { DEMO_PDB, DEMO_LIGAND_SMILES } from '@/lib/molecular-demo'
+import { useHydrated } from '@/lib/use-hydrated'
 
 // Self-hosted, the way AD3 serves RDKit from its own /rdkit/ path. The files
 // are copied out of the @rdkit/rdkit package into public/rdkit/ by
@@ -12,17 +13,8 @@ const RDKIT_BASE = '/rdkit'
 // route-scoped: molstar (npm) only enters the bundle when this component renders
 const MolstarViewer = lazy(() => import('./molstar/MolstarViewer'))
 
-// Whether hydration has happened. The viewers touch WebGL and the DOM, so
-// nothing here may render on the server. This is the sanctioned way to ask:
-// the server snapshot is false, the client one is true, and no effect has to
-// push the answer into state.
-const neverChanges = () => () => {}
-const useHydrated = () =>
-  useSyncExternalStore(
-    neverChanges,
-    () => true,
-    () => false,
-  )
+// The viewers touch WebGL and the DOM, so nothing here may render on the
+// server — useHydrated is how this component waits for the client.
 
 /**
  * The slice of RDKit.js this demo actually touches. @rdkit/rdkit is a

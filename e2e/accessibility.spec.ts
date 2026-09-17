@@ -13,9 +13,10 @@ import { KNOWN_CONTRAST_FAILURES } from './contrast-baseline'
  *   2. Colour-contrast failures are allowed only for the exact foreground /
  *      background pairs recorded in contrast-baseline.ts. A new one fails.
  *
- * Both themes are checked. Dark mode is driven by a `theme` cookie that the
- * root layout reads to render the class server-side — not by
- * prefers-color-scheme — so emulateMedia() would silently test light twice.
+ * Both themes are checked. next-themes resolves the default `system` theme
+ * against prefers-color-scheme in an inline script before first paint, so
+ * emulating the media query is what actually drives dark here — and it covers
+ * the path most visitors arrive on, having never touched the toggle.
  */
 
 const ROUTES = ['/en', '/en/work', '/en/about', '/en/hire', '/ko/work']
@@ -82,8 +83,8 @@ for (const theme of ['light', 'dark'] as const) {
   test.describe(`${theme} theme`, () => {
     test.use({ storageState: { cookies: [], origins: [] } })
 
-    test.beforeEach(async ({ context, baseURL }) => {
-      await context.addCookies([{ name: 'theme', value: theme, url: baseURL! }])
+    test.beforeEach(async ({ page }) => {
+      await page.emulateMedia({ colorScheme: theme })
     })
 
     for (const route of [...ROUTES, CASE_STUDY]) {
