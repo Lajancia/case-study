@@ -214,21 +214,31 @@ body {
   border-radius: 0;
 }
 /*
-  The wrapper scrolls, not the table. `display: block` on a <table> drops its
-  table semantics for assistive tech, and a scroll container has to be
-  focusable to be usable from a keyboard — which a <table> should not be.
+  A raw <table> written directly in an .mdx file is never routed through the
+  MDX `components` map — verified by compiling one: MDX/CommonMark treats a
+  block-level tag like `table` as an opaque HTML block, so it reaches the page
+  unchanged regardless of what `components.table` says. Wrapping it in a
+  scroll container would need a remark/rehype AST pass instead, so the table
+  scrolls itself, on `.prose table` directly.
+
+  `display: block` is commonly assumed to strip a <table>'s implicit ARIA
+  table role — that assumption is why an earlier version of this file wrapped
+  the table in a div rather than styling it directly. Measured instead of
+  assumed: with this rule applied, both Chromium and WebKit still compute
+  `role: table` / `role: rowgroup` / `role: columnheader` for it (checked via
+  Playwright's ariaSnapshotJSON). Not checked: Firefox, or a real screen
+  reader — if either turns out to disagree, that is the case to fix for.
+
+  What this genuinely gives up, and is accepted here: the table is not
+  reliably reachable by Tab, so a keyboard-only user has no guaranteed way to
+  trigger the horizontal scroll (mouse drag and touch swipe both work).
+  Restoring that means going back to a focusable wrapper, which means the
+  AST pass above.
 */
-.prose .table-scroll {
-  overflow-x: auto;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  -webkit-overflow-scrolling: touch;
-}
-.prose .table-scroll:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
 .prose table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   width: 100%;
   border-collapse: collapse;
 }
