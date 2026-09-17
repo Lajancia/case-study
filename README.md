@@ -58,7 +58,11 @@ browsers installed once via `npx playwright install chromium`.
 
 `next.config.ts` sets the headers that never change — `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` — and turns off `X-Powered-By`. `proxy.ts` builds a per-request Content-Security-Policy around a fresh nonce, which Next stamps onto the scripts it emits; injected script arrives without one and never runs. `'strict-dynamic'` extends that trust to the chunks the runtime appends itself.
 
-Two directives are deliberate concessions: `style-src 'unsafe-inline'`, because a nonce cannot cover the style *attributes* React writes for every `style={{ ... }}` prop, and `'wasm-unsafe-eval'` on the RDKit case-study route alone, because the browser will not compile WebAssembly without it. Neither `eval()` nor `new Function()` is allowed anywhere.
+Two directives are deliberate concessions. `style-src 'unsafe-inline'`, because a nonce cannot cover the style *attributes* React writes for every `style={{ ... }}` prop. And `'wasm-unsafe-eval' 'unsafe-eval'` on the RDKit case-study route alone: the first lets the browser compile the module, and the second is needed because Emscripten's embind layer builds its method invokers with `new Function`. Everywhere else, turning a string into code is blocked.
+
+`'unsafe-eval'` is a real concession, so it is worth being precise about what it does and does not open. It relaxes what already-trusted code may do, not who may ship code — `'strict-dynamic'` still decides that, and an injected script has no way to run in the first place. It is scoped to the one route that renders the viewer.
+
+That route shipped broken once, which is worth recording: `'wasm-unsafe-eval'` alone let the module compile, so the page looked right in tests while the viewer showed an error in production. Two things hid it. The spec waited for the loading text to disappear — which also happens on failure — and then asserted on the first `<svg>` on the page, which is the theme toggle in the header. And a CSP violation is not a console error, so the spec watching the console could not have seen it either. Both are fixed: the viewer's output is now addressed by `data-testid`, and `e2e/security-headers.spec.ts` listens for `securitypolicyviolation` on every route.
 
 `e2e/security-headers.spec.ts` asserts all of this against real responses. It exists because the headers previously lived only in the nginx config and had silently stopped reaching production.
 

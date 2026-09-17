@@ -27,6 +27,11 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   output: 'standalone',
+  // Forward browser warnings and errors from `next dev` to the terminal, where
+  // an agent can actually read them. Set explicitly rather than left to the
+  // default: client-side failures that never reach the terminal are the ones
+  // that ship, and this repo has shipped one.
+  logging: { browserToTerminal: 'warn' },
   // Announces the framework to anyone scanning for a version to target.
   poweredByHeader: false,
   async headers() {
