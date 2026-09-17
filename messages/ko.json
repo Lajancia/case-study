@@ -1,14 +1,14 @@
 {
 	"site": {
-		"titleSuffix": "프론트엔드 케이스 스터디",
+		"titleSuffix": "프론트엔드 프로젝트",
 		"tagline": "React/Next.js 프론트엔드 엔지니어 · DevOps"
 	},
 	"nav": {
-		"about": "소개",
-		"work": "작업물",
+		"about": "About",
+		"work": "프로젝트",
 		"hire": "함께 일하기",
 		"technicalWriting": "기술 블로그",
-		"resume": "이력서",
+		"resume": "Resume",
 		"contact": "Contact",
 		"openMenu": "메뉴 열기",
 		"closeMenu": "메뉴 닫기"
@@ -22,21 +22,21 @@
 	},
 	"footer": {
 		"rights": "All right reserved.",
-		"email": "이메일",
+		"email": "Email",
 		"linkedin": "LinkedIn",
 		"github": "GitHub",
 		"medium": "Medium",
-		"portfolio": "인터랙티브 포트폴리오"
+		"portfolio": "Interactive portfolio"
 	},
 	"home": {
-		"heroSubtitle": "제품 개발, 테스트 자동화, CI/CD, 성능 최적화 — 데이터 집약적인 프로덕트를 다룹니다.",
+		"heroSubtitle": "백엔드 API 연동부터 CI/CD·테스트 자동화·보안 점검까지, 데이터 집약적인 제품을 실제 운영 환경에 내보내는 전 과정에 참여해 왔습니다.",
 		"viewCaseStudy": "작업물 보기",
 		"bookACall": "미팅 예약",
 		"emailSoomin": "이메일 보내기",
 		"resultsAtAGlance": "한눈에 보는 성과",
 		"selectedWork": "대표 작업물",
-		"readFullCaseStudy": "전체 케이스 스터디 읽기 →",
-		"seeAllCaseStudies": "모든 케이스 스터디 보기",
+		"readFullCaseStudy": "전체 프로젝트 읽기 →",
+		"seeAllCaseStudies": "모든 프로젝트 보기",
 		"howWeWorkTitle": "핵심 역량",
 		"howWeWorkSubtitle": "제가 집중해온 세 가지 영역입니다.",
 		"frontendTitle": "프론트엔드",
@@ -53,7 +53,7 @@
 	"work": {
 		"title": "대표 작업물",
 		"comingSoon": "준비 중",
-		"readCaseStudy": "케이스 스터디 읽기 →",
+		"readCaseStudy": "프로젝트 읽기 →",
 		"draft": "초안",
 		"filterAria": "역량으로 필터",
 		"resultCount": "{count}건",
@@ -116,7 +116,7 @@
 		"ctaTitle": "프로젝트 문의",
 		"ctaBody": "제품 개요와 현재 해결하고자 하는 기술적 과제를 간략히 보내주세요. 검토 후 진행 범위와 적합 여부를 회신드리겠습니다.",
 		"ctaButton": "문의하기",
-		"workLink": "전체 케이스 스터디 보기 →"
+		"workLink": "전체 프로젝트 보기 →"
 	},
 	"caseStudyHero": {
 		"role": "역할",
