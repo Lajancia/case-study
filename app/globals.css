@@ -41,6 +41,10 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Tailwind's default is 150ms; every bare `transition`/`transition-colors`
+     utility site-wide reads this token. */
+  --default-transition-duration: 200ms;
 }
 
 :root {
