@@ -5,7 +5,7 @@
   },
   "nav": {
     "about": "About",
-    "work": "Work",
+    "work": "Projects",
     "hire": "Work with me",
     "technicalWriting": "Technical Writing",
     "resume": "Resume",
@@ -29,12 +29,12 @@
     "portfolio": "Interactive portfolio"
   },
   "home": {
-    "heroSubtitle": "Product development, test automation, CI/CD, and performance — for data-intensive products.",
+    "heroSubtitle": "I work on frontend experiences for data-heavy products, with a focus on rendering performance, bundle optimization, and deployment pipelines.",
     "viewCaseStudy": "View case study",
     "bookACall": "Book a call",
     "emailSoomin": "Email Soomin",
     "resultsAtAGlance": "Results at a glance",
-    "selectedWork": "Selected work",
+    "selectedWork": "Selected projects",
     "readFullCaseStudy": "Read full case study →",
     "seeAllCaseStudies": "See all case studies",
     "howWeWorkTitle": "Core strengths",
@@ -51,15 +51,15 @@
     "letsWorkSubtitle": "Ready to work with a new team."
   },
   "work": {
-    "title": "Selected work",
+    "title": "Selected projects",
     "comingSoon": "Coming soon",
     "readCaseStudy": "Read case study →",
     "draft": "Draft",
     "filterAria": "Filter by capability",
     "resultCount": "{count, plural, =1 {# case study} other {# case studies}}",
-    "clearFilter": "Show all work",
+    "clearFilter": "Show all projects",
     "capabilities": {
-      "all": "All work",
+      "all": "All projects",
       "performance": "Performance",
       "visualization": "3D & data visualization",
       "delivery": "CI/CD & deployment",
@@ -75,7 +75,7 @@
     }
   },
   "hire": {
-    "seeAllWork": "See all {capability} work ({count})",
+    "seeAllWork": "See all {capability} projects ({count})",
     "processTitle": "How a project runs",
     "step1Title": "Inquiry review",
     "step1Timing": "1-2 business days",
@@ -135,6 +135,9 @@
     "intro": "I build React/Next.js products end to end — from backend API integration through CI/CD, test automation, and security review. Most of my recent work has been on data-intensive platforms in biotech: 3D molecular visualization, scientific charting, and the bundle-size and delivery-pipeline discipline that keeps those products fast to load and safe to ship. I also use Claude Code and Codex to automate parts of testing, review, and refactoring in day-to-day development.",
     "experience": "Experience",
     "skills": "Skills",
+    "creativeLabel": "Interactive builds",
+    "creativeCtaPrefix": "See interactive WebGL and React Three Fiber work at ",
+    "creativeCtaSuffix": ".",
     "education": "Education",
     "leftNote": "Left when the company ceased operations.",
     "letsWorkTitle": "Let's work together",
@@ -145,6 +148,6 @@
     "title": "Page not found",
     "description": "The page you're looking for doesn't exist or has moved.",
     "backHome": "Back to home",
-    "viewWork": "View work"
+    "viewWork": "View projects"
   }
 }

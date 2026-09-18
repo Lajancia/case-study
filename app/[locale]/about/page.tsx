@@ -97,6 +97,26 @@ export default async function AboutPage({
 			</section>
 
 			<section className="mb-16">
+				<div className="rounded-lg border border-gray-200 p-5 dark:border-gray-800">
+					<h2 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 dark:text-gray-500">
+						{t('creativeLabel')}
+					</h2>
+					<p className="text-sm text-gray-700 dark:text-gray-400">
+						{t('creativeCtaPrefix')}
+						<a
+							href="https://creative.soominlab.com"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300"
+						>
+							creative.soominlab.com
+						</a>
+						{t('creativeCtaSuffix')}
+					</p>
+				</div>
+			</section>
+
+			<section className="mb-16">
 				<h2 className="text-xl font-bold mb-6">{t('education')}</h2>
 				<div className="border-l-2 border-gray-200 pl-5 dark:border-gray-800">
 					<h3 className="font-semibold text-gray-900 dark:text-gray-100">
@@ -120,7 +140,7 @@ export default async function AboutPage({
 				<div className="flex justify-center gap-4">
 					<a
 						href={mailtoUrl('Hello from your about page')}
-						className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600"
+						className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-500 dark:hover:bg-blue-600"
 					>
 						{t('emailSoomin')}
 					</a>

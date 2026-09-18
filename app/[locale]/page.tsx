@@ -18,16 +18,16 @@ export default async function HomePage({
 		<div className="mx-auto max-w-4xl px-6">
 			{/* Hero */}
 			<section className="py-20 sm:py-28">
-				<h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight mb-4 text-gray-900 dark:text-white">
+				<h1 className="animate-slide-up text-4xl sm:text-5xl font-bold tracking-tight leading-tight mb-4 text-gray-900 dark:text-white">
 					{tSite('tagline')}
 				</h1>
-				<p className="text-lg text-gray-600 max-w-xl mb-6 dark:text-gray-400">
+				<p className="animate-slide-up [animation-delay:80ms] text-lg text-gray-600 max-w-xl mb-6 dark:text-gray-400">
 					{t('heroSubtitle')}
 				</p>
-				<div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+				<div className="animate-slide-up [animation-delay:160ms] flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
 					<Link
 						href="/work"
-						className="inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:bg-blue-500 dark:hover:bg-blue-600"
+						className="inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition w-full max-w-64 sm:w-auto sm:max-w-none dark:bg-blue-500 dark:hover:bg-blue-600"
 					>
 						{t('viewCaseStudy')}
 					</Link>
@@ -36,14 +36,14 @@ export default async function HomePage({
 							href={siteConfig.calendlyUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
+							className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-2.5 text-gray-700 font-medium hover:border-gray-400 active:scale-[0.98] hover:scale-[1.02] transition w-full max-w-64 sm:w-auto sm:max-w-none dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
 						>
 							{t('bookACall')}
 						</a>
 					) : (
 						<a
 							href={mailtoUrl('Hello from your case study site')}
-							className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:border-gray-700 dark:text-gray-700 dark:hover:border-gray-500"
+							className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-2.5 text-gray-700 font-medium hover:border-gray-400 active:scale-[0.98] hover:scale-[1.02] transition w-full max-w-64 sm:w-auto sm:max-w-none dark:border-gray-700 dark:text-gray-700 dark:hover:border-gray-500"
 						>
 							{t('emailSoomin')}
 						</a>
@@ -182,13 +182,13 @@ export default async function HomePage({
 				<div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
 					<Link
 						href="/work"
-						className="inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-2.5 text-white font-medium hover:bg-blue-700 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:bg-blue-500 dark:hover:bg-blue-600"
+						className="inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition w-full max-w-64 sm:w-auto sm:max-w-none dark:bg-blue-500 dark:hover:bg-blue-600"
 					>
 						{t('viewCaseStudy')}
 					</Link>
 					<a
 						href={mailtoUrl("Let's work together")}
-						className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-2.5 text-gray-700 font-medium hover:border-gray-400 transition-colors w-full max-w-64 sm:w-auto sm:max-w-none dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
+						className="inline-flex items-center justify-center rounded-full border border-gray-300 px-8 py-2.5 text-gray-700 font-medium hover:border-gray-400 active:scale-[0.98] hover:scale-[1.02] transition w-full max-w-64 sm:w-auto sm:max-w-none dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-500"
 					>
 						{t('emailSoomin')}
 					</a>

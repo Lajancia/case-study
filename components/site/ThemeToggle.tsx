@@ -24,7 +24,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={isDark ? t('switchToLight') : t('switchToDark')}
-      className="rounded-full p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+      className="rounded-full p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 active:scale-90 transition dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
     >
       {isDark ? (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">

@@ -45,7 +45,7 @@ test('capability filter narrows the list and stays shareable', async ({ page }) 
 
 test('an unknown capability falls back to the full list', async ({ page }) => {
   await page.goto('/en/work?do=fullstack')
-  await expect(page.getByRole('link', { name: /all work/i })).toHaveAttribute(
+  await expect(page.getByRole('link', { name: /all projects/i })).toHaveAttribute(
     'aria-current',
     'page',
   )
