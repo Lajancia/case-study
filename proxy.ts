@@ -1,122 +1,24 @@
 import createMiddleware from 'next-intl/middleware'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { routing } from './i18n/routing'
-import { RDKIT_EMBED_PATH, MOLSTAR_DEMO_SLUG } from './lib/rdkit-route'
+import { RDKIT_EMBED_PATH } from './lib/rdkit-route'
 
 const handleI18nRouting = createMiddleware(routing)
 
-
-// The one route that runs RDKit — an iframe embed nobody lands on directly,
-// so no locale prefix to match. Nothing else needs what it needs, so the
-// allowance stops here.
+// The RDKit embed sits outside app/[locale] (lib/rdkit-route.ts) — it has
+// no locale-prefixed identity, and handing it to next-intl finds that out
+// the hard way: with localePrefix 'always', next-intl redirects any
+// unprefixed path to one, e.g. /en/embed/rdkit-viewer. That 404s (there is
+// no app/[locale]/embed route). Skip next-intl entirely for it. This is
+// unrelated to the CSP now — headers are static (next.config.ts) — it's
+// purely to avoid the unwanted redirect/404.
 const RDKIT_PATH = new RegExp(`^${RDKIT_EMBED_PATH}/?$`)
 
-// The one route that mounts Molstar directly and needs connect-src open to
-// RCSB. See lib/rdkit-route.ts.
-const MOLSTAR_DEMO_PATH = new RegExp(
-  `^/(?:(?:${routing.locales.join('|')})/)?work/${MOLSTAR_DEMO_SLUG}/?$`,
-)
-
-const isProduction = process.env.NODE_ENV === 'production'
-
-/**
- * A per-request Content-Security-Policy.
- *
- * Next emits inline <script> tags to hand the RSC payload to the client, so a
- * source list alone leaves only the two useless choices: allow every inline
- * script, or break the page. A nonce distinguishes them — Next reads this
- * header while rendering and stamps the matching value onto its own scripts,
- * so anything injected into the markup arrives without one and never runs.
- *
- * 'strict-dynamic' extends that trust to the chunks the Next runtime appends
- * itself, which exist too late to carry a nonce of their own. It also makes
- * browsers ignore the source list for scripts, which is the stronger rule:
- * trust follows the chain rather than the hostname.
- *
- * The nonce has to be unguessable and fresh per response, so the document
- * cannot be prerendered or shared by a cache. That is the real price of this
- * policy, and it is paid deliberately: see "Rendering mode" in the README for
- * what it buys and what it would take to undo.
- */
-function contentSecurityPolicy(nonce: string, isRdkitEmbed: boolean, isMolstarDemo: boolean) {
-  // RDKit needs both, and this was learned the hard way. 'wasm-unsafe-eval'
-  // lets the browser compile the module; without it nothing loads at all. But
-  // the Emscripten embind layer then builds its method invokers with
-  // `new Function(...)`, so 'unsafe-eval' is required too.
-  //
-  // That is a real concession — it lets already-trusted code turn strings into
-  // code — and it is why this is scoped to the single route that renders the
-  // viewer. 'strict-dynamic' still governs what may run in the first place, so
-  // an injected script has no way in; what is relaxed here is what the code we
-  // shipped may do, not who may ship code.
-  const scriptExtras = [
-    isRdkitEmbed ? " 'wasm-unsafe-eval' 'unsafe-eval'" : '',
-    // React's, in development only: it reconstructs server stacks in the
-    // browser. Production needs no eval of its own.
-    isProduction || isRdkitEmbed ? '' : " 'unsafe-eval'",
-  ].join('')
-
-  return [
-    `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${scriptExtras}`,
-    // A nonce cannot cover style *attributes*, and React writes those for every
-    // style={{ ... }} prop. Style injection is far weaker than script
-    // injection, so this is the usual place to stop.
-    `style-src 'self' 'unsafe-inline'`,
-    `img-src 'self' data: blob:`,
-    // next/font downloads the Geist families at build time and serves them from
-    // /_next/static, so no font host is needed.
-    `font-src 'self'`,
-    // Mol* fetches the demo structure straight from RCSB — scoped to the one
-    // route that mounts it, same reasoning as the eval allowance above.
-    `connect-src 'self'${isMolstarDemo ? ' https://files.rcsb.org' : ''}`,
-    `object-src 'none'`,
-    `base-uri 'self'`,
-    `form-action 'self'`,
-    // The modern replacement for X-Frame-Options, which stays in next.config.ts
-    // only for browsers that never implemented this. 'self' only for the
-    // RDKit embed, which the case-study page frames on purpose — everything
-    // else keeps 'none' so nothing may frame it at all, embed included: it
-    // has no reason to be nested inside itself or anywhere else on the site.
-    `frame-ancestors ${isRdkitEmbed ? "'self'" : "'none'"}`,
-    `upgrade-insecure-requests`,
-  ].join('; ')
-}
-
 export function proxy(request: NextRequest) {
-  const nonce = crypto.randomUUID().replaceAll('-', '')
-  const isRdkitEmbed = RDKIT_PATH.test(request.nextUrl.pathname)
-  const isMolstarDemo = MOLSTAR_DEMO_PATH.test(request.nextUrl.pathname)
-  const csp = contentSecurityPolicy(nonce, isRdkitEmbed, isMolstarDemo)
-
-  // next-intl copies the incoming headers onto the response it forwards
-  // downstream, so the policy has to be on the request before it runs: that
-  // forwarded copy is what Next reads to find the nonce at render time.
-  const requestHeaders = new Headers(request.headers)
-  requestHeaders.set('content-security-policy', csp)
-  requestHeaders.set('x-nonce', nonce)
-
-  // The RDKit embed sits outside app/[locale] (lib/rdkit-route.ts) — it has
-  // no locale-prefixed identity, and handing it to next-intl finds that out
-  // the hard way: with localePrefix 'always', next-intl redirects any
-  // unprefixed path to one, e.g. /en/embed/rdkit-viewer. That 404s (there is
-  // no app/[locale]/embed route), and on the way there it hands the browser
-  // a document whose path no longer matches RDKIT_PATH, so it carries the
-  // *unprefixed* default CSP instead — no WASM allowance, frame-ancestors
-  // 'none' — exactly what this route exists to avoid. Skip next-intl
-  // entirely for it.
-  if (isRdkitEmbed) {
-    const response = NextResponse.next({ request: { headers: requestHeaders } })
-    response.headers.set('Content-Security-Policy', csp)
-    return response
+  if (RDKIT_PATH.test(request.nextUrl.pathname)) {
+    return
   }
-
-  const response = handleI18nRouting(
-    new NextRequest(request, { headers: requestHeaders }),
-  )
-  response.headers.set('Content-Security-Policy', csp)
-
-  return response
+  return handleI18nRouting(request)
 }
 
 export const config = {
