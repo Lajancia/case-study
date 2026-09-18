@@ -47,32 +47,22 @@ test.describe('security headers', () => {
 })
 
 test.describe('content security policy', () => {
-  test('every route is covered, and the nonce is fresh each time', async ({
-    request,
-  }) => {
-    const seen = new Set<string>()
-
+  test('every route is covered by a fixed, non-empty CSP', async ({ request }) => {
     for (const route of [...ROUTES, DEMO_ROUTE, RDKIT_EMBED_ROUTE]) {
       const csp = (await request.get(route)).headers()['content-security-policy']
       expect(csp, `no CSP on ${route}`).toBeTruthy()
-
-      const nonce = csp.match(/'nonce-([a-f0-9]+)'/)?.[1]
-      expect(nonce, `no nonce on ${route}`).toBeTruthy()
-      // A nonce reused across responses is one an attacker can simply read off
-      // an earlier page, which makes it worth no more than 'unsafe-inline'.
-      expect(seen.has(nonce!), `nonce repeated on ${route}`).toBe(false)
-      seen.add(nonce!)
     }
   })
 
-  test('the policy keeps script injection closed', async ({ request }) => {
+  test('the policy has no nonce anywhere, and the rest still holds', async ({ request }) => {
     const csp = (await request.get('/en')).headers()['content-security-policy']
     const scriptSrc = csp.split(';').find((d) => d.trim().startsWith('script-src'))!
 
-    // The whole point of the nonce: inline script stays blocked. 'unsafe-inline'
-    // anywhere in script-src would quietly undo it.
-    expect(scriptSrc).not.toContain('unsafe-inline')
-    expect(scriptSrc).toContain(`'strict-dynamic'`)
+    // Static rendering means no per-request nonce is possible — script-src
+    // relies on 'unsafe-inline' instead, everywhere, RDKit included.
+    expect(csp).not.toContain('nonce-')
+    expect(scriptSrc).toContain(`'unsafe-inline'`)
+    expect(scriptSrc).not.toContain(`'unsafe-eval'`)
 
     for (const directive of [
       `object-src 'none'`,
@@ -82,22 +72,6 @@ test.describe('content security policy', () => {
     ]) {
       expect(csp).toContain(directive)
     }
-  })
-
-  test('Next stamps the nonce onto every script it emits', async ({ request }) => {
-    const response = await request.get('/en')
-    const nonce = response
-      .headers()
-      ['content-security-policy'].match(/'nonce-([a-f0-9]+)'/)![1]
-    const html = await response.text()
-
-    const scripts = html.match(/<script\b[^>]*>/g) ?? []
-    expect(scripts.length).toBeGreaterThan(0)
-
-    // Under 'strict-dynamic' a script without the nonce simply does not run, so
-    // one unstamped tag means a blank page rather than a subtle regression.
-    const unstamped = scripts.filter((tag) => !tag.includes(`nonce="${nonce}"`))
-    expect(unstamped, `scripts missing the nonce: ${unstamped.join(' ')}`).toEqual([])
   })
 
   test(`only the RDKit embed may compile WebAssembly`, async ({ request }) => {
@@ -114,15 +88,12 @@ test.describe('content security policy', () => {
     }
   })
 
-  test('only the page that mounts Molstar may connect to RCSB', async ({ request }) => {
-    // Unlike RDKit, Molstar isn't iframed off (lib/rdkit-route.ts) — it
-    // shares the case-study page, so its own connect-src need lives there
-    // instead. Every other route was carrying this same allowance for no
-    // reason: nothing there ever fetches from RCSB.
-    const onDemo = (await request.get(DEMO_ROUTE)).headers()['content-security-policy']
-    expect(onDemo).toContain('https://files.rcsb.org')
-
-    for (const route of [...ROUTES, RDKIT_EMBED_ROUTE]) {
+  test('browser policies do not allow direct RCSB connections', async ({ request }) => {
+    // Molstar reaches RCSB through /api/pdb/[pdbId], not from the browser.
+    // That matters on client-side navigation: CSP belongs to the current
+    // document, so a Link from /en to the demo route would keep /en's
+    // connect-src rather than receiving a new route-specific allowance.
+    for (const route of [...ROUTES, DEMO_ROUTE, RDKIT_EMBED_ROUTE]) {
       const csp = (await request.get(route)).headers()['content-security-policy']
       expect(csp, `RCSB allowed on ${route}`).not.toContain('files.rcsb.org')
     }

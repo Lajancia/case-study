@@ -2,12 +2,12 @@
  * The one route that runs RDKit's WASM viewer — isolated in its own iframe
  * embed rather than mounted directly on the case-study page.
  *
- * RDKit needs 'wasm-unsafe-eval'/'unsafe-eval' to compile (see proxy.ts).
+ * RDKit needs 'wasm-unsafe-eval'/'unsafe-eval' to compile (see next.config.ts).
  * Molstar, which shares the case-study page, does not — measured by loading
  * the page under a CSP with neither and watching Molstar render a full
  * structure anyway while only RDKit's compile step failed. So the concession
  * only has to cover RDKit's own document, not the whole page: this route is
- * that document. proxy.ts scopes the eval allowance to it, and grants it
+ * that document. next.config.ts scopes the eval allowance to it, and grants it
  * `frame-ancestors 'self'` instead of the sitewide `'none'` so only this
  * origin may embed it — see components/case-study/MolecularViewer.tsx for
  * the iframe that does, and app/embed/rdkit-viewer/page.tsx for the page.

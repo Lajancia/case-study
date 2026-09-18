@@ -11,8 +11,7 @@ interface NavLink {
 
 interface MobileNavProps {
   links: NavLink[]
-  /** null on the contract track, where a resume is off message. */
-  resumeUrl: string | null
+  resumeUrl: string
   resumeLabel: string
   openLabel: string
   closeLabel: string

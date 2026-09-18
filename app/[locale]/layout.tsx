@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ContactFab } from "@/components/site/ContactFab";
@@ -9,10 +9,9 @@ import { HtmlLangSync } from "@/components/site/HtmlLangSync";
 import { siteConfig } from "@/lib/site";
 import { routing } from "@/i18n/routing";
 
-// Declared, but inert today: the CSP nonce makes the root layout read
-// headers(), which renders every route on demand. Kept because it is the
-// correct declaration and starts working the moment that changes — see
-// "Rendering mode" in the README.
+// These are what prerender the locale tree — paired with setRequestLocale()
+// below, which is what tells next-intl each build pass is safe to render
+// statically. See "Rendering mode" in the README.
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -42,6 +41,7 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  setRequestLocale(locale);
   const messages = await getMessages({ locale });
 
   return (

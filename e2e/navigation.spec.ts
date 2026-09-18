@@ -72,3 +72,13 @@ test('both locales serve every case study', async ({ page }) => {
     await expect(page.getByRole('article').first()).toBeVisible()
   }
 })
+
+test('/hire and /work stay indexable for both locales', async ({ request }) => {
+  // /hire has no nav link by design, so the sitemap is its only discovery
+  // path for the B2B prospects it's meant for.
+  const sitemap = await (await request.get('/sitemap.xml')).text()
+  for (const locale of ['en', 'ko']) {
+    expect(sitemap).toContain(`/${locale}/hire`)
+    expect(sitemap).toContain(`/${locale}/work`)
+  }
+})
