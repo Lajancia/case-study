@@ -1,8 +1,7 @@
 import createMDX from '@next/mdx'
 import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
-import { RDKIT_EMBED_PATH, MOLSTAR_DEMO_SLUG } from './lib/rdkit-route';
-import { routing } from './i18n/routing';
+import { RDKIT_EMBED_PATH } from './lib/rdkit-route';
 
 /**
  * All headers are static now — nothing here varies by request, which is what
@@ -71,27 +70,17 @@ const RDKIT_EMBED_CSP = [
   `upgrade-insecure-requests`,
 ].join('; ')
 
-// Molstar fetches the demo structure straight from RCSB (lib/rdkit-route.ts)
-// — scoped to the one route that mounts it, same reasoning as above.
-const MOLSTAR_DEMO_CSP = [
-  `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline'${devEval}`,
-  `style-src 'self' 'unsafe-inline'`,
-  `img-src 'self' data: blob:`,
-  `font-src 'self'`,
-  `connect-src 'self' https://files.rcsb.org`,
-  `object-src 'none'`,
-  `base-uri 'self'`,
-  `form-action 'self'`,
-  `frame-ancestors 'none'`,
-  `upgrade-insecure-requests`,
-].join('; ')
-
 const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   output: 'standalone',
   logging: { browserToTerminal: 'warn' },
   poweredByHeader: false,
+  // Dev-only (next.config.ts's own dev-cross-origin guard doesn't run in a
+  // production build at all). The RDKit embed's dropped allow-same-origin
+  // makes its requests carry `Origin: null`, which Next's dev server blocks
+  // by default — this is a separate check from the CSP/CORS above, and the
+  // literal string 'null' is how you allow an opaque origin specifically.
+  allowedDevOrigins: ['null'],
   async headers() {
     return [
       {
@@ -101,19 +90,15 @@ const nextConfig: NextConfig = {
           { key: 'Content-Security-Policy', value: DEFAULT_CSP },
         ],
       },
-      // Header sets are merged by key with the last match winning, so these
-      // two overrides only replace Content-Security-Policy (and, for RDKit,
-      // X-Frame-Options) for their own path.
+      // Header sets are merged by key with the last match winning, so this
+      // override only replaces Content-Security-Policy and X-Frame-Options
+      // for RDKit's isolated document.
       {
         source: RDKIT_EMBED_PATH,
         headers: [
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'Content-Security-Policy', value: RDKIT_EMBED_CSP },
         ],
-      },
-      {
-        source: `/:locale(${routing.locales.join('|')})/work/${MOLSTAR_DEMO_SLUG}`,
-        headers: [{ key: 'Content-Security-Policy', value: MOLSTAR_DEMO_CSP }],
       },
       // The RDKit embed's sandbox carries no allow-same-origin (see
       // MolecularViewer.tsx), so its document is an opaque origin — not just

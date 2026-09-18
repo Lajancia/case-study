@@ -102,6 +102,17 @@ test.describe('route-scoped chunks', () => {
   })
 })
 
+test.describe('same-origin molecular data route', () => {
+  test('serves only the demo PDB through the app origin', async ({ request }) => {
+    const demo = await request.get('/api/pdb/1CRN')
+    expect(demo.status()).toBe(200)
+    expect(await demo.text()).toContain('HEADER')
+
+    const other = await request.get('/api/pdb/4HHB')
+    expect(other.status()).toBe(404)
+  })
+})
+
 test.describe('the live demo actually renders', () => {
   // Mol* needs WebGL, which the emulated mobile profile in headless Chromium
   // does not reliably provide.
@@ -132,6 +143,23 @@ test.describe('the live demo actually renders', () => {
     for (const preset of ['Cartoon', 'Ball & stick', 'Surface']) {
       await expect(page.getByRole('button', { name: preset })).toBeVisible()
     }
+  })
+
+  test('Molstar survives arriving by client-side navigation, not just a direct load', async ({ page }) => {
+    // page.goto(DEMO_ROUTE) receives the demo route's response headers. A
+    // client-side <Link> navigation keeps the current document and therefore
+    // the current document's CSP. Molstar must fetch its demo structure from
+    // this origin, or arriving from /en inherits connect-src 'self' and the
+    // browser blocks the RCSB download before Molstar reports "Invalid data
+    // cell."
+    await page.goto('/en')
+    await page.locator(`a[href="${DEMO_ROUTE}"]`).first().click()
+    await expect(page).toHaveURL(new RegExp(`${DEMO_ROUTE}$`))
+
+    await expect(page.getByRole('button', { name: 'Cartoon' })).toBeVisible({
+      timeout: 30_000,
+    })
+    await expect(page.locator('canvas').first()).toBeVisible({ timeout: 30_000 })
   })
 
   test('the demo page logs no console errors', async ({ page }) => {

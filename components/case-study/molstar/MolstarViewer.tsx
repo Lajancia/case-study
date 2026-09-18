@@ -8,6 +8,7 @@ import { PluginConfig } from 'molstar/lib/mol-plugin/config'
 import type { PluginUIContext } from 'molstar/lib/mol-plugin-ui/context'
 import type { StateObjectRef } from 'molstar/lib/mol-state'
 import type { PluginStateObject } from 'molstar/lib/mol-plugin-state/objects'
+import { pdbDataPath } from '@/lib/molecular-demo'
 import { CASE_STUDY_PRESETS } from './presets'
 
 /**
@@ -93,7 +94,7 @@ export default function MolstarViewer({ pdbId, height = 480 }: MolstarViewerProp
         pluginRef.current = plugin
 
         const data = await plugin.builders.data.download(
-          { url: `https://files.rcsb.org/download/${pdbId}.pdb` },
+          { url: pdbDataPath(pdbId) },
           { state: { isGhost: true } }
         )
         const trajectory = await plugin.builders.structure.parseTrajectory(data, 'pdb')
