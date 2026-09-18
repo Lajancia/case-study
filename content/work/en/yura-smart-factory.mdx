@@ -1,9 +1,9 @@
 export const metadata = {
   title: "Smart Factory Monitoring for a Serbian Production Plant",
   description:
-    "A chart-based monitoring dashboard (ApexCharts, Plotly) for AOI process yield at an overseas production plant, built end-to-end from Figma design through a Spring Boot API — process visibility that helped cut the AOI defect rate by roughly 20%.",
+    "A chart-based monitoring dashboard (ApexCharts, Plotly) for AOI process yield at an overseas production plant, built from Figma design through the React frontend, with an existing Spring Boot API adapted to feed it — process visibility that helped cut the AOI defect rate by roughly 20%.",
   slug: "yura-smart-factory",
-  role: "UI/UX Design, Frontend & API Development",
+  role: "UI/UX Design, Frontend, API Maintenance",
   timeline: "Oct 2022 – May 2024",
   industry: "Manufacturing / Smart factory",
   stack: ["React.js", "MUI", "ApexCharts", "Plotly", "Java Spring Boot", "MyBatis", "MariaDB", "Figma"],
@@ -18,7 +18,7 @@ export const metadata = {
 
 *The client's name and internal system names are omitted. The structure and the figures are as they are.*
 
-I built a monitoring system for reviewing and visualizing AOI (Automated Optical Inspection) process data at a production plant in Serbia. I owned the full path — Figma-based UI/UX design, React screen implementation, Spring Boot API development, and MariaDB integration — and worked in English with the on-site team to incorporate their process formulas and feedback.
+I built a monitoring system for reviewing and visualizing AOI (Automated Optical Inspection) process data at a production plant in Serbia. I owned the frontend end to end — Figma-based UI/UX design through React screen implementation — and adapted an existing Spring Boot API with similar functionality to fit the dashboard's needs, writing its MyBatis query mappings against MariaDB. I also worked in English with the on-site team to incorporate their process formulas and feedback.
 
 ## Problem
 
@@ -34,9 +34,9 @@ I designed the dashboard layout around the metrics on-site staff actually watche
 
 I built time-series charts for first-pass yield by product/machine with **ApexCharts**, and used **Plotly** for the screens that needed richer, multivariate comparisons. Splitting the two libraries by screen type kept simple trend views lightweight while giving the multi-dimensional comparisons full interactivity.
 
-### 3. Spring Boot API + MariaDB integration
+### 3. Adapting an existing Spring Boot API + MariaDB
 
-I built the process-data query API in **Java Spring Boot** and mapped MariaDB queries with **MyBatis**, shaping the API response structure around the aggregation levels the dashboard needed (by product, by machine, by time window).
+I took an existing **Java Spring Boot** API with similar functionality and modified it to fit what this dashboard needed, writing its **MyBatis** query mappings against MariaDB.
 
 ### 4. Working with the on-site team
 
