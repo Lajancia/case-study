@@ -62,6 +62,7 @@ test.describe('content security policy', () => {
     // relies on 'unsafe-inline' instead, everywhere, RDKit included.
     expect(csp).not.toContain('nonce-')
     expect(scriptSrc).toContain(`'unsafe-inline'`)
+    expect(scriptSrc).not.toContain(`'unsafe-eval'`)
 
     for (const directive of [
       `object-src 'none'`,

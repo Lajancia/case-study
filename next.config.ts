@@ -20,6 +20,9 @@ const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'X-Frame-Options', value: 'DENY' },
+  // Deliberately no X-XSS-Protection: the auditor it switched on was removed
+  // from every major browser years ago, and could itself be turned into a
+  // vulnerability. The CSP is what guards this now.
 ]
 
 const isProduction = process.env.NODE_ENV === 'production'

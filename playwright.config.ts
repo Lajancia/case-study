@@ -4,10 +4,10 @@ const PORT = Number(process.env.PLAYWRIGHT_PORT ?? 3100)
 const baseURL = `http://localhost:${PORT}`
 
 /**
- * These specs check behaviour that only exists in a real build: the proxy that
- * sets the hire-track cookie, and the route-scoped chunk loading the case
- * studies claim. Both are erased by `next dev`'s eager compilation, so the
- * suite runs against `next build && next start`.
+ * These specs check behaviour that only exists in a real build: the static
+ * CSP headers next.config.ts declares, and the route-scoped chunk loading
+ * the case studies claim. Both are erased by `next dev`'s eager compilation,
+ * so the suite runs against `next build && next start`.
  */
 export default defineConfig({
   testDir: './e2e',
