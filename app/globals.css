@@ -125,27 +125,6 @@
   --scrollbar-thumb-hover: #38bdf8;
 }
 
-/*
- * The RDKit route (see lib/rdkit-route.ts) links in through a plain <a>, not
- * next/link, so the per-route CSP that lets its WASM compile gets recomputed
- * fresh — that only happens on a real navigation, and a soft one would keep
- * the previous page's policy. The cost is that a real navigation unloads the
- * document, so the browser shows its default "flash to blank, then paint"
- * sequence for that one link, instead of the seamless swap every other case
- * study gets.
- *
- * Cross-document View Transitions turn that flash into a cross-fade without
- * touching the navigation itself, so the CSP fix stands as-is. Chrome 126+
- * supports it; every other browser ignores the unknown at-rule and falls
- * back to today's plain navigation — no regression, no JS. Scoped site-wide
- * rather than to this one route, since there's no way to select "the page
- * this navigation is leaving" from CSS, and a smoother full navigation
- * anywhere else (a hard refresh, a bookmark) is a win, not a cost.
- */
-@view-transition {
-  navigation: auto;
-}
-
 html {
   background-color: var(--color-background);
   transition: background-color 0.3s ease;
@@ -338,14 +317,6 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-
-  /* View-transition pseudo-elements live outside the regular tree, so `*`
-     above never reaches them — the cross-fade above needs its own opt-out. */
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
   }
 }
 

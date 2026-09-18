@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Link, getPathname } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { mailtoUrl } from "@/lib/site";
 import type { Locale } from "@/lib/case-studies";
-import { RDKIT_ROUTE_SLUG } from "@/lib/rdkit-route";
 import { ResultsAtAGlance } from "@/components/site/ResultsAtAGlance";
 import { getCapabilityCounts, type Capability } from "@/lib/case-studies";
 
@@ -99,28 +98,12 @@ export default async function HirePage({
                 {service.body}
               </p>
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                {/*
-                  RDKit's route (see lib/rdkit-route.ts) needs a real
-                  navigation: the CSP that lets its WASM compile is scoped to
-                  that path in proxy.ts, and next/link's client-side
-                  transition would keep this page's policy instead, which
-                  never carries that allowance.
-                */}
-                {service.href === `/work/${RDKIT_ROUTE_SLUG}` ? (
-                  <a
-                    href={getPathname({ href: service.href, locale })}
-                    className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300"
-                  >
-                    {service.link}
-                  </a>
-                ) : (
-                  <Link
-                    href={service.href}
-                    className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300"
-                  >
-                    {service.link}
-                  </Link>
-                )}
+                <Link
+                  href={service.href}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                  {service.link}
+                </Link>
                 <Link
                   href={{
                     pathname: "/work",

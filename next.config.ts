@@ -1,6 +1,7 @@
 import createMDX from '@next/mdx'
 import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
+import { RDKIT_EMBED_PATH } from './lib/rdkit-route';
 
 /**
  * Headers that never vary by request. The per-request Content-Security-Policy
@@ -35,7 +36,19 @@ const nextConfig: NextConfig = {
   // Announces the framework to anyone scanning for a version to target.
   poweredByHeader: false,
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }]
+    return [
+      { source: '/:path*', headers: securityHeaders },
+      // The RDKit embed (lib/rdkit-route.ts) is the one page another page on
+      // this site frames on purpose. Header sets are merged by key with the
+      // last match winning, so this overrides only X-Frame-Options for this
+      // path — SAMEORIGIN is the legacy equivalent of the `frame-ancestors
+      // 'self'` proxy.ts already sends it in the CSP; DENY here would block
+      // the very framing that CSP allows.
+      {
+        source: RDKIT_EMBED_PATH,
+        headers: [{ key: 'X-Frame-Options', value: 'SAMEORIGIN' }],
+      },
+    ]
   },
 };
 

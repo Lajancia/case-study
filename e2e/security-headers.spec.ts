@@ -11,8 +11,11 @@ import { expect, test } from '@playwright/test'
 
 const ROUTES = ['/en', '/ko', '/en/work', '/en/about', '/en/hire']
 
-/** The route whose RDKit demo compiles WebAssembly. */
-const WASM_ROUTE = '/en/work/scientific-platform-performance'
+/** The case-study page that embeds the RDKit demo — no WASM allowance of its own. */
+const DEMO_ROUTE = '/en/work/scientific-platform-performance'
+
+/** The isolated document that actually compiles RDKit's WASM (lib/rdkit-route.ts). */
+const RDKIT_EMBED_ROUTE = '/embed/rdkit-viewer'
 
 const STATIC_HEADERS = {
   'x-content-type-options': 'nosniff',
@@ -49,7 +52,7 @@ test.describe('content security policy', () => {
   }) => {
     const seen = new Set<string>()
 
-    for (const route of [...ROUTES, WASM_ROUTE]) {
+    for (const route of [...ROUTES, DEMO_ROUTE, RDKIT_EMBED_ROUTE]) {
       const csp = (await request.get(route)).headers()['content-security-policy']
       expect(csp, `no CSP on ${route}`).toBeTruthy()
 
@@ -97,17 +100,65 @@ test.describe('content security policy', () => {
     expect(unstamped, `scripts missing the nonce: ${unstamped.join(' ')}`).toEqual([])
   })
 
-  test(`only the RDKit route may compile WebAssembly`, async ({ request }) => {
+  test(`only the RDKit embed may compile WebAssembly`, async ({ request }) => {
     // 'wasm-unsafe-eval' allows WebAssembly.instantiate and nothing else —
-    // eval() and new Function() stay blocked everywhere. It is still scoped to
-    // the one route that needs it.
-    const onDemo = (await request.get(WASM_ROUTE)).headers()['content-security-policy']
-    expect(onDemo).toContain(`'wasm-unsafe-eval'`)
+    // eval() and new Function() stay blocked everywhere. It is scoped to the
+    // one document that needs it: RDKit's own iframe (lib/rdkit-route.ts),
+    // not the case-study page that frames it in.
+    const onEmbed = (await request.get(RDKIT_EMBED_ROUTE)).headers()['content-security-policy']
+    expect(onEmbed).toContain(`'wasm-unsafe-eval'`)
 
-    for (const route of ROUTES) {
+    for (const route of [...ROUTES, DEMO_ROUTE]) {
       const csp = (await request.get(route)).headers()['content-security-policy']
       expect(csp, `wasm allowed on ${route}`).not.toContain('wasm-unsafe-eval')
     }
+  })
+
+  test('only the RDKit embed may be framed, and only by this origin', async ({
+    request,
+  }) => {
+    // frame-ancestors is what actually stops a hostile page from iframing
+    // RDKit's relaxed-eval document to attack it via clickjacking or a
+    // framed-UI trick. 'self' has to be scoped as tightly as the eval
+    // allowance it travels with, or isolating RDKit into its own document
+    // would gain nothing.
+    const onEmbed = (await request.get(RDKIT_EMBED_ROUTE)).headers()['content-security-policy']
+    expect(onEmbed).toContain(`frame-ancestors 'self'`)
+
+    for (const route of [...ROUTES, DEMO_ROUTE]) {
+      const csp = (await request.get(route)).headers()['content-security-policy']
+      expect(csp, `frame-ancestors on ${route}`).toContain(`frame-ancestors 'none'`)
+    }
+  })
+
+  test('X-Frame-Options matches frame-ancestors for browsers that ignore it', async ({
+    request,
+  }) => {
+    // The CSP directive is what modern browsers enforce; X-Frame-Options is
+    // the fallback for ones that predate it (next.config.ts). A mismatch
+    // here would mean an old browser enforcing a stricter or looser rule
+    // than the one actually intended.
+    const embedHeaders = (await request.get(RDKIT_EMBED_ROUTE)).headers()
+    expect(embedHeaders['x-frame-options']).toBe('SAMEORIGIN')
+
+    for (const route of [...ROUTES, DEMO_ROUTE]) {
+      const headers = (await request.get(route)).headers()
+      expect(headers['x-frame-options'], `x-frame-options on ${route}`).toBe('DENY')
+    }
+  })
+
+  test('the RDKit embed is not indexed and has no locale of its own', async ({
+    request,
+  }) => {
+    // It sits outside app/[locale] (lib/rdkit-route.ts) — a request without a
+    // locale prefix must be served directly, not redirected to add one. A
+    // redirect here would 404 (there is no app/[locale]/embed route) and, on
+    // the way, swap this response's CSP for the stricter unprefixed default.
+    const response = await request.get(RDKIT_EMBED_ROUTE, { maxRedirects: 0 })
+    expect(response.status(), 'RDKit embed was redirected instead of served directly').toBe(200)
+
+    const html = await response.text()
+    expect(html).toContain('noindex')
   })
 })
 
@@ -136,11 +187,16 @@ const collectViolations = () => {
   })
 }
 
+// addInitScript runs in every frame, RDKit's embed included, but each frame
+// keeps its own window — so violations there sit on that frame's own
+// __cspViolations, invisible to a check against only the top page.
 const violationsOn = (page: import('@playwright/test').Page) =>
-  page.evaluate(() => (window as ViolationWindow).__cspViolations ?? [])
+  Promise.all(page.frames().map((frame) => frame.evaluate(() => (window as ViolationWindow).__cspViolations ?? []))).then(
+    (perFrame) => perFrame.flat(),
+  )
 
 test.describe('the policy does not block the site itself', () => {
-  for (const route of ROUTES) {
+  for (const route of [...ROUTES, DEMO_ROUTE]) {
     test(`${route} renders with no policy violations`, async ({ page }) => {
       await page.addInitScript(collectViolations)
       await page.goto(route)
@@ -156,14 +212,19 @@ test.describe('the policy does not block the site itself', () => {
     test.skip(!!isMobile)
 
     await page.addInitScript(collectViolations)
-    await page.goto(WASM_ROUTE)
+    await page.goto(DEMO_ROUTE)
+
+    // RDKit runs in its own document, framed in by data-testid="rdkit-frame"
+    // (lib/rdkit-route.ts) — frameLocator reaches into it the same way a
+    // reader's DevTools would.
+    const rdkit = page.frameLocator('[data-testid="rdkit-frame"]')
 
     // Waiting for the depiction rather than for the network: the failure this
     // guards against leaves the page idle with an error panel showing.
-    await expect(page.getByTestId('rdkit-depiction').locator('svg')).toBeVisible({
+    await expect(rdkit.getByTestId('rdkit-depiction').locator('svg')).toBeVisible({
       timeout: 30_000,
     })
-    await expect(page.getByTestId('rdkit-error')).toHaveCount(0)
+    await expect(rdkit.getByTestId('rdkit-error')).toHaveCount(0)
 
     expect(await violationsOn(page)).toEqual([])
   })

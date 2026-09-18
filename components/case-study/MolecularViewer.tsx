@@ -1,14 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef, lazy, Suspense } from 'react'
-import { DEMO_PDB, DEMO_LIGAND_SMILES } from '@/lib/molecular-demo'
+import { lazy, Suspense } from 'react'
+import { DEMO_PDB } from '@/lib/molecular-demo'
 import { useHydrated } from '@/lib/use-hydrated'
-
-// Self-hosted, the way AD3 serves RDKit from its own /rdkit/ path. The files
-// are copied out of the @rdkit/rdkit package into public/rdkit/ by
-// scripts/copy-rdkit.mjs; RDKIT_BASE is where the loader finds the .wasm.
-const RDKIT_SRC = '/rdkit/RDKit_minimal.js'
-const RDKIT_BASE = '/rdkit'
+import { RDKIT_EMBED_PATH } from '@/lib/rdkit-route'
 
 // route-scoped: molstar (npm) only enters the bundle when this component renders
 const MolstarViewer = lazy(() => import('./molstar/MolstarViewer'))
@@ -17,34 +12,9 @@ const MolstarViewer = lazy(() => import('./molstar/MolstarViewer'))
 // server — useHydrated is how this component waits for the client.
 
 /**
- * The slice of RDKit.js this demo actually touches. @rdkit/rdkit is a
- * dependency for its asset files alone — importing it, even only for its type
- * declarations, risks pulling the library into a bundle and undoing the
- * route-scoped loading this page is about. So the surface is described here.
- */
-interface RDKitMol {
-  get_svg(width: number, height: number): string
-  delete(): void
-}
-
-interface RDKitModule {
-  get_mol(smiles: string): RDKitMol | null
-}
-
-interface RDKitWindow extends Window {
-  RDKitModule?: RDKitModule
-  initRDKitModule?: (options: {
-    locateFile: (path: string) => string
-  }) => Promise<RDKitModule>
-  /** Keeps a second mount from kicking off a second WASM init. */
-  _rdkitLoading?: boolean
-}
-
-const messageOf = (error: unknown, fallback: string) =>
-  error instanceof Error && error.message ? error.message : fallback
-
-/**
- * RDKit 2D chemical structure viewer — self-hosted WASM, loaded on demand.
+ * RDKit 2D chemical structure viewer — self-hosted WASM, isolated in its own
+ * document and framed in via <iframe> (see components/case-study/RdkitEmbed.tsx
+ * and lib/rdkit-route.ts for why: it needs a CSP concession this page does not).
  * Molstar 3D viewer — loaded from the `molstar` npm package via
  * React.lazy(), so it code-splits into its own chunk instead of shipping
  * with every route.
@@ -52,91 +22,8 @@ const messageOf = (error: unknown, fallback: string) =>
  * Both libraries demonstrate route-scoped loading of scientific
  * dependencies: neither contributes bytes to any other page.
  */
-
 export default function MolecularViewer() {
   const hydrated = useHydrated()
-  const [rdkitStatus, setRdkitStatus] = useState<'loading' | 'ready' | 'error'>('loading')
-  const [errorDetail, setErrorDetail] = useState<string | null>(null)
-  const rdkitSvgRef = useRef<HTMLDivElement>(null)
-
-  // ── Load RDKit.js from this origin (route-scoped) ──
-  useEffect(() => {
-    if (!hydrated) return
-
-    const w = window as unknown as RDKitWindow
-
-    // Already loaded + initialized
-    if (w.RDKitModule) {
-      renderRdkitSvg(w.RDKitModule)
-      return
-    }
-
-    // Script loaded but WASM init already in progress
-    const loadedInit = w.initRDKitModule
-    if (loadedInit && !w._rdkitLoading) {
-      w._rdkitLoading = true
-      loadedInit({ locateFile: (path) => `${RDKIT_BASE}/${path}` })
-        .then((Module) => {
-          w.RDKitModule = Module
-          renderRdkitSvg(Module)
-        })
-        .catch((e: unknown) => {
-          setRdkitStatus('error')
-          setErrorDetail(messageOf(e, 'WASM init failed'))
-        })
-      return
-    }
-
-    // Not loaded yet — fetch the script
-    if (!w._rdkitLoading) {
-      w._rdkitLoading = true
-      const script = document.createElement('script')
-      script.src = RDKIT_SRC
-      script.async = true
-      script.onload = () => {
-        // initRDKitModule is a global async function that returns the Module
-        const init = w.initRDKitModule
-        if (init) {
-          init({ locateFile: (path) => `${RDKIT_BASE}/${path}` })
-            .then((Module) => {
-              w.RDKitModule = Module
-              renderRdkitSvg(Module)
-            })
-            .catch((e: unknown) => {
-              setRdkitStatus('error')
-              setErrorDetail(`WASM: ${messageOf(e, 'unknown')}`)
-            })
-        } else {
-          setRdkitStatus('error')
-          setErrorDetail('initRDKitModule not found on window')
-        }
-      }
-      script.onerror = () => {
-        setRdkitStatus('error')
-        setErrorDetail('Script load failed')
-      }
-      document.head.appendChild(script)
-    }
-
-    function renderRdkitSvg(Module: RDKitModule) {
-      try {
-        if (!rdkitSvgRef.current) return
-        const mol = Module.get_mol(DEMO_LIGAND_SMILES)
-        if (mol) {
-          const svg = mol.get_svg(400, 280)
-          rdkitSvgRef.current.innerHTML = svg
-          mol.delete()
-          setRdkitStatus('ready')
-        } else {
-          setRdkitStatus('error')
-          setErrorDetail('get_mol returned null')
-        }
-      } catch (e) {
-        setRdkitStatus('error')
-        setErrorDetail(messageOf(e, 'render error'))
-      }
-    }
-  }, [hydrated])
 
   if (!hydrated) return null
 
@@ -171,45 +58,32 @@ export default function MolecularViewer() {
         </div>
       </div>
 
-      {/* RDKit 2D — full width */}
+      {/*
+        RDKit 2D — isolated in its own document (lib/rdkit-route.ts) rather
+        than mounted here directly. RDKit needs 'wasm-unsafe-eval'/
+        'unsafe-eval' to compile its WASM; Molstar above does not — measured
+        by loading this page under a CSP with neither and watching Molstar
+        render a full structure while only RDKit's compile step failed. So
+        only RDKit's own document carries that concession; this page, and the
+        ordinary Link that reaches it, need no special CSP treatment at all.
+
+        sandbox: allow-scripts + allow-same-origin is the minimum RDKit needs
+        (script execution, same-origin fetch of its own .wasm) — not a strong
+        isolation boundary on a same-origin frame (the two together let framed
+        script reach back out via the same mechanism they need to run at
+        all), but it still closes off what this frame has no reason to do:
+        top-level navigation, popups, forms, pointer lock. frame-ancestors on
+        the embed's own response (proxy.ts) is the real boundary — it refuses
+        to render inside anything but this origin's pages.
+      */}
       <div className="border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800">
-        <div className="px-5 pt-3 pb-2 border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
-          <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide dark:text-gray-300">
-            RDKit.js &mdash; 2D Molecule Structure
-          </span>
-          <span className="text-xs text-gray-400 ml-2 dark:text-gray-600">Aspirin (C₉H₈O₄)</span>
-        </div>
-        <div
-          className="flex items-center justify-center bg-white"
-          style={{ minHeight: 400 }}
-        >
-          {rdkitStatus === 'loading' && (
-            // Fixed greys, not tokens: this panel is white in both themes, and
-            // .dark remaps the grey scale to light values meant for dark backings.
-            <div className="text-[#4b5563] text-sm animate-pulse px-4 text-center">
-              <p>Loading RDKit.js (~2.5 MB WASM, served from this origin)...</p>
-              <p className="text-xs mt-2">This library loads on-demand — zero bytes on other pages.</p>
-            </div>
-          )}
-          {/* RDKit renders fixed-color SVG optimized for white background */}
-          <div
-            ref={rdkitSvgRef}
-            // Named so a test can assert on RDKit's own output. Reaching for
-            // the first <svg> on the page finds the theme toggle in the header
-            // and passes whatever RDKit did.
-            data-testid="rdkit-depiction"
-            className={`items-center justify-center p-6 w-full ${rdkitStatus === 'ready' ? 'flex' : 'hidden'}`}
-          />
-          {rdkitStatus === 'error' && (
-            <div data-testid="rdkit-error" className="text-[#b91c1c] text-sm text-center p-4">
-              <p>Failed to load RDKit.js</p>
-              {errorDetail && <p className="text-xs mt-1 text-[#4b5563] break-all">{errorDetail}</p>}
-              <p className="text-xs mt-2 text-[#4b5563]">
-                Source: {RDKIT_SRC}
-              </p>
-            </div>
-          )}
-        </div>
+        <iframe
+          src={RDKIT_EMBED_PATH}
+          title="RDKit.js 2D molecule structure viewer"
+          data-testid="rdkit-frame"
+          sandbox="allow-scripts allow-same-origin"
+          style={{ width: '100%', height: 460, border: 'none', display: 'block' }}
+        />
       </div>
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 dark:text-gray-600">

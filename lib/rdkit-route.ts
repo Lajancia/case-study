@@ -1,16 +1,20 @@
 /**
- * The one route that runs RDKit's WASM viewer.
+ * The one route that runs RDKit's WASM viewer — isolated in its own iframe
+ * embed rather than mounted directly on the case-study page.
  *
- * proxy.ts scopes the 'wasm-unsafe-eval'/'unsafe-eval' CSP allowance to this
- * path alone, and CSP is enforced per document — a client-side (soft)
- * navigation into this route keeps whatever policy the *previous* page
- * loaded with, which never carries this route's WASM allowance. So every
- * in-app link that points here has to force a full navigation instead of
- * going through next/link's router transition; see WorkCard.tsx and
- * app/[locale]/hire/page.tsx for the two places that do.
+ * RDKit needs 'wasm-unsafe-eval'/'unsafe-eval' to compile (see proxy.ts).
+ * Molstar, which shares the case-study page, does not — measured by loading
+ * the page under a CSP with neither and watching Molstar render a full
+ * structure anyway while only RDKit's compile step failed. So the concession
+ * only has to cover RDKit's own document, not the whole page: this route is
+ * that document. proxy.ts scopes the eval allowance to it, and grants it
+ * `frame-ancestors 'self'` instead of the sitewide `'none'` so only this
+ * origin may embed it — see components/case-study/MolecularViewer.tsx for
+ * the iframe that does, and app/embed/rdkit-viewer/page.tsx for the page.
  *
- * Kept in its own module, rather than importing it out of lib/case-studies.ts,
- * so the per-request Edge middleware in proxy.ts doesn't have to bundle that
- * file's full case-study dataset just to read one string.
+ * Outside app/[locale]: its handful of strings are hardcoded English
+ * already, same as before this moved (it is a technical demo panel, not
+ * localized copy), and nothing links to it directly — only case-study pages
+ * that embed it.
  */
-export const RDKIT_ROUTE_SLUG = 'scientific-platform-performance'
+export const RDKIT_EMBED_PATH = '/embed/rdkit-viewer'
