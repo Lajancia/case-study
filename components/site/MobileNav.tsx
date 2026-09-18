@@ -28,7 +28,7 @@ export function MobileNav({ links, resumeUrl, resumeLabel, openLabel, closeLabel
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? closeLabel : openLabel}
-        className="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+        className="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 active:scale-90 transition dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
       >
         {open ? (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">

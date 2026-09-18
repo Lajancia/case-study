@@ -90,7 +90,7 @@ test.describe('contract track', () => {
   test('each service links to a case study and to its filtered slice', async ({ page }) => {
     await page.goto('/en/hire')
 
-    const seeAll = page.getByRole('link', { name: /see all .* work \(\d+\)/i })
+    const seeAll = page.getByRole('link', { name: /see all .* projects \(\d+\)/i })
     await expect(seeAll.first()).toBeVisible()
 
     // The count printed on the link has to be what the filtered page shows.

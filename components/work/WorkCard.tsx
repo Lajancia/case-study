@@ -14,7 +14,7 @@ export async function WorkCard({ study, locale }: WorkCardProps) {
     <article className={`border rounded-lg p-6 transition-all duration-200 ${
       study.draft
         ? 'border-gray-200 bg-gray-50 opacity-60 grayscale-[40%] dark:border-gray-800 dark:bg-gray-900/50'
-        : 'border-gray-200 hover:border-blue-400 hover:shadow-lg hover:-translate-y-0.5 dark:border-gray-800 dark:hover:border-[#007DCC]'
+        : 'border-gray-200 hover:border-blue-400 hover:shadow-xl hover:-translate-y-0.5 dark:border-gray-800 dark:hover:border-[#007DCC]'
     }`}>
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className={`text-xs font-medium uppercase tracking-wider ${study.draft ? 'text-gray-400 dark:text-gray-600' : 'text-blue-600 dark:text-blue-400'}`}>{study.industry}</div>

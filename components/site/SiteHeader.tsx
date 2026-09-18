@@ -70,7 +70,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
 						<a
 							href={resumeUrl}
 							download
-							className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-3.5 py-1.5 text-gray-700 hover:border-gray-400 transition-colors dark:border-gray-700 dark:text-gray-700 dark:hover:border-gray-500"
+							className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-3.5 py-1.5 text-gray-700 hover:border-gray-400 active:scale-[0.98] hover:scale-[1.02] transition dark:border-gray-700 dark:text-gray-700 dark:hover:border-gray-500"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
