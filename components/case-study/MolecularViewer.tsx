@@ -67,21 +67,29 @@ export default function MolecularViewer() {
         only RDKit's own document carries that concession; this page, and the
         ordinary Link that reaches it, need no special CSP treatment at all.
 
-        sandbox: allow-scripts + allow-same-origin is the minimum RDKit needs
-        (script execution, same-origin fetch of its own .wasm) — not a strong
-        isolation boundary on a same-origin frame (the two together let framed
-        script reach back out via the same mechanism they need to run at
-        all), but it still closes off what this frame has no reason to do:
-        top-level navigation, popups, forms, pointer lock. frame-ancestors on
-        the embed's own response (proxy.ts) is the real boundary — it refuses
-        to render inside anything but this origin's pages.
+        sandbox: allow-scripts alone. An earlier version also carried
+        allow-same-origin for RDKit's same-origin fetch of its own .wasm, but
+        that pairing is exactly what Chrome's own devtools flags as escapable:
+        same-origin gives this frame and the parent full mutual window access,
+        so a compromised parent could call this frame's contentWindow.eval()
+        directly — and it would run, because this frame's own CSP already
+        permits eval for RDKit's legitimate use, which can't be told apart
+        from anyone else's. Dropping allow-same-origin makes this an opaque
+        origin instead, so the frame is cross-origin from the parent under the
+        browser's own Same-Origin Policy — cross-origin window access is
+        limited to a small allowlist (postMessage, close, focus, ...) that
+        does not include eval or document, closing that path structurally.
+        RDKit's .wasm fetch, now cross-origin for the same reason, needs the
+        CORS allowance next.config.ts grants it instead. frame-ancestors on
+        the embed's own response (next.config.ts) is the other real boundary
+        — it refuses to render inside anything but this origin's pages.
       */}
       <div className="border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800">
         <iframe
           src={RDKIT_EMBED_PATH}
           title="RDKit.js 2D molecule structure viewer"
           data-testid="rdkit-frame"
-          sandbox="allow-scripts allow-same-origin"
+          sandbox="allow-scripts"
           style={{ width: '100%', height: 460, border: 'none', display: 'block' }}
         />
       </div>

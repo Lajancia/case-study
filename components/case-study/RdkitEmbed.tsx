@@ -42,7 +42,7 @@ const messageOf = (error: unknown, fallback: string) =>
  * Lives in its own document (app/embed/rdkit-viewer/page.tsx), framed by
  * components/case-study/MolecularViewer.tsx via <iframe>, rather than
  * mounted directly on the case-study page. That split exists for the CSP:
- * RDKit needs 'wasm-unsafe-eval'/'unsafe-eval' to compile (see proxy.ts),
+ * RDKit needs 'wasm-unsafe-eval'/'unsafe-eval' to compile (see next.config.ts),
  * Molstar does not, and CSP applies per document — so isolating RDKit here
  * keeps that concession off the page around it instead of covering both
  * viewers. See lib/rdkit-route.ts for the fuller reasoning.
@@ -133,11 +133,22 @@ export default function RdkitEmbed() {
 
   return (
     <div>
-      <div className="px-5 pt-3 pb-2 border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
-        <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide dark:text-gray-300">
+      {/* Fixed hex, not gray-* tokens: the viewer body below is always white
+          (RDKit's SVG output has fixed colors meant for a light background),
+          so a header that flipped dark/light independently of it would read
+          as broken rather than synced. gray-* isn't actually fixed either —
+          app/globals.css's .dark block remaps the whole scale (gray-50 becomes
+          a dark navy surface color, not a lighter gray), the same trap the
+          loading/error states below already route around with literal hex.
+          This document also no longer shares an origin with the parent
+          (MolecularViewer.tsx), so it can't observe the parent's theme
+          anyway — deliberately staying theme-independent throughout rather
+          than half-syncing. */}
+      <div className="px-5 pt-3 pb-2 border-b border-[#ece0cd] bg-[#f5ebdd]">
+        <span className="text-xs font-semibold text-[#1b4273] uppercase tracking-wide">
           RDKit.js &mdash; 2D Molecule Structure
         </span>
-        <span className="text-xs text-gray-400 ml-2 dark:text-gray-600">Aspirin (C₉H₈O₄)</span>
+        <span className="text-xs text-[#7b8ea6] ml-2">Aspirin (C₉H₈O₄)</span>
       </div>
       <div
         className="flex items-center justify-center bg-white"

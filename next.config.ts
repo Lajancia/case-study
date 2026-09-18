@@ -115,6 +115,25 @@ const nextConfig: NextConfig = {
         source: `/:locale(${routing.locales.join('|')})/work/${MOLSTAR_DEMO_SLUG}`,
         headers: [{ key: 'Content-Security-Policy', value: MOLSTAR_DEMO_CSP }],
       },
+      // The RDKit embed's sandbox carries no allow-same-origin (see
+      // MolecularViewer.tsx), so its document is an opaque origin — not just
+      // for RDKit's own .wasm fetch, but for every chunk Next's own client
+      // runtime loads. Turbopack loads chunks via dynamic import()/fetch,
+      // not plain <script> tags, so all of it needs CORS from an opaque
+      // origin, not only the one file this project's own code fetches.
+      // Verified live: without this, the whole document fails to hydrate —
+      // RDKit never even gets the chance to fail on its own. No credentials
+      // are ever sent to these paths (they're public, unauthenticated,
+      // content-hashed assets), so a wildcard is safe — credentials +
+      // wildcard is what CORS forbids, not wildcard alone.
+      {
+        source: '/_next/static/:path*',
+        headers: [{ key: 'Access-Control-Allow-Origin', value: '*' }],
+      },
+      {
+        source: '/rdkit/RDKit_minimal.wasm',
+        headers: [{ key: 'Access-Control-Allow-Origin', value: '*' }],
+      },
     ]
   },
 };
