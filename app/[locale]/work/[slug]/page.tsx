@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
 import { getCaseStudy, getAllSlugs, type Locale } from "@/lib/case-studies";
 import { mdxModules } from "@/content/work";
 import { CaseStudyHero } from "@/components/case-study/CaseStudyHero";
@@ -33,6 +34,7 @@ export default async function CaseStudyPage({
   params: Promise<{ locale: Locale; slug: string }>;
 }) {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const study = getCaseStudy(locale, slug);
   if (!study) notFound();
 
