@@ -30,19 +30,28 @@ const LIGHT_ROUTES = [
  */
 const LIGHT_ROUTE_BUDGET = 0.5 * 1024 * 1024
 
+const measureInFrame = () =>
+  performance
+    .getEntriesByType('resource')
+    .filter(
+      (entry): entry is PerformanceResourceTiming =>
+        entry.name.includes('.js') ||
+        entry.name.includes('.wasm') ||
+        (entry as PerformanceResourceTiming).initiatorType === 'script',
+    )
+    .reduce((total, entry) => total + (entry.encodedBodySize || entry.transferSize), 0)
+
+/**
+ * Sums resource bytes across the page and every frame in it. RDKit runs in
+ * its own document (lib/rdkit-route.ts) framed into the demo route, and
+ * `performance.getEntriesByType` on the top page only sees the top page's own
+ * resources — a frame keeps its own timeline. Without summing across frames,
+ * this would silently stop counting RDKit's ~2.5 MB WASM at all.
+ */
 async function scriptBytes(page: Page) {
   await page.waitForLoadState('networkidle')
-  return page.evaluate(() =>
-    performance
-      .getEntriesByType('resource')
-      .filter(
-        (entry): entry is PerformanceResourceTiming =>
-          entry.name.includes('.js') ||
-          entry.name.includes('.wasm') ||
-          (entry as PerformanceResourceTiming).initiatorType === 'script',
-      )
-      .reduce((total, entry) => total + (entry.encodedBodySize || entry.transferSize), 0),
-  )
+  const perFrame = await Promise.all(page.frames().map((frame) => frame.evaluate(measureInFrame)))
+  return perFrame.reduce((total, bytes) => total + bytes, 0)
 }
 
 test.describe('route-scoped chunks', () => {
@@ -101,14 +110,19 @@ test.describe('the live demo actually renders', () => {
   test('Molstar draws a structure and RDKit draws a molecule', async ({ page }) => {
     await page.goto(DEMO_ROUTE)
 
+    // RDKit runs in its own document, framed in by data-testid="rdkit-frame"
+    // (lib/rdkit-route.ts) — frameLocator reaches into it the same way a
+    // reader's DevTools would.
+    const rdkit = page.frameLocator('[data-testid="rdkit-frame"]')
+
     // Assert on RDKit's own output, by name. An earlier version waited for the
     // loading text to disappear and then checked the first <svg> on the page:
     // the text also disappears when RDKit fails, and the first <svg> is the
     // theme toggle in the header, so the test passed while the viewer was
     // showing an error in production.
-    const depiction = page.getByTestId('rdkit-depiction')
+    const depiction = rdkit.getByTestId('rdkit-depiction')
     await expect(depiction.locator('svg')).toBeVisible({ timeout: 30_000 })
-    await expect(page.getByTestId('rdkit-error')).toHaveCount(0)
+    await expect(rdkit.getByTestId('rdkit-error')).toHaveCount(0)
 
     // Mol* renders into a canvas and exposes its preset switcher once ready.
     await expect(page.locator('canvas').first()).toBeVisible({ timeout: 30_000 })
@@ -121,6 +135,9 @@ test.describe('the live demo actually renders', () => {
   })
 
   test('the demo page logs no console errors', async ({ page }) => {
+    // Page-level 'console'/'pageerror' events include every frame on the
+    // page, RDKit's embed (lib/rdkit-route.ts) included — no per-frame
+    // wiring needed to catch a failure there too.
     const errors: string[] = []
     page.on('console', (message) => {
       if (message.type() === 'error') errors.push(message.text())
