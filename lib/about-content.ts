@@ -21,7 +21,7 @@ const EXPERIENCE_EN: Role[] = [
   {
     company: "Arontier",
     title: "Frontend Engineer, Platform Team",
-    period: "Mar 2025 – present",
+    period: "Mar 2025 – present · Seoul-based",
     bullets: [
       "Own frontend development on AD3, a protein structure analysis platform — Molstar/RDKit-based 3D visualization, analysis parameter forms, and route-scoped bundle optimization (32MB → 6.5MB, Lighthouse 29 → 78).",
       "Built viewer and interaction UI for a digital pathology (WSI) platform, including an OWASP ZAP-based security check ahead of an on-premise, regulated delivery.",
@@ -33,7 +33,7 @@ const EXPERIENCE_EN: Role[] = [
   {
     company: "Illuminarean",
     title: "Frontend Engineer",
-    period: "Jun 2024 – Feb 2025 · 9 months · Remote",
+    period: "Jun 2024 – Feb 2025 · Remote",
     bullets: [
       "Migrated to a Next.js 14 standalone build + pnpm, cutting the Docker image from 1.3GB to 500MB and deploy time from 15 minutes to under 3.",
       "Built a recruiting and applicant-management service plus its admin panel (Next.js 14, React Hook Form, React Query).",
@@ -43,19 +43,19 @@ const EXPERIENCE_EN: Role[] = [
   },
   {
     company: "Yura",
-    title: "Frontend Engineer & API Developer",
+    title: "Web Developer, Development Team 4",
     period:
-      "Oct 2022 – May 2024 · 1 yr 8 mo · Seoul-based, remote collaboration with Serbia plant",
+      "Oct 2022 – May 2024 · Pangyo-based, remote collaboration with Serbia plant",
     bullets: [
-      "Designed and built a chart-based monitoring dashboard for a Serbia-based production plant, from Figma design through React/MUI implementation to a Spring Boot + MariaDB backend.",
+      "Designed and built a chart-based monitoring dashboard for a Serbia-based production plant, from Figma design through React/MUI implementation, and adapted an existing Spring Boot API to feed it, writing its MyBatis query mappings.",
       "Visualized per-product, per-line AOI pass rates with ApexCharts and Plotly; the resulting visibility cut the AOI defect rate by roughly 20%.",
       "Coordinated directly with the Serbia-based plant team in English on process formulas and feedback.",
     ],
   },
   {
     company: "commON srl",
-    title: "Frontend Intern",
-    period: "Nov 2021 – May 2022 · 7 months · On-site (Milan) + remote",
+    title: "Web Developer Intern",
+    period: "Nov 2021 – May 2022 · On-site (Milan) + remote",
     bullets: [
       "Built the official website and a magazine display/purchase platform for a Milan-based startup using Vue.js/Vuetify.",
       "Worked in a multinational team on a fashion-magazine and event-marketing web product, and improved portfolio UX for social-driven traffic.",
@@ -67,7 +67,7 @@ const EXPERIENCE_KO: Role[] = [
   {
     company: "아론티어 (Arontier)",
     title: "프론트엔드 엔지니어, 플랫폼팀",
-    period: "2025년 3월 – 현재",
+    period: "2025년 3월 – 현재 · 서울 근무",
     bullets: [
       "단백질 구조 분석 플랫폼 AD3의 프론트엔드 개발 담당 — Molstar/RDKit 기반 3D 시각화, 분석 파라미터 입력 폼, 라우트 단위 번들 최적화(32MB → 6.5MB, Lighthouse 29 → 78).",
       "병리 이미지(WSI) 분석 플랫폼의 뷰어·인터랙션 UI 개발, 온프레미스 규제 환경 납품에 앞선 OWASP ZAP 기반 보안 점검 포함.",
@@ -79,7 +79,7 @@ const EXPERIENCE_KO: Role[] = [
   {
     company: "일루미나리안",
     title: "프론트엔드 엔지니어",
-    period: "2024년 6월 – 2025년 2월 · 9개월 · 원격",
+    period: "2024년 6월 – 2025년 2월 · 원격",
     bullets: [
       "Next.js 14 standalone 빌드 + pnpm으로 마이그레이션, Docker 이미지를 1.3GB에서 500MB로, 배포 시간을 15분에서 3분 이내로 단축.",
       "채용 공고 및 지원자 관리 서비스와 그 관리자 페이지 개발 (Next.js 14, React Hook Form, React Query).",
@@ -89,19 +89,19 @@ const EXPERIENCE_KO: Role[] = [
   },
   {
     company: "유라",
-    title: "프론트엔드 엔지니어 & API 개발자",
+    title: "웹 개발자, 개발 4팀",
     period:
-      "2022년 10월 – 2024년 5월 · 1년 8개월 · 서울 근무, 세르비아 현지와 원격 협업",
+      "2022년 10월 – 2024년 5월 · 판교 근무, 세르비아 현지와 원격 협업",
     bullets: [
-      "세르비아 소재 생산 공장을 위한 차트 기반 모니터링 대시보드를 Figma 설계부터 React/MUI 구현, Spring Boot + MariaDB 백엔드까지 직접 설계·개발.",
+      "세르비아 소재 생산 공장을 위한 차트 기반 모니터링 대시보드를 Figma 설계부터 React/MUI 구현까지 직접 담당하고, 기존 Spring Boot API를 요구사항에 맞게 수정하며 MyBatis 쿼리 작성.",
       "ApexCharts·Plotly로 품목별·라인별 AOI 직행률을 시각화 — AOI 불량률을 약 20% 감소.",
       "세르비아 현지 공장 팀과 영어로 직접 소통하며 공정 계산식과 피드백을 반영.",
     ],
   },
   {
     company: "commON srl",
-    title: "프론트엔드 인턴",
-    period: "2021년 11월 – 2022년 5월 · 7개월 · 밀라노 현지 근무 + 원격",
+    title: "웹 개발자 인턴",
+    period: "2021년 11월 – 2022년 5월 · 밀라노 현지 근무 + 원격",
     bullets: [
       "밀라노 소재 스타트업의 공식 웹사이트와 매거진 디스플레이·구매 플랫폼을 Vue.js/Vuetify로 개발.",
       "다국적 팀에서 패션 매거진 및 이벤트 마케팅 웹 제품을 작업하고, SNS 유입 트래픽을 위한 포트폴리오 UX 개선.",
