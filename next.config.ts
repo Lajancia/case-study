@@ -22,13 +22,20 @@ const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
 ]
 
+const isProduction = process.env.NODE_ENV === 'production'
+
+// React reconstructs server error stacks in the browser during development,
+// which needs eval() — production doesn't use eval on its own. Dev-only, the
+// same as proxy.ts granted before CSP moved here (see git history).
+const devEval = isProduction ? '' : ` 'unsafe-eval'`
+
 const DEFAULT_CSP = [
   `default-src 'self'`,
   // No nonce is possible without a per-request response, so script-src
   // relies on 'unsafe-inline'. There is no live injection vector on this
   // site to justify the dynamic-rendering cost of a nonce instead (see the
   // design doc linked from the README for the reasoning).
-  `script-src 'self' 'unsafe-inline'`,
+  `script-src 'self' 'unsafe-inline'${devEval}`,
   `style-src 'self' 'unsafe-inline'`,
   `img-src 'self' data: blob:`,
   `font-src 'self'`,
@@ -65,7 +72,7 @@ const RDKIT_EMBED_CSP = [
 // — scoped to the one route that mounts it, same reasoning as above.
 const MOLSTAR_DEMO_CSP = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline'`,
+  `script-src 'self' 'unsafe-inline'${devEval}`,
   `style-src 'self' 'unsafe-inline'`,
   `img-src 'self' data: blob:`,
   `font-src 'self'`,
