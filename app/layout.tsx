@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
@@ -13,17 +12,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // next-themes settles the theme from localStorage in an inline script that
-  // runs before first paint. Under this site's CSP that script only executes if
-  // it carries the request's nonce, which proxy.ts puts on the request as
-  // x-nonce. Without it the page would paint light and then correct itself.
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
-
   return (
     // suppressHydrationWarning: the inline script adds the theme class to this
     // element before React hydrates, so the server's markup is expected to
@@ -32,13 +25,14 @@ export default async function RootLayout({
       <body className="min-h-screen flex flex-col bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
         {/* attribute="class" to match the `dark` variant globals.css declares.
             The stylesheet has no .light rule — light is the :root default — so
-            the class next-themes adds for it is simply inert. */}
+            the class next-themes adds for it is simply inert. Under this
+            site's CSP, script-src carries 'unsafe-inline' (next.config.ts), so
+            this inline theme-init script runs without needing a nonce. */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-          nonce={nonce}
         >
           {children}
         </ThemeProvider>
