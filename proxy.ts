@@ -1,7 +1,7 @@
 import createMiddleware from 'next-intl/middleware'
 import { NextRequest, NextResponse } from 'next/server'
 import { routing } from './i18n/routing'
-import { RDKIT_EMBED_PATH } from './lib/rdkit-route'
+import { RDKIT_EMBED_PATH, MOLSTAR_DEMO_SLUG } from './lib/rdkit-route'
 
 const handleI18nRouting = createMiddleware(routing)
 
@@ -20,6 +20,12 @@ export const HIRE_TRACK_COOKIE = 'track'
 // so no locale prefix to match. Nothing else needs what it needs, so the
 // allowance stops here.
 const RDKIT_PATH = new RegExp(`^${RDKIT_EMBED_PATH}/?$`)
+
+// The one route that mounts Molstar directly and needs connect-src open to
+// RCSB. See lib/rdkit-route.ts.
+const MOLSTAR_DEMO_PATH = new RegExp(
+  `^/(?:(?:${routing.locales.join('|')})/)?work/${MOLSTAR_DEMO_SLUG}/?$`,
+)
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -42,7 +48,7 @@ const isProduction = process.env.NODE_ENV === 'production'
  * policy, and it is paid deliberately: see "Rendering mode" in the README for
  * what it buys and what it would take to undo.
  */
-function contentSecurityPolicy(nonce: string, isRdkitEmbed: boolean) {
+function contentSecurityPolicy(nonce: string, isRdkitEmbed: boolean, isMolstarDemo: boolean) {
   // RDKit needs both, and this was learned the hard way. 'wasm-unsafe-eval'
   // lets the browser compile the module; without it nothing loads at all. But
   // the Emscripten embind layer then builds its method invokers with
@@ -71,8 +77,9 @@ function contentSecurityPolicy(nonce: string, isRdkitEmbed: boolean) {
     // next/font downloads the Geist families at build time and serves them from
     // /_next/static, so no font host is needed.
     `font-src 'self'`,
-    // Mol* fetches the demo structure straight from RCSB.
-    `connect-src 'self' https://files.rcsb.org`,
+    // Mol* fetches the demo structure straight from RCSB — scoped to the one
+    // route that mounts it, same reasoning as the eval allowance above.
+    `connect-src 'self'${isMolstarDemo ? ' https://files.rcsb.org' : ''}`,
     `object-src 'none'`,
     `base-uri 'self'`,
     `form-action 'self'`,
@@ -89,7 +96,8 @@ function contentSecurityPolicy(nonce: string, isRdkitEmbed: boolean) {
 export function proxy(request: NextRequest) {
   const nonce = crypto.randomUUID().replaceAll('-', '')
   const isRdkitEmbed = RDKIT_PATH.test(request.nextUrl.pathname)
-  const csp = contentSecurityPolicy(nonce, isRdkitEmbed)
+  const isMolstarDemo = MOLSTAR_DEMO_PATH.test(request.nextUrl.pathname)
+  const csp = contentSecurityPolicy(nonce, isRdkitEmbed, isMolstarDemo)
 
   // next-intl copies the incoming headers onto the response it forwards
   // downstream, so the policy has to be on the request before it runs: that

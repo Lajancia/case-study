@@ -114,6 +114,20 @@ test.describe('content security policy', () => {
     }
   })
 
+  test('only the page that mounts Molstar may connect to RCSB', async ({ request }) => {
+    // Unlike RDKit, Molstar isn't iframed off (lib/rdkit-route.ts) — it
+    // shares the case-study page, so its own connect-src need lives there
+    // instead. Every other route was carrying this same allowance for no
+    // reason: nothing there ever fetches from RCSB.
+    const onDemo = (await request.get(DEMO_ROUTE)).headers()['content-security-policy']
+    expect(onDemo).toContain('https://files.rcsb.org')
+
+    for (const route of [...ROUTES, RDKIT_EMBED_ROUTE]) {
+      const csp = (await request.get(route)).headers()['content-security-policy']
+      expect(csp, `RCSB allowed on ${route}`).not.toContain('files.rcsb.org')
+    }
+  })
+
   test('only the RDKit embed may be framed, and only by this origin', async ({
     request,
   }) => {

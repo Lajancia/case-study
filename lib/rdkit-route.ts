@@ -18,3 +18,13 @@
  * that embed it.
  */
 export const RDKIT_EMBED_PATH = '/embed/rdkit-viewer'
+
+/**
+ * The case-study route that mounts Molstar directly — unlike RDKit above,
+ * Molstar isn't iframed off, so its own `connect-src` need (RCSB, where
+ * MolstarViewer.tsx fetches the demo structure) has nowhere narrower to live
+ * than this page. Every other route was carrying that same allowance for no
+ * reason: nothing there ever calls RCSB. Scoping it to this route narrows
+ * that the same way RDKIT_EMBED_PATH narrows the eval allowance above.
+ */
+export const MOLSTAR_DEMO_SLUG = 'scientific-platform-performance'
