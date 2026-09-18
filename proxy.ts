@@ -1,6 +1,7 @@
 import createMiddleware from 'next-intl/middleware'
 import { NextRequest } from 'next/server'
 import { routing } from './i18n/routing'
+import { RDKIT_ROUTE_SLUG } from './lib/rdkit-route'
 
 const handleI18nRouting = createMiddleware(routing)
 
@@ -18,7 +19,7 @@ export const HIRE_TRACK_COOKIE = 'track'
 // The one route that runs RDKit. Nothing else on the site needs what it needs,
 // so the allowance stops here.
 const RDKIT_PATH = new RegExp(
-  `^/(?:(?:${routing.locales.join('|')})/)?work/scientific-platform-performance/?$`,
+  `^/(?:(?:${routing.locales.join('|')})/)?work/${RDKIT_ROUTE_SLUG}/?$`,
 )
 
 const isProduction = process.env.NODE_ENV === 'production'

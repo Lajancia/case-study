@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
-import { Link } from '@/i18n/navigation'
+import { Link, getPathname } from '@/i18n/navigation'
 import type { CaseStudyMeta, Locale } from '@/lib/case-studies'
+import { RDKIT_ROUTE_SLUG } from '@/lib/rdkit-route'
 
 interface WorkCardProps {
   study: CaseStudyMeta
@@ -42,14 +43,32 @@ export async function WorkCard({ study, locale }: WorkCardProps) {
           <span key={tech} className="text-xs bg-[#00224D] text-[#F5EBDD] dark:bg-[#0284c7] dark:text-white px-2 py-0.5 rounded font-medium">{tech}</span>
         ))}
       </div>
-      <Link
-        href={`/work/${study.slug}`}
-        className={`text-sm font-medium transition-colors ${
-          study.draft ? 'text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500' : 'text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
-        }`}
-      >
-        {t('readCaseStudy')}
-      </Link>
+      {/*
+        RDKit's route (see lib/rdkit-route.ts) needs a real navigation, not
+        next/link's client-side transition: the CSP that allows its WASM to
+        compile is scoped to that path in proxy.ts, and a soft navigation
+        keeps whatever policy this page — /work — loaded with, which never
+        carries that allowance.
+      */}
+      {study.slug === RDKIT_ROUTE_SLUG ? (
+        <a
+          href={getPathname({ href: `/work/${study.slug}`, locale })}
+          className={`text-sm font-medium transition-colors ${
+            study.draft ? 'text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500' : 'text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
+          }`}
+        >
+          {t('readCaseStudy')}
+        </a>
+      ) : (
+        <Link
+          href={`/work/${study.slug}`}
+          className={`text-sm font-medium transition-colors ${
+            study.draft ? 'text-gray-400 hover:text-gray-500 dark:text-gray-600 dark:hover:text-gray-500' : 'text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
+          }`}
+        >
+          {t('readCaseStudy')}
+        </Link>
+      )}
     </article>
   )
 }
