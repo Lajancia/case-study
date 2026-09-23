@@ -108,23 +108,26 @@ ArgoCD, running on the K3s cluster, polls the GitOps repository every 3 minutes.
 
 ## Infrastructure diagram
 
-The pipeline page on the portfolio site visualizes this architecture as an interactive timeline:
+Deployment and serving are two separate paths. The deploy path runs one way, on every merge to `main`:
 
 ```
-User → Nginx (proxy + SSL) → Next.js (R3F portfolio) → Jenkins (CI pipeline)
-                                                              ↓
-                                                        GHCR (image registry)
-                                                              ↓
-                                                        GitOps repo (manifests)
-                                                              ↓
-                                                        ArgoCD (auto-sync)
-                                                              ↓
-                                                        K3s cluster (production)
-                                                              ↓
-                                                        Tailscale (secure VPN access)
+GitHub push
+     ↓
+PR reviewed & merged to main
+     ↓
+Jenkins webhook
+     ↓
+Docker image build → push to GHCR
+     ↓
+GitOps repo update (image tag bump)
+     ↓
+ArgoCD sync
+     ↓
+K3s cluster deploy (rolling update)
 ```
 
-Each node is clickable with detailed descriptions of its role.
+The serving path is unrelated to the above: Nginx terminates SSL and proxies requests to the Next.js
+application running on K3s. Tailscale covers administrative access to the cluster — it sits on neither path.
 
 ## Infrastructure details
 
