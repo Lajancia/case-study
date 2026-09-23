@@ -110,7 +110,7 @@ const RdkitDepiction = dynamic(() => import('@/components/chem/RdkitDepiction'))
 
 <MolecularViewer />
 
-두 라이브러리 모두 흉내만 낸 게 아니라 실제로 번들링·코드 스플리팅되어 있습니다: RDKit.js(~2.5MB WASM)는 이 사이트가 직접 서빙하는 `/rdkit/` 경로에서 로드되고, Molstar는 `molstar` npm 패키지에서 `React.lazy()`를 통해 로드됩니다 — AD3 자체가 뷰어 컴포넌트에 쓰는 것과 같은 패턴입니다.
+두 라이브러리 모두 흉내만 낸 게 아니라 실제로 번들링·코드 스플리팅되어 있습니다: RDKit.js(WASM 바이너리 — gzip 전송 기준 ~2MB, 압축 전 6.9MB)는 이 사이트가 직접 서빙하는 `/rdkit/` 경로에서 로드되고, Molstar는 `molstar` npm 패키지에서 `React.lazy()`를 통해 로드됩니다 — AD3 자체가 뷰어 컴포넌트에 쓰는 것과 같은 패턴입니다.
 
 **왜 `next/dynamic` 대신 Molstar에 `React.lazy()`를 썼나?** `next/dynamic`은 단일 React 컴포넌트를 지연 로드하기 위한 것인데, Mol*의 프로덕션 통합 방식은 명령형입니다(`createPluginUI`가 DOM 컨테이너에 직접 마운트되지, Next가 알아서 코드 스플리팅할 수 있는 컴포넌트 트리를 통하지 않습니다). 모듈 전체를 `React.lazy(() => import('./MolstarViewer'))` + `Suspense`로 감싸면 이 컴포넌트가 렌더링될 때까지 `molstar` 청크 전체를 지연시킬 수 있습니다.
 
