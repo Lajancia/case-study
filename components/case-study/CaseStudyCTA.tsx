@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { siteConfig, mailtoUrl } from "@/lib/site";
 import type { Locale } from "@/lib/case-studies";
 
@@ -18,17 +19,28 @@ export async function CaseStudyCTA({ locale }: { locale: Locale }) {
             href={siteConfig.calendlyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-500 dark:hover:bg-blue-600"
+            className="inline-flex items-center w-full sm:w-auto justify-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-500 dark:hover:bg-blue-600"
           >
             {t("bookACall")}
           </a>
         )}
         <a
           href={mailtoUrl("Frontend performance audit inquiry")}
-          className="inline-flex items-center rounded-full border border-blue-600 px-6 py-2.5 text-blue-600 font-medium hover:bg-blue-50 active:scale-[0.98] hover:scale-[1.02] transition dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950/60"
+          className="inline-flex items-center w-full sm:w-auto justify-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-500 dark:hover:bg-blue-600"
         >
           {t("emailSoomin")}
         </a>
+        {/* Secondary to the email CTA: a way back into the list for someone
+            who wants to keep reading rather than get in touch. Outlined
+            against the filled email button so the two don't read alike.
+            If `calendlyUrl` is ever set, "Book a call" becomes a second
+            filled button — revisit which one stays solid at that point. */}
+        <Link
+          href="/work"
+          className="inline-flex items-center w-full sm:w-auto justify-center rounded-full border border-blue-600 px-6 py-2.5 text-blue-600 font-medium hover:bg-blue-100 active:scale-[0.98] hover:scale-[1.02] transition dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950/60"
+        >
+          {t("viewProjects")}
+        </Link>
       </div>
     </section>
   );
