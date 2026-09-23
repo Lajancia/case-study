@@ -12,13 +12,15 @@ before the first edit and its **Self-Verification** before claiming anything is 
 
 ## Reference map
 
-| If the task is…                                       | Read                             |
-| ----------------------------------------------------- | -------------------------------- |
-| Anything that writes code                             | `CONTRIBUTING.md`                |
-| Why routes render on demand, how theming and CSP work | `README.md`                      |
-| Next.js APIs, config, file conventions                | `node_modules/next/dist/docs/`   |
-| Framework-level quality bar before shipping           | `…/docs/01-app/02-guides/production-checklist.md` |
-| What a case study asserts about this site             | `content/work/{en,ko}/*.mdx`     |
+| If the task is…                                         | Read                                              |
+| ------------------------------------------------------- | ------------------------------------------------- |
+| Anything that writes code                               | `CONTRIBUTING.md`                                 |
+| Running it locally, and what each script does           | `README.md` §Getting Started, §Scripts            |
+| Why routes prerender, which two do not, theming and CSP | `README.md`                                       |
+| Next.js APIs, config, file conventions                  | `node_modules/next/dist/docs/`                    |
+| Framework-level quality bar before shipping             | `…/docs/01-app/02-guides/production-checklist.md` |
+| What must pass before a change ships                    | `README.md` §Verification Gates                   |
+| What a case study asserts about this site               | `content/work/{en,ko}/*.mdx`                      |
 
 Skip what the task does not need. Do not preload everything.
 
@@ -34,7 +36,9 @@ Compiling is not working. Use the tooling rather than inferring from a green bui
   compilation issues — without a full `next build`. `.mcp.json` wires it up; a production build
   does not serve it.
 - `.claude/skills/next-dev-loop` is the edit-and-verify rhythm on top of that, cross-checked
-  against the browser. Invoke it after edits to app code.
+  against the browser. Invoke it as a skill after edits to app code; where skills do not exist,
+  read it as a document and follow it. `/_next/mcp` is a plain HTTP endpoint — `curl` reaches it
+  from any tool, with or without `.mcp.json`.
 - `next dev` forwards browser warnings and errors to the terminal
   (`logging.browserToTerminal` in `next.config.ts`).
 - A second `next dev` prints the running server's URL and PID instead of starting a duplicate.
