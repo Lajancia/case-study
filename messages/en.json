@@ -51,7 +51,7 @@
     "letsWorkSubtitle": "Ready to work with a new team."
   },
   "work": {
-    "title": "Selected projects",
+    "title": "Selected case studies",
     "comingSoon": "Coming soon",
     "readCaseStudy": "Read case study →",
     "draft": "Draft",
@@ -148,6 +148,6 @@
     "title": "Page not found",
     "description": "The page you're looking for doesn't exist or has moved.",
     "backHome": "Back to home",
-    "viewWork": "View projects"
+    "viewWork": "View case studies"
   }
 }
