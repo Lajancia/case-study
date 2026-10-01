@@ -5,7 +5,7 @@
   },
   "nav": {
     "about": "About",
-    "work": "Projects",
+    "work": "Case Studies",
     "hire": "Work with me",
     "technicalWriting": "Technical Writing",
     "resume": "Resume",
@@ -34,7 +34,7 @@
     "bookACall": "Book a call",
     "emailSoomin": "Email Soomin",
     "resultsAtAGlance": "Results at a glance",
-    "selectedWork": "Selected projects",
+    "selectedWork": "Selected case studies",
     "readFullCaseStudy": "Read full case study →",
     "seeAllCaseStudies": "See all case studies",
     "howWeWorkTitle": "Core strengths",
@@ -51,15 +51,15 @@
     "letsWorkSubtitle": "Ready to work with a new team."
   },
   "work": {
-    "title": "Selected projects",
+    "title": "Selected case studies",
     "comingSoon": "Coming soon",
     "readCaseStudy": "Read case study →",
     "draft": "Draft",
     "filterAria": "Filter by capability",
     "resultCount": "{count, plural, =1 {# case study} other {# case studies}}",
-    "clearFilter": "Show all projects",
+    "clearFilter": "Show all case studies",
     "capabilities": {
-      "all": "All projects",
+      "all": "All case studies",
       "performance": "Performance",
       "visualization": "3D & data visualization",
       "delivery": "CI/CD & deployment",
@@ -71,11 +71,11 @@
       "illuminarean": "Illuminarean LLC",
       "yura": "Yura Corp.",
       "common-srl": "commON srl",
-      "personal": "Personal Projects"
+      "personal": "Personal Case Studies"
     }
   },
   "hire": {
-    "seeAllWork": "See all {capability} projects ({count})",
+    "seeAllWork": "See all {capability} case studies ({count})",
     "processTitle": "How a project runs",
     "step1Title": "Inquiry review",
     "step1Timing": "1-2 business days",
@@ -149,6 +149,6 @@
     "title": "Page not found",
     "description": "The page you're looking for doesn't exist or has moved.",
     "backHome": "Back to home",
-    "viewWork": "View projects"
+    "viewWork": "View case studies"
   }
 }
