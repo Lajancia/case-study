@@ -85,7 +85,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
     description:
       "Route-scoped loading for Molstar/RDKit and runtime rendering fixes that cut a scientific React platform's main bundle from 32MB to 6.5MB and moved two heavyweight visualization libraries to on-demand loading.",
     role: "Frontend Engineer",
-    timeline: "Mar 2025 – present",
+    timeline: "Mar 2025 – Oct 2026",
     industry: "Biotech / AI drug discovery",
     company: "arontier",
     stack: [
@@ -245,7 +245,7 @@ const caseStudiesEn: CaseStudyMeta[] = [
     description:
       "Moving the Jenkins pipeline definitions for three codebases into one central repository, converging their stage structure, and migrating E2E from Cypress to Playwright so 350 tests run automatically in CI.",
     role: "CI/CD Pipeline Design & Operations",
-    timeline: "Apr 2025 – present",
+    timeline: "Apr 2025 – Oct 2026",
     industry: "Platform engineering / DevSecOps",
     company: "arontier",
     stack: [
@@ -471,7 +471,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
     description:
       "Molstar/RDKit 라우트 단위 로딩과 런타임 렌더링 개선으로 과학 분야 React 플랫폼의 메인 번들을 32MB에서 6.5MB로 줄이고, 두 개의 대형 시각화 라이브러리를 온디맨드 로딩으로 전환한 과정.",
     role: "프론트엔드 엔지니어",
-    timeline: "2025년 3월 – 현재",
+    timeline: "2025년 3월 – 2026년 10월",
     industry: "바이오테크 / AI 신약 개발",
     company: "arontier",
     stack: [
@@ -629,7 +629,7 @@ const caseStudiesKo: CaseStudyMeta[] = [
     description:
       "세 코드베이스의 Jenkins 파이프라인 정의를 중앙 저장소 하나로 모아 스테이지 구조를 통일하고, E2E를 Cypress에서 Playwright로 전면 이관해 350개 테스트를 CI에서 자동 실행하도록 만든 과정.",
     role: "CI/CD 파이프라인 설계 및 운영",
-    timeline: "2025년 4월 – 현재",
+    timeline: "2025년 4월 – 2026년 10월",
     industry: "플랫폼 엔지니어링 / DevSecOps",
     company: "arontier",
     stack: [

@@ -21,7 +21,7 @@ const EXPERIENCE_EN: Role[] = [
   {
     company: "Arontier",
     title: "Frontend Engineer, Platform Team",
-    period: "Mar 2025 – present · Seoul-based",
+    period: "Mar 2025 – Oct 2026 · Seoul-based",
     bullets: [
       "Own frontend development on AD3, a protein structure analysis platform — Molstar/RDKit-based 3D visualization, analysis parameter forms, and route-scoped bundle optimization (32MB → 6.5MB, Lighthouse 29 → 78).",
       "Built viewer and interaction UI for a digital pathology (WSI) platform, including an OWASP ZAP-based security check ahead of an on-premise, regulated delivery.",
@@ -67,7 +67,7 @@ const EXPERIENCE_KO: Role[] = [
   {
     company: "아론티어 (Arontier)",
     title: "프론트엔드 엔지니어, 플랫폼팀",
-    period: "2025년 3월 – 현재 · 서울 근무",
+    period: "2025년 3월 – 2026년 10월 · 서울 근무",
     bullets: [
       "단백질 구조 분석 플랫폼 AD3의 프론트엔드 개발 담당 — Molstar/RDKit 기반 3D 시각화, 분석 파라미터 입력 폼, 라우트 단위 번들 최적화(32MB → 6.5MB, Lighthouse 29 → 78).",
       "병리 이미지(WSI) 분석 플랫폼의 뷰어·인터랙션 UI 개발, 온프레미스 규제 환경 납품에 앞선 OWASP ZAP 기반 보안 점검 포함.",
