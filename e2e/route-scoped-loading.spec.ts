@@ -46,7 +46,8 @@ const measureInFrame = () =>
  * its own document (lib/rdkit-route.ts) framed into the demo route, and
  * `performance.getEntriesByType` on the top page only sees the top page's own
  * resources — a frame keeps its own timeline. Without summing across frames,
- * this would silently stop counting RDKit's ~2.5 MB WASM at all.
+ * this would silently stop counting RDKit's WASM at all (~2 MB as
+ * `encodedBodySize` counts it — the gzipped transfer, not the 6.9 MB binary).
  */
 async function scriptBytes(page: Page) {
   await page.waitForLoadState('networkidle')

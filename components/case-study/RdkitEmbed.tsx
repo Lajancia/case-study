@@ -158,7 +158,7 @@ export default function RdkitEmbed() {
           // Fixed greys, not tokens: this panel is white in both themes, and
           // .dark remaps the grey scale to light values meant for dark backings.
           <div className="text-[#4b5563] text-sm animate-pulse px-4 text-center">
-            <p>Loading RDKit.js (~2.5 MB WASM, served from this origin)...</p>
+            <p>Loading RDKit.js (~2 MB gzipped WASM, 6.9 MB uncompressed, served from this origin)...</p>
             <p className="text-xs mt-2">This library loads on-demand — zero bytes on other pages.</p>
           </div>
         )}

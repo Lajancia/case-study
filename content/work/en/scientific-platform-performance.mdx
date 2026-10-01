@@ -110,7 +110,7 @@ The panel below demonstrates both libraries loading on-demand. Open DevTools →
 
 <MolecularViewer />
 
-Both libraries are genuinely bundled and code-split, not simulated: RDKit.js (~2.5 MB WASM) is served from this site's own `/rdkit/` path, and Molstar loads from the `molstar` npm package via `React.lazy()` — the same pattern AD3 itself uses for its viewer component.
+Both libraries are genuinely bundled and code-split, not simulated: RDKit.js (a WASM binary: ~2 MB gzipped over the wire, 6.9 MB uncompressed) is served from this site's own `/rdkit/` path, and Molstar loads from the `molstar` npm package via `React.lazy()` — the same pattern AD3 itself uses for its viewer component.
 
 **Why `React.lazy()` for Molstar instead of `next/dynamic`?** `next/dynamic` is built for lazy-loading a single React component; Mol*'s production integration is imperative (`createPluginUI` mounts directly into a DOM container, not through a component tree Next can code-split on its own). Splitting the whole module behind `React.lazy(() => import('./MolstarViewer'))` + `Suspense` defers the entire `molstar` chunk until this component renders.
 
