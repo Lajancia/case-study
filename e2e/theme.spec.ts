@@ -56,3 +56,55 @@ test.describe('the toggle', () => {
     ).toBeAttached()
   })
 })
+
+/**
+ * Switching theme fades backgrounds over 0.3s; text and every other colour
+ * switch at once. The pill has no transition utility of its own, so it is the
+ * element that snapped when next-themes suppressed transitions during the
+ * switch.
+ */
+async function samplePillDuringToggle(page: import('@playwright/test').Page) {
+  const pill = page.getByTestId('expertise-pill').first()
+  const read = (el: Element) => {
+    const style = getComputedStyle(el)
+    return { bg: style.backgroundColor, text: style.color }
+  }
+  const before = await pill.evaluate(read)
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click()
+  // ~150ms in is halfway through a 0.3s fade.
+  const mid = await pill.evaluate(
+    (el) =>
+      new Promise<{ bg: string; text: string }>((resolve) =>
+        setTimeout(() => {
+          const style = getComputedStyle(el)
+          resolve({ bg: style.backgroundColor, text: style.color })
+        }, 150),
+      ),
+  )
+  await expect(html(page)).toHaveClass(/\bdark\b/)
+  await expect(html(page)).not.toHaveClass(/\btheme-switching\b/)
+  const after = await pill.evaluate(read)
+  return { before, mid, after }
+}
+
+test.describe('switching theme', () => {
+  test('fades the background over 0.3s and switches text at once', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light', reducedMotion: 'no-preference' })
+    await page.goto('/en')
+
+    const { before, mid, after } = await samplePillDuringToggle(page)
+    expect(before.bg).not.toBe(after.bg)
+    expect(before.text).not.toBe(after.text)
+    expect(mid.bg, 'background mid-switch should be between the two themes').not.toBe(before.bg)
+    expect(mid.bg, 'background mid-switch should be between the two themes').not.toBe(after.bg)
+    expect(mid.text, 'text should already be the new theme').toBe(after.text)
+  })
+
+  test('snaps when the visitor asks for reduced motion', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light', reducedMotion: 'reduce' })
+    await page.goto('/en')
+
+    const { mid, after } = await samplePillDuringToggle(page)
+    expect(mid).toEqual(after)
+  })
+})

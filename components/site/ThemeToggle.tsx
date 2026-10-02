@@ -1,5 +1,6 @@
 'use client'
 
+import { useRef } from 'react'
 import { useTheme } from 'next-themes'
 import { useTranslations } from 'next-intl'
 import { useHydrated } from '@/lib/use-hydrated'
@@ -15,7 +16,16 @@ export function ThemeToggle() {
   const hydrated = useHydrated()
   const isDark = hydrated && resolvedTheme === 'dark'
 
+  // `theme-switching` on <html> fades every background for the length of the
+  // switch (globals.css). Kept to the toggle so an OS-driven change, or the
+  // first paint, never animates. Must match --theme-switch-duration.
+  const switchTimer = useRef<number | undefined>(undefined)
+
   function toggle() {
+    const root = document.documentElement
+    root.classList.add('theme-switching')
+    window.clearTimeout(switchTimer.current)
+    switchTimer.current = window.setTimeout(() => root.classList.remove('theme-switching'), 300)
     setTheme(isDark ? 'light' : 'dark')
   }
 

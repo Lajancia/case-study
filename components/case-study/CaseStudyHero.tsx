@@ -37,7 +37,7 @@ export async function CaseStudyHero({ study, locale }: CaseStudyHeroProps) {
             {study.stack.map((tech) => (
               <span
                 key={tech}
-                className="text-xs bg-[#00224D] text-[#F5EBDD] dark:bg-[#0284c7] dark:text-white px-2 py-0.5 rounded font-medium"
+                className="text-xs bg-[#111111] text-[#f5efe6] dark:bg-[#2e2e2e] dark:text-white px-2 py-0.5 rounded font-medium"
               >
                 {tech}
               </span>

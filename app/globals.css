@@ -4,10 +4,10 @@
 
 @theme inline {
   /* Core Brand Tokens */
-  --color-cream: #f5ebdd;
-  --color-navy: #00224d;
-  --color-red: #ff204e;
-  --color-blue: #315b8c;
+  --color-cream: #f5efe6;
+  --color-navy: #111111;
+  --color-red: #d7192f;
+  --color-blue: #111111;
 
   /* Dynamic CSS variable bindings for utilities */
   --color-gray-50: var(--color-gray-50);
@@ -48,81 +48,81 @@
 }
 
 :root {
-  /* Light theme: white page, warm cream surfaces, deep navy ink.
-     The page stays white so cards, code blocks and the accent red keep
-     their contrast; the cream carries the brand warmth on surfaces. */
-  --color-gray-50: #f5ebdd;
-  --color-gray-100: #ece0cd;  /* hover surface — must stay between 50 and 200 */
-  --color-gray-200: #c9b497;
-  --color-gray-300: #bfa888;
-  --color-gray-400: #7b8ea6;
-  --color-gray-500: #556c88;
-  --color-gray-600: #315b8c;
-  --color-gray-700: #1b4273;
-  --color-gray-800: #0d305c;
-  --color-gray-900: #00224d;
-  --color-gray-950: #001736;
+  /* Light theme: white page, beige surfaces, near-black ink, red accent.
+     The red is #d7192f rather than a brighter one so it clears WCAG AA as
+     text on both white (5.16) and the beige surface (4.51). */
+  --color-gray-50: #f5efe6;
+  --color-gray-100: #ece3d5;  /* hover surface — must stay between 50 and 200 */
+  --color-gray-200: #d9ccb8;
+  --color-gray-300: #c8b9a2;
+  --color-gray-400: #6e6862;
+  --color-gray-500: #5e5852;
+  --color-gray-600: #3d3a37;
+  --color-gray-700: #2a2826;
+  --color-gray-800: #1c1b1a;
+  --color-gray-900: #111111;
+  --color-gray-950: #000000;
 
-  --color-blue-50: #f5ebdd;  /* CTA panel — same cream surface, one tone only */
-  --color-blue-100: #d8c4a6;
-  --color-blue-400: #ff5c7d;
-  --color-blue-500: #ff204e;
-  --color-blue-600: #ff204e;
-  --color-blue-700: #d8143d;
-  --color-blue-800: #315b8c;
-  --color-blue-950: #001f45;
+  --color-blue-50: #f5efe6;  /* CTA panel — same beige surface, one tone only */
+  --color-blue-100: #e6d8c3;
+  --color-blue-400: #e8475c;
+  --color-blue-500: #d7192f;
+  --color-blue-600: #d7192f;
+  --color-blue-700: #a50e25;
+  --color-blue-800: #111111;
+  --color-blue-950: #2a0a0f;
 
   --color-background: #ffffff;
-  --color-foreground: #00224d;
-  --color-accent: #ff204e;
-  --color-accent-hover: #315b8c;
-  --color-muted: #556c88;
-  --color-border: #c9b497;
-  --color-surface: #f5ebdd;
+  --color-foreground: #111111;
+  --color-accent: #d7192f;
+  --color-accent-hover: #a50e25;
+  --color-muted: #5e5852;
+  --color-border: #d9ccb8;
+  --color-surface: #f5efe6;
 
-  --scrollbar-thumb: #c9b497;
-  --scrollbar-thumb-hover: #315b8c;
+  --theme-switch-duration: 300ms; /* ThemeToggle clears the class after this */
+
+  --scrollbar-thumb: #d9ccb8;
+  --scrollbar-thumb-hover: #d7192f;
 }
 
 .dark {
   /*
-    High-contrast, clean Dark Mode:
-    Background: Deep Slate-Navy (#0b1329)
-    Surfaces & Cards: Elevated Charcoal-Navy (#131f3d)
-    Text: High contrast crisp white (#ffffff) and clear slate-200 (#e2e8f0)
-    Accents: Crisp blue palette (#38bdf8 / #0284c7)
+    Dark theme: black page, neutral-grey surfaces, white ink, red accent.
+    The gray scale keeps the roles the old palette gave each step — note
+    100 is the heading highlight and 700 is emphasis text, not greys.
   */
-  --color-gray-50: #131f3d;      /* Card/Box surface */
-  --color-gray-100: #38bdf8;     /* Bright accent blue for heading highlights */
-  --color-gray-200: #233765;     /* Card border / divider */
-  --color-gray-300: #7dd3fc;     /* Secondary strong light-blue/cyan text */
-  --color-gray-400: #cbd5e1;     /* Main descriptions & body */
-  --color-gray-500: #94a3b8;     /* Metadata / labels */
-  --color-gray-600: #64748b;     /* Tertiary / disabled */
-  --color-gray-700: #f8fafc;     /* Emphasis text */
-  --color-gray-800: #1a2a50;     /* Dark component backings */
-  --color-gray-900: #131f3d;     /* Panel surface: only reached via dark:bg-gray-900 */
-  --color-gray-950: #050b18;     /* Darkest base */
+  --color-gray-50: #171717;      /* Card/Box surface */
+  --color-gray-100: #ff5a6a;     /* Heading highlight */
+  --color-gray-200: #2e2e2e;     /* Card border / divider */
+  --color-gray-300: #d4d4d4;     /* Secondary strong text */
+  --color-gray-400: #bdbdbd;     /* Main descriptions & body */
+  --color-gray-500: #9a9a9a;     /* Metadata / labels */
+  --color-gray-600: #8a8a8a;     /* Tertiary / disabled */
+  --color-gray-700: #fafafa;     /* Emphasis text */
+  --color-gray-800: #1f1f1f;     /* Dark component backings */
+  --color-gray-900: #171717;     /* Panel surface: only reached via dark:bg-gray-900 */
+  --color-gray-950: #000000;     /* Darkest base */
 
-  --color-blue-50: #172554;
-  --color-blue-100: #1e3a8a;
-  --color-blue-400: #38bdf8;
-  --color-blue-500: #0ea5e9;
-  --color-blue-600: #0284c7;
-  --color-blue-700: #0369a1;
-  --color-blue-800: #7dd3fc;
-  --color-blue-950: #082f49;
+  --color-blue-50: #2a1216;
+  --color-blue-100: #4a1820;
+  --color-blue-400: #ff5a6a;
+  --color-blue-500: #e11d2e;
+  --color-blue-600: #d42a3c;
+  --color-blue-700: #b31f30;
+  --color-blue-800: #ff8a96;
+  --color-blue-950: #1a0a0c;
 
-  --color-background: #0b1329;
+  --color-background: #0a0a0a;
   --color-foreground: #ffffff;
-  --color-accent: #38bdf8;
-  --color-accent-hover: #7dd3fc;
-  --color-muted: #cbd5e1;
-  --color-border: #233765;
-  --color-surface: #131f3d;
+  --color-accent: #ff5a6a;
+  --color-accent-hover: #ff8a96;
+  --color-muted: #bdbdbd;
+  --color-border: #2e2e2e;
+  --color-surface: #171717;
 
-  --scrollbar-thumb: #233765;
-  --scrollbar-thumb-hover: #38bdf8;
+  --scrollbar-thumb: #2e2e2e;
+  --scrollbar-thumb-hover: #ff5a6a;
 }
 
 html {
@@ -136,9 +136,7 @@ body {
   font-family: var(--font-sans, Arial, Helvetica, sans-serif);
   line-height: 1.75;
   word-break: keep-all;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .prose {
@@ -317,6 +315,22 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Theme switch: while the toggle holds `theme-switching` on <html>, every
+   background fades together, so cards do not snap ahead of the page; text,
+   borders and icons switch at once. `!important` because it must also beat
+   each element's own transition utility for that window. Reduced motion
+   skips it entirely. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-switching,
+  html.theme-switching *,
+  html.theme-switching *::before,
+  html.theme-switching *::after {
+    transition-property: background-color !important;
+    transition-duration: var(--theme-switch-duration) !important;
+    transition-timing-function: ease !important;
   }
 }
 

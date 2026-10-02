@@ -50,13 +50,13 @@ export default async function WorkPage({
 	const chipBase =
 		'rounded-full border px-3 py-1.5 text-sm transition-colors whitespace-nowrap';
 	const chipOn =
-		'border-[#00224D] bg-[#00224D] text-[#F5EBDD] dark:border-[#38bdf8] dark:bg-[#0284c7] dark:text-white font-medium';
+		'border-[#111111] bg-[#111111] text-[#f5efe6] dark:border-[#ff5a6a] dark:bg-[#d42a3c] dark:text-white font-medium';
 	const chipOff =
-		'border-gray-300 text-gray-600 hover:border-[#00224D] hover:text-[#00224D] dark:border-gray-500 dark:text-gray-500 dark:hover:border-[#38bdf8] dark:hover:text-[#38bdf8]';
+		'border-gray-300 text-gray-600 hover:border-[#111111] hover:text-[#111111] dark:border-gray-500 dark:text-gray-500 dark:hover:border-[#ff5a6a] dark:hover:text-[#ff5a6a]';
 
 	return (
 		<div className="mx-auto max-w-4xl px-6 py-16">
-			<h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-[#38bdf8]">
+			<h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-[#ff5a6a]">
 				{t('title')}
 			</h1>
 

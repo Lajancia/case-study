@@ -30,7 +30,7 @@ export default async function AboutPage({
 
 	return (
 		<div className="mx-auto max-w-3xl px-6 py-16">
-			<h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-[#38bdf8]">
+			<h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-[#ff5a6a]">
 				{t('title')}
 			</h1>
 			<p className="text-lg text-gray-600 max-w-xl mb-4 dark:text-gray-400">
@@ -88,7 +88,7 @@ export default async function AboutPage({
 					{content.skills.map((item) => (
 						<span
 							key={item}
-							className="text-sm bg-[#00224D] text-[#F5EBDD] dark:bg-[#0284c7] dark:text-white px-3 py-1 rounded-full font-medium"
+							className="text-sm bg-[#111111] text-[#f5efe6] dark:bg-[#2e2e2e] dark:text-white px-3 py-1 rounded-full font-medium"
 						>
 							{item}
 						</span>

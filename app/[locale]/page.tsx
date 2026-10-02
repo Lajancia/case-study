@@ -64,7 +64,7 @@ export default async function HomePage({
 						{featuredStudies.map((study) => (
 							<div
 								key={study.slug}
-								className="border border-gray-200 rounded-lg p-6 sm:p-8 transition-colors hover:border-blue-400 dark:border-gray-800 dark:hover:border-[#007DCC]"
+								className="border border-gray-200 rounded-lg p-6 sm:p-8 transition-colors hover:border-blue-400 dark:border-gray-800 dark:hover:border-[#ff5a6a]"
 							>
 								<div className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-2 dark:text-blue-400">
 									{study.industry}
@@ -159,7 +159,8 @@ export default async function HomePage({
 					].map((item) => (
 						<span
 							key={item}
-							className="text-sm bg-[#00224D] text-[#F5EBDD] dark:bg-[#0284c7] dark:text-white px-3 py-1 rounded-full font-medium"
+							data-testid="expertise-pill"
+							className="text-sm bg-[#111111] text-[#f5efe6] dark:bg-[#2e2e2e] dark:text-white px-3 py-1 rounded-full font-medium"
 						>
 							{item}
 						</span>

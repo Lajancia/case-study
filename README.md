@@ -89,6 +89,8 @@ If a form, `dangerouslySetInnerHTML`, or any other HTML-injecting feature lands 
 
 This replaced a `theme` cookie that the root layout read to render the class server-side. That version ignored the operating system: with no cookie it emitted no class, and the stylesheet has no `prefers-color-scheme` rule, so a visitor whose OS was dark got a light page while the toggle drew itself as though the page were dark. `e2e/theme.spec.ts` covers the behaviour that replaced it.
 
+The toggle fades backgrounds over 0.3s while text, borders and icons switch at once: it holds a `theme-switching` class on `<html>` for that long, and `globals.css` transitions `background-color` site-wide only while the class is there, so an OS-driven change or first paint never animates. next-themes' `disableTransitionOnChange` is off for this reason. Reduced motion skips the fade.
+
 ## Content
 
 Case studies live in `content/work/{locale}/` as MDX files. Metadata includes title, description, metrics, and draft status. Draft routes are `noindex` until approved for publication.
