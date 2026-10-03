@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Building an Immersive 3D Portfolio: Next.js 14 + React Three Fiber",
   description:
-    "A bilingual 3D portfolio site with interactive WebGL scenes, macro keyboard controls, Panda CSS, and a full CI/CD pipeline from Jenkins to K3s.",
+    "A bilingual 3D portfolio site: interactive WebGL scenes with GLTF models, route-based i18n, Panda CSS styling, and an automated Jenkins → GHCR deployment.",
   slug: "next14-r3f-portfolio",
   publishedAt: "2026-XX-XX",
   role: "Frontend Developer (solo)",
@@ -9,34 +9,61 @@ export const metadata = {
   industry: "Personal portfolio / 3D web",
   stack: ["Next.js 14", "React Three Fiber", "Three.js", "Panda CSS", "i18next", "Framer Motion", "Docker", "Jenkins"],
   outcomes: [
-    { label: "3D scenes", before: "0", after: "5+ scenes", change: "interactive WebGL" },
-    { label: "Deployment", before: "Manual SSH", after: "Jenkins → K3s auto", change: "fully automated" },
+    { label: "GLTF scenes", before: "0", after: "5 models loaded", change: "interactive WebGL" },
+    { label: "Languages", before: "1", after: "2 (ko/en)", change: "route-based i18n" },
   ],
   draft: true,
 }
 
 ## Context
 
-A personal portfolio site that doubles as a technical showcase. Instead of a conventional static portfolio, I built an immersive 3D experience using React Three Fiber (R3F) — demonstrating not just frontend development but 3D graphics, internationalization, and DevOps integration in a single project.
+A personal portfolio site that doubles as a technical showcase. Instead of a conventional static portfolio, I built an immersive 3D experience with React Three Fiber (R3F) — combining 3D graphics, internationalization, build-time styling, and automated deployment in a single Next.js 14 project.
+
+Everything described below is verifiable in the public repository:
 
 **GitHub:** [Lajancia/Next14-R3F](https://github.com/Lajancia/Next14-R3F)
 
-## Technical highlights
+## What was built
 
-### 1. 3D scene composition with React Three Fiber
+### 1. Interactive 3D scenes (React Three Fiber + drei)
 
-The site features multiple interactive 3D scenes:
+The repo loads **five GLTF models**, each wired into a dedicated scene component under `src/components/canvas/`:
 
-- **Macro Keyboard** — The homepage hero: a detailed keyboard model (`.glb`) with keycaps, rendered with custom lighting and post-processing effects
-- **Astronaut** — Animated character with GLTF skeletal animation, embedded in a space scene
-- **Bike** — Interactive 3D bicycle model with orbit controls
-- **Boxes** — Particle-based visual effect demonstrating instanced meshes
-- **Gallery** — 3D image gallery with transitions
+<table>
+  <thead>
+    <tr>
+      <th>Model (in <code>public/</code>)</th>
+      <th>Scene / usage</th>
+      <th>Technique</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>keyboard.glb</code>, <code>keyboard_website.glb</code></td>
+      <td>Homepage hero (macro keyboard with keycaps)</td>
+      <td>Custom lighting, post-processing (<code>Effect.tsx</code>), scroll-linked composition</td>
+    </tr>
+    <tr>
+      <td><code>astronaut_animation.glb</code></td>
+      <td><code>/astronaut</code> page</td>
+      <td>GLTF skeletal animation in a space scene</td>
+    </tr>
+    <tr>
+      <td><code>bike.glb</code></td>
+      <td>Keyboard-section companion scene</td>
+      <td>Orbit controls, contact shadows</td>
+    </tr>
+    <tr>
+      <td><code>work.glb</code></td>
+      <td>Gallery / work section</td>
+      <td>View-tracked canvas (<code>View.tsx</code>), instanced boxes (<code>Boxes.tsx</code>)</td>
+    </tr>
+  </tbody>
+</table>
 
-Each scene is a self-contained R3F component:
+A representative scene component — the pattern is a self-contained R3F component per scene:
 
 ```tsx
-// Example: 3D keyboard scene component structure
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment, useGLTF } from '@react-three/drei'
 
@@ -52,47 +79,73 @@ function KeyboardScene() {
 }
 ```
 
-### 2. Bilingual support with i18next
+State for cross-canvas interaction is handled with **zustand** and **valtio** (shared scene state), with `tunnel-rat` passing DOM ↔ canvas props and `suspend-react` coordinating async asset loading.
 
-Full Korean and English localization using `i18next` with:
-- Dynamic route-based language detection (`/en/pipeline`, `/ko/pipeline`)
-- Server-side language negotiation via `accept-language` header
-- Namespaced translation files per page component
+### 2. Bilingual support (i18next, ko/en)
 
-### 3. Panda CSS for styling
+Full Korean and English localization — verifiable in `src/app/i18n/locales/{ko,en}/`:
 
-Styling is handled by **Panda CSS** — a modern CSS-in-JS framework with:
-- Type-safe design tokens
-- Zero-runtime CSS generation at build time
-- Responsive variants without media query boilerplate
+- **Route-based language URLs**: `/ko/...` and `/en/...` via the `[lng]` dynamic segment, prerendered per language with `generateStaticParams`
+- **Detection order**: path → html tag → cookie → navigator, using i18next's `LanguageDetector` + `resourcesToBackend` for per-namespace lazy loading
+- **Namespaced translation files** per section (menu, gallery, infrastructure, …)
 
-### 4. Infrastructure timeline
+### 3. Build-time styling (Panda CSS)
 
-A dedicated Pipeline page visualizes the full CI/CD infrastructure as an interactive timeline diagram — from user → Nginx → Next.js → Jenkins → K3s → GitHub → Tailscale — with animated signal packets flowing between nodes.
+Styling uses **Panda CSS** (`panda.config.mjs`, `panda` / `panda:dev` build scripts):
 
-## CI/CD pipeline
+- Zero-runtime CSS generation at build time — no style injection cost at runtime
+- Type-safe design tokens and recipes shared across components
+- Responsive variants without media-query boilerplate
 
-The project includes a complete DevOps pipeline:
+### 4. Infrastructure diagram page
 
-- **`dockerfile`** — Multi-stage build (deps → builder → runner) with pnpm
-- **`docker-compose.yml`** — Local deployment configuration
-- **`Jenkinsfile`** — Automated build, push to GHCR, GitOps repo update
-- **`ecosystem.config.js`** — PM2 process management for production
+A dedicated section renders the full deployment topology — user → Nginx → Next.js → Jenkins → K3s → GitHub → Tailscale — as an animated diagram with signal packets flowing between nodes (`src/parts/infrastructure/InfrastructureDiagram.tsx`).
 
 ## Key decisions
 
-**Why Panda CSS over Tailwind?** Panda CSS generates type-safe atomic styles at build time, providing the developer experience of Tailwind with the type safety of CSS-in-JS libraries. It also supports configurable design tokens that can be shared across the application.
+**Why Panda CSS alongside Tailwind?** The project started with Tailwind and migrated the design system to Panda CSS for its typed tokens and build-time output. Both configs remain in the repo, reflecting the incremental migration rather than a big-bang rewrite.
 
-**Why separate CI/CD case study?** The Next14-R3F project originally contained both the 3D portfolio and the Jenkins/K3s pipeline. I've documented them separately because each addresses a different engineering concern — visualization and infrastructure.
+**Why route-based i18n instead of a cookie-only switch?** Language in the URL keeps each locale linkable and shareable, and lets `generateStaticParams` prerender both languages as static pages — no runtime locale negotiation on the server.
+
+**Why separate CI/CD case study?** This project originally contained both the 3D portfolio and the Jenkins/K3s pipeline. They are documented separately because each addresses a different engineering concern — visualization and infrastructure.
+
+## Deployment (summary)
+
+The repo ships the full deployment tooling — `Jenkinsfile`, multi-stage `dockerfile`, `docker-compose.yml`, and PM2 `ecosystem.config.js`. Jenkins builds the image with a git short-SHA tag, pushes it to GHCR (`latest` + SHA), and updates the GitOps repo. The complete pipeline — including the K3s/ArgoCD side — is documented in the dedicated case study below.
 
 ## Results
 
-| Aspect | Detail |
-|--------|--------|
-| 3D scenes | 5+ interactive WebGL scenes with GLTF models |
-| i18n | Korean + English, route-based detection |
-| Styling | Panda CSS with typed design tokens |
-| CI/CD | Jenkins → GHCR → K3s (see dedicated case study) |
+<table>
+  <thead>
+    <tr>
+      <th>Aspect</th>
+      <th>Detail</th>
+      <th>Verify</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3D scenes</td>
+      <td>5 GLTF models across hero, astronaut, bike, gallery sections</td>
+      <td><code>ls public/*.glb</code>, <code>src/components/canvas/</code></td>
+    </tr>
+    <tr>
+      <td>i18n</td>
+      <td>Korean + English, route-based, prerendered per locale</td>
+      <td><code>src/app/[lng]/layout.tsx</code>, <code>src/app/i18n/locales/</code></td>
+    </tr>
+    <tr>
+      <td>Styling</td>
+      <td>Panda CSS, build-time generated, typed tokens</td>
+      <td><code>panda.config.mjs</code>, <code>package.json</code> scripts</td>
+    </tr>
+    <tr>
+      <td>Deployment</td>
+      <td>Jenkins → GHCR → GitOps (automated, SHA-tagged)</td>
+      <td><code>Jenkinsfile</code>, <code>dockerfile</code></td>
+    </tr>
+  </tbody>
+</table>
 
 ## Related
 
