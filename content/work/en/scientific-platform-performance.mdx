@@ -1,0 +1,205 @@
+export const metadata = {
+  title: "AD3 Protein Structure Platform: 3D Visualization and an 80% Bundle Cut",
+  description:
+    "Route-scoped loading for Molstar/RDKit and runtime rendering fixes that cut a scientific React platform's main bundle from 32MB to 6.5MB and moved two heavyweight visualization libraries to on-demand loading.",
+  slug: "scientific-platform-performance",
+  role: "Frontend Engineer",
+  timeline: "Mar 2025 – present",
+  industry: "Biotech / AI drug discovery",
+  stack: ["React", "TypeScript", "Vite", "Molstar", "RDKit.js", "Plotly", "MUI"],
+  outcomes: [
+    { label: "Main bundle", before: "32MB", after: "6.5MB", change: "−80%" },
+    { label: "Lighthouse Performance", before: "29", after: "78", change: "+49" },
+    { label: "3D/2D molecular viewers", before: "Eager on every route", after: "Route-scoped", change: "lazy-loaded" },
+  ],
+  draft: false,
+}
+
+## Context
+
+The product ([AD3](https://ad3.io/), live) serves computational biologists and medicinal chemists investigating protein–ligand interactions. Scientists rely on heavyweight domain tools — 3D molecular viewers, structural chemistry libraries, and interactive charting — to explore and validate hypotheses in the browser. Two specialized libraries handle the visualization work:
+
+- **Molstar** — An open-source 3D macromolecular viewer used by the RCSB Protein Data Bank itself
+- **RDKit.js** — A WebAssembly port of the industry-standard RDKit cheminformatics toolkit
+
+Both are large (several MB each), and the same Molstar + RDKit combination also ships in the [ADC case study](/en/work/adc-visualization), a related product built on the same viewer stack.
+
+## Problem
+
+The main JavaScript bundle weighed **32MB**. Lighthouse Performance scored **29** on production builds. A `rollup-plugin-visualizer` treemap revealed that **RDKit and Molstar occupied more than 50% of the bundle on routes where neither was used** — every page paid the full cost of scientific libraries the user might never touch on that route. The standard fix — route-scoped `dynamic()` imports — could solve this cleanly, but required precise knowledge of which routes needed which libraries.
+
+## What I did
+
+### 1. Measure
+
+I ran `rollup-plugin-visualizer` against the production build to identify the worst offenders. The treemap confirmed what load-time profiling suggested: RDKit (structural chemistry) and Molstar (3D molecular viewer) dominated the bundle regardless of the current route.
+
+### 2. Evaluate alternative approaches
+
+Global compression (`brotli` / `gzip`) would reduce transfer size but doesn't change the 32MB that the browser must parse and execute — compression treats the symptom, not the load cost. Indiscriminate lazy loading via `React.lazy` on every heavy import shifts the cost without addressing the architecture that puts scientific libraries on every route regardless of relevance. Neither approach was sufficient for this codebase; the fix needed to be structural.
+
+### 3. Route-scoped Molstar/RDKit chunks
+
+I restructured the bundling strategy so that Molstar and RDKit are loaded only on the routes that actually render 3D or structural chemistry views. Routes that serve table-heavy, form-heavy, or dashboard views no longer include these libraries in their main chunk.
+
+### 4. Selective RDKit bundle imports
+
+RDKit ships a monolithic JavaScript port of its C++ cheminformatics library. I replaced full-library imports with targeted, tree-shakeable entry points — importing only the molecular operations each route needed.
+
+### 5. Lazy react-plotly.js
+
+The interactive plotting library was being eagerly bundled into every route. I deferred it with route-level dynamic imports so that it loads only on the specific analysis views that use it.
+
+### 6. Compound Designer — the critical path
+
+The Compound Designer route renders an interactive workspace with **150+ React nodes**: molecule viewers, property tables, filter panels, similarity search results, and parallel coordinate plots. The bottlenecks were:
+
+- **Viewport loading**: Only nodes visible in the current viewport are rendered. As the user scrolls or pans, remaining nodes hydrate on demand.
+- **Parallel rendering**: Independent node trees render concurrently instead of serially.
+- **Corrected `useEffect` dependencies**: Several effects were re-running on every render because of missing or stale dependency arrays. Fixing these eliminated thousands of unnecessary re-renders per interaction.
+- **Memoization**: Expensive computations — fingerprint generation, similarity scoring, property calculation — are cached with `useMemo` keyed on stable inputs.
+
+### 7. CLS regression
+
+During rollout, a Cumulative Layout Shift regression was detected: dynamic content loading caused layout jumps on the Compound Designer route. The root cause — an unstyled loading container collapsing to zero height — was identified and resolved before the changes reached production.
+
+### 8. Route-to-library mapping
+
+I mapped every route in the application against its visualization requirements:
+
+<table>
+  <thead>
+    <tr>
+      <th>Library</th>
+      <th>Required on</th>
+      <th>Not required on</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Molstar (3D viewer)</td>
+      <td>Structure analysis, docking results</td>
+      <td>Dashboard, search, admin</td>
+    </tr>
+    <tr>
+      <td>RDKit.js (2D chem)</td>
+      <td>Compound designer, property tables</td>
+      <td>Dashboard, admin, settings</td>
+    </tr>
+  </tbody>
+</table>
+
+Both libraries were migrated from top-level imports to route-scoped `dynamic()` calls:
+
+```tsx
+// Before: every route paid the cost
+import { MolstarViewer } from '@molstar/viewer'
+
+// After: only routes that render 3D load Molstar
+const MolstarViewer = dynamic(() => import('@/components/3d/MolstarViewer'))
+
+// RDKit.js loaded only on compound-related routes
+const RdkitDepiction = dynamic(() => import('@/components/chem/RdkitDepiction'))
+```
+
+Each heavy component receives a skeleton placeholder that matches its final dimensions, preventing layout shift (CLS) during lazy load — the same principle behind the CLS fix in item 7 above.
+
+### 9. Live demo: the same technique on this site
+
+The panel below demonstrates both libraries loading on-demand. Open DevTools → Network and filter by "rdkit" or "molstar" to see each library load only on this page. The Molstar panel also includes a small preset switcher (Cartoon / Ball & stick / Surface) — three custom `StructureRepresentationPresetProvider`s, the same customization mechanism used to build alternate representation styles on the real platform.
+
+<MolecularViewer />
+
+Both libraries are genuinely bundled and code-split, not simulated: RDKit.js (a WASM binary: ~2 MB gzipped over the wire, 6.9 MB uncompressed) is served from this site's own `/rdkit/` path, and Molstar loads from the `molstar` npm package via `React.lazy()` — the same pattern AD3 itself uses for its viewer component.
+
+**Why `React.lazy()` for Molstar instead of `next/dynamic`?** `next/dynamic` is built for lazy-loading a single React component; Mol*'s production integration is imperative (`createPluginUI` mounts directly into a DOM container, not through a component tree Next can code-split on its own). Splitting the whole module behind `React.lazy(() => import('./MolstarViewer'))` + `Suspense` defers the entire `molstar` chunk until this component renders.
+
+**Why self-host RDKit.js instead of bundling it — or pulling it from a CDN?** RDKit.js is a WebAssembly binary that has to be fetched and compiled at runtime no matter how it's imported, so a `<script>` tag pointed at a fixed URL is the honest way to load it: the request shows up in DevTools under a readable name, which makes route-scoped loading verifiable rather than merely claimed. That URL is this origin, not a CDN. Serving it from `/rdkit/` keeps a third party off the critical path of the page, leaves the `script-src` and `connect-src` policies with one fewer origin to allow, and pins the exact build through `package.json` instead of a URL. It is also what AD3 does — it serves RDKit from its own `/rdkit/` location, with the security headers repeated on that nginx block. A build step copies the two files out of the `@rdkit/rdkit` package into `public/`; nothing imports the package, since an import would put RDKit back in a bundle and undo the split this page is about.
+
+## Results
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Main bundle</td>
+      <td>32MB</td>
+      <td>6.5MB</td>
+      <td>−80%</td>
+    </tr>
+    <tr>
+      <td>Lighthouse Performance</td>
+      <td>29</td>
+      <td>78</td>
+      <td>+49</td>
+    </tr>
+    <tr>
+      <td>Molstar (3D viewer)</td>
+      <td>Eager import on every route</td>
+      <td>On-demand (~0.9 MB gzipped chunk, this route only)</td>
+      <td>lazy-loaded (<code>React.lazy()</code>)</td>
+    </tr>
+    <tr>
+      <td>RDKit.js (WASM)</td>
+      <td>Eager bundling</td>
+      <td>Self-hosted, on-demand</td>
+      <td>lazy-loaded (<code>&lt;script&gt;</code> injection)</td>
+    </tr>
+  </tbody>
+</table>
+
+*Measured in Chrome DevTools Lighthouse against a production build under the same test setup before and after. Molstar chunk size measured from this site's own production build (`next build`) for this route.*
+
+The 6.5MB main bundle loads in under three seconds on a typical office connection (measured on a production build, Chrome DevTools throttled to Fast 3G). Subsequent route transitions add only the route-specific chunk.
+
+## Anonymized technical illustration
+
+![Route-to-chunk diagram before and after](/work/scientific-platform-performance/route-chunks.svg)
+
+*Simplified reconstruction; not a production screenshot.*
+
+The diagram shows a representative selection of routes. Before the change, every route included the full scientific library chunk. After the change, each route loads only its required subset.
+
+---
+
+## The same techniques, applied to this site
+
+This case study site itself uses the same route-scoped code splitting and standalone build strategies. To prove the point, a dedicated `perf/before-optimization` branch recreates the exact AD3 anti-pattern on this site:
+
+- **Eager import:** `three.js` (99 KB) loaded on every route via `layout.tsx`
+- **Non-standalone build:** `output: 'standalone'` removed from `next.config.ts`
+
+The dashboard below compares the unoptimized branch against the current optimized state — directly on this site, not on AD3's closed-source codebase.
+
+<PerformanceDashboard />
+
+---
+
+## How to verify these claims
+
+1. **Clone this repo:** `git clone https://github.com/Lajancia/case-study`
+2. **Current build (optimized):** `git checkout main && npm run build && node scripts/measure-bundle.mjs`
+3. **Unoptimized build (before):** `git checkout perf/before-optimization && npm run build && node scripts/measure-before.mjs`
+4. **Compare the difference:** `git diff perf/before-optimization..main -- app/layout.tsx next.config.ts`
+5. **Verify route-scoped chunks:** Open DevTools → Network tab, navigate to this page, and observe that `apexcharts` loads as a separate chunk only on this route.
+
+---
+
+## Related
+
+The same Molstar/RDKit viewer combination is used in the [ADC case study](/en/work/adc-visualization) — a newer product designed with route-scoped loading from day one.
+
+---
+
+{/*
+## Interested in a frontend performance audit?
+
+One-week fixed-scope audit for your React/Next.js product. You get a prioritized action plan with measurable targets.
+*/}

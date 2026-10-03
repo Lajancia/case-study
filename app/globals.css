@@ -1,15 +1,133 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
-  --color-background: #ffffff;
-  --color-foreground: #111827;
-  --color-accent: #2563eb;
-  --color-accent-hover: #1d4ed8;
-  --color-muted: #6b7280;
-  --color-border: #e5e7eb;
-  --color-surface: #f9fafb;
+  /* Core Brand Tokens */
+  --color-cream: #f5ebdd;
+  --color-navy: #00224d;
+  --color-red: #ff204e;
+  --color-blue: #315b8c;
+
+  /* Dynamic CSS variable bindings for utilities */
+  --color-gray-50: var(--color-gray-50);
+  --color-gray-100: var(--color-gray-100);
+  --color-gray-200: var(--color-gray-200);
+  --color-gray-300: var(--color-gray-300);
+  --color-gray-400: var(--color-gray-400);
+  --color-gray-500: var(--color-gray-500);
+  --color-gray-600: var(--color-gray-600);
+  --color-gray-700: var(--color-gray-700);
+  --color-gray-800: var(--color-gray-800);
+  --color-gray-900: var(--color-gray-900);
+  --color-gray-950: var(--color-gray-950);
+
+  --color-blue-50: var(--color-blue-50);
+  --color-blue-100: var(--color-blue-100);
+  --color-blue-400: var(--color-blue-400);
+  --color-blue-500: var(--color-blue-500);
+  --color-blue-600: var(--color-blue-600);
+  --color-blue-700: var(--color-blue-700);
+  --color-blue-800: var(--color-blue-800);
+  --color-blue-950: var(--color-blue-950);
+
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+  --color-surface: var(--color-surface);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Tailwind's default is 150ms; every bare `transition`/`transition-colors`
+     utility site-wide reads this token. */
+  --default-transition-duration: 200ms;
+}
+
+:root {
+  /* Light theme: white page, warm cream surfaces, deep navy ink.
+     The page stays white so cards, code blocks and the accent red keep
+     their contrast; the cream carries the brand warmth on surfaces. */
+  --color-gray-50: #f5ebdd;
+  --color-gray-100: #ece0cd;  /* hover surface — must stay between 50 and 200 */
+  --color-gray-200: #c9b497;
+  --color-gray-300: #bfa888;
+  --color-gray-400: #7b8ea6;
+  --color-gray-500: #556c88;
+  --color-gray-600: #315b8c;
+  --color-gray-700: #1b4273;
+  --color-gray-800: #0d305c;
+  --color-gray-900: #00224d;
+  --color-gray-950: #001736;
+
+  --color-blue-50: #f5ebdd;  /* CTA panel — same cream surface, one tone only */
+  --color-blue-100: #d8c4a6;
+  --color-blue-400: #ff5c7d;
+  --color-blue-500: #ff204e;
+  --color-blue-600: #ff204e;
+  --color-blue-700: #d8143d;
+  --color-blue-800: #315b8c;
+  --color-blue-950: #001f45;
+
+  --color-background: #ffffff;
+  --color-foreground: #00224d;
+  --color-accent: #ff204e;
+  --color-accent-hover: #315b8c;
+  --color-muted: #556c88;
+  --color-border: #c9b497;
+  --color-surface: #f5ebdd;
+
+  --scrollbar-thumb: #c9b497;
+  --scrollbar-thumb-hover: #315b8c;
+}
+
+.dark {
+  /*
+    High-contrast, clean Dark Mode:
+    Background: Deep Slate-Navy (#0b1329)
+    Surfaces & Cards: Elevated Charcoal-Navy (#131f3d)
+    Text: High contrast crisp white (#ffffff) and clear slate-200 (#e2e8f0)
+    Accents: Crisp blue palette (#38bdf8 / #0284c7)
+  */
+  --color-gray-50: #131f3d;      /* Card/Box surface */
+  --color-gray-100: #38bdf8;     /* Bright accent blue for heading highlights */
+  --color-gray-200: #233765;     /* Card border / divider */
+  --color-gray-300: #7dd3fc;     /* Secondary strong light-blue/cyan text */
+  --color-gray-400: #cbd5e1;     /* Main descriptions & body */
+  --color-gray-500: #94a3b8;     /* Metadata / labels */
+  --color-gray-600: #64748b;     /* Tertiary / disabled */
+  --color-gray-700: #f8fafc;     /* Emphasis text */
+  --color-gray-800: #1a2a50;     /* Dark component backings */
+  --color-gray-900: #131f3d;     /* Panel surface: only reached via dark:bg-gray-900 */
+  --color-gray-950: #050b18;     /* Darkest base */
+
+  --color-blue-50: #172554;
+  --color-blue-100: #1e3a8a;
+  --color-blue-400: #38bdf8;
+  --color-blue-500: #0ea5e9;
+  --color-blue-600: #0284c7;
+  --color-blue-700: #0369a1;
+  --color-blue-800: #7dd3fc;
+  --color-blue-950: #082f49;
+
+  --color-background: #0b1329;
+  --color-foreground: #ffffff;
+  --color-accent: #38bdf8;
+  --color-accent-hover: #7dd3fc;
+  --color-muted: #cbd5e1;
+  --color-border: #233765;
+  --color-surface: #131f3d;
+
+  --scrollbar-thumb: #233765;
+  --scrollbar-thumb-hover: #38bdf8;
+}
+
+html {
+  background-color: var(--color-background);
+  transition: background-color 0.3s ease;
 }
 
 body {
@@ -17,6 +135,10 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-sans, Arial, Helvetica, sans-serif);
   line-height: 1.75;
+  word-break: keep-all;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .prose {
@@ -25,24 +147,128 @@ body {
   line-height: 1.75;
 }
 
-.prose h1 { font-size: 2rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
-.prose h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; }
-.prose h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-.prose h4 { font-size: 1.125rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; }
-.prose p { margin-top: 1rem; margin-bottom: 1rem; }
-.prose ul, .prose ol { margin-top: 0.75rem; margin-bottom: 0.75rem; padding-left: 1.5rem; }
-.prose li { margin-top: 0.25rem; margin-bottom: 0.25rem; }
-.prose strong { font-weight: 600; }
-.prose a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 2px; }
-.prose a:hover { color: var(--color-accent-hover); }
-.prose code { font-family: var(--font-mono, monospace); font-size: 0.875em; background: var(--color-surface); padding: 0.125rem 0.375rem; border-radius: 0.25rem; }
-.prose pre { overflow-x: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0.5rem; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem; }
-.prose pre code { background: none; padding: 0; border-radius: 0; }
-.prose table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; margin-bottom: 1.5rem; }
-.prose th, .prose td { border: 1px solid var(--color-border); padding: 0.5rem 0.75rem; text-align: left; font-variant-numeric: tabular-nums; }
-.prose th { background: var(--color-surface); font-weight: 600; }
-.prose blockquote { border-left: 3px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-muted); }
-.prose img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1.5rem 0; }
+.prose h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.prose h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.prose h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.prose p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.prose ul,
+.prose ol {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+}
+.prose li {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+.prose strong {
+  font-weight: 600;
+}
+.prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose a:hover {
+  color: var(--color-accent-hover);
+}
+.prose code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875em;
+  background: var(--color-surface);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+}
+.prose pre {
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.prose pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+/*
+  A raw <table> written directly in an .mdx file is never routed through the
+  MDX `components` map — verified by compiling one: MDX/CommonMark treats a
+  block-level tag like `table` as an opaque HTML block, so it reaches the page
+  unchanged regardless of what `components.table` says. Wrapping it in a
+  scroll container would need a remark/rehype AST pass instead, so the table
+  scrolls itself, on `.prose table` directly.
+
+  `display: block` is commonly assumed to strip a <table>'s implicit ARIA
+  table role — that assumption is why an earlier version of this file wrapped
+  the table in a div rather than styling it directly. Measured instead of
+  assumed: with this rule applied, both Chromium and WebKit still compute
+  `role: table` / `role: rowgroup` / `role: columnheader` for it (checked via
+  Playwright's ariaSnapshotJSON). Not checked: Firefox, or a real screen
+  reader — if either turns out to disagree, that is the case to fix for.
+
+  What this genuinely gives up, and is accepted here: the table is not
+  reliably reachable by Tab, so a keyboard-only user has no guaranteed way to
+  trigger the horizontal scroll (mouse drag and touch swipe both work).
+  Restoring that means going back to a focusable wrapper, which means the
+  AST pass above.
+*/
+.prose table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  border-collapse: collapse;
+}
+.prose th,
+.prose td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+.prose th {
+  background: var(--color-surface);
+  font-weight: 600;
+}
+.prose blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: var(--color-muted);
+}
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
 
 .skip-link {
   position: absolute;
@@ -56,4 +282,54 @@ body {
 }
 .skip-link:focus {
   top: 0;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+  transition: none;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Motion: every animation/transition added below is subject to this. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* translate-only: animating opacity here would put text under WCAG contrast
+   threshold for part of the transition (caught by e2e/accessibility.spec.ts). */
+@keyframes slide-up {
+  from {
+    translate: 0 12px;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out both;
 }

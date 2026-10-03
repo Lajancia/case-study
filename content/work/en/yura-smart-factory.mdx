@@ -1,0 +1,78 @@
+export const metadata = {
+  title: "Smart Factory Monitoring for a Serbian Production Plant",
+  description:
+    "A chart-based monitoring dashboard (ApexCharts, Plotly) for AOI process yield at an overseas production plant, built from Figma design through the React frontend, with an existing Spring Boot API adapted to feed it — process visibility that helped cut the AOI defect rate by roughly 20%.",
+  slug: "yura-smart-factory",
+  role: "UI/UX Design, Frontend, API Maintenance",
+  timeline: "Oct 2022 – May 2024",
+  industry: "Manufacturing / Smart factory",
+  stack: ["React.js", "MUI", "ApexCharts", "Plotly", "Java Spring Boot", "MyBatis", "MariaDB", "Figma"],
+  outcomes: [
+    { label: "AOI defect rate", before: "manual aggregation", after: "~20% lower", change: "−20%" },
+    { label: "Process visibility", before: "manual review", after: "dashboard monitoring", change: "constant monitoring" },
+  ],
+  draft: false,
+}
+
+## Context
+
+*The client's name and internal system names are omitted. The structure and the figures are as they are.*
+
+I built a monitoring system for reviewing and visualizing AOI (Automated Optical Inspection) process data at a production plant in Serbia. I owned the frontend end to end — Figma-based UI/UX design through React screen implementation — and adapted an existing Spring Boot API with similar functionality to fit the dashboard's needs, writing its MyBatis query mappings against MariaDB. I also worked in English with the on-site team to incorporate their process formulas and feedback.
+
+## Problem
+
+Checking first-pass yield for the AOI process, broken down by product and by machine, required staff to manually aggregate data. That meant a lag before anyone could spot a process going wrong.
+
+## What I did
+
+### 1. Figma-based UI/UX design
+
+I designed the dashboard layout around the metrics on-site staff actually watched: first-pass yield by product and by machine, and trends over time.
+
+### 2. ApexCharts + Plotly visualization
+
+I built time-series charts for first-pass yield by product/machine with **ApexCharts**, and used **Plotly** for the screens that needed richer, multivariate comparisons. Splitting the two libraries by screen type kept simple trend views lightweight while giving the multi-dimensional comparisons full interactivity.
+
+### 3. Adapting an existing Spring Boot API + MariaDB
+
+I took an existing **Java Spring Boot** API with similar functionality and modified it to fit what this dashboard needed, writing its **MyBatis** query mappings against MariaDB.
+
+### 4. Working with the on-site team
+
+I communicated in English with the Serbian on-site team to refine the metric definitions against their actual process calculations and field feedback.
+
+## Results
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AOI defect rate</td>
+      <td>manual aggregation</td>
+      <td>~20% lower</td>
+      <td>−20%</td>
+    </tr>
+    <tr>
+      <td>Process visibility</td>
+      <td>Manual aggregation and review</td>
+      <td>Chart dashboards</td>
+      <td>constant monitoring</td>
+    </tr>
+  </tbody>
+</table>
+
+Replacing manual aggregation with a dashboard wasn't the goal in itself — the resulting visibility into which processes were drifting is what actually drove the drop in the AOI defect rate.
+
+{/*
+## Need a monitoring dashboard built?
+
+I build React-based data visualization dashboards, including backend API integration, as fixed-scope engagements.
+*/}
