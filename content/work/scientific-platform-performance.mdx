@@ -60,10 +60,30 @@ During rollout, a Cumulative Layout Shift regression was detected: dynamic conte
 
 ## Results
 
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| Main bundle | 32MB | 6.5MB | −80% |
-| Lighthouse Performance | 29 | 78 | +49 |
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Main bundle</td>
+      <td>32MB</td>
+      <td>6.5MB</td>
+      <td>−80%</td>
+    </tr>
+    <tr>
+      <td>Lighthouse Performance</td>
+      <td>29</td>
+      <td>78</td>
+      <td>+49</td>
+    </tr>
+  </tbody>
+</table>
 
 *Measured in Chrome DevTools Lighthouse against a production build under the same test setup before and after.*
 
@@ -83,7 +103,7 @@ The diagram shows a representative selection of routes. Before the change, every
 
 This case study site itself uses the same route-scoped code splitting and standalone build strategies. To prove the point, a dedicated `perf/before-optimization` branch recreates the exact AD3 anti-pattern on this site:
 
-- **Eager import:** `three.js` (99 KB) loaded on every route via `layout.tsx`
+- **Eager import:** `three.js` (508.8 KB) loaded on every route via `layout.tsx`
 - **Non-standalone build:** `output: 'standalone'` removed from `next.config.ts`
 
 The dashboard below compares the unoptimized branch against the current optimized state — directly on this site, not on AD3's closed-source codebase.

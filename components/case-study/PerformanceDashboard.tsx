@@ -118,7 +118,7 @@ export default function PerformanceDashboard() {
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 // In the "before" branch, three.js was eagerly loaded in layout.tsx:
-import EagerThreeInit from "@/components/EagerThreeInit"  // +99 KB every route
+import EagerThreeInit from "@/components/EagerThreeInit"  // +508.8 KB every route
 `}</code></pre>
         <p className="text-xs text-yellow-700 mt-2">
           Compare branches: <code>git diff perf/before-optimization..HEAD</code>
