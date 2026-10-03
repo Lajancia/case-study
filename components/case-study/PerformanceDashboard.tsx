@@ -123,7 +123,9 @@ export default function PerformanceDashboard() {
           <p className="text-xs text-gray-400 mt-1 dark:text-gray-600">
             {docker.reductionPercent}% smaller vs non-standalone
           </p>
-          <p className="text-xs text-gray-400 dark:text-gray-600">vs ~{docker.estimatedNonStandaloneMb} MB</p>
+          <p className="text-xs text-gray-400 dark:text-gray-600">
+            vs ~{docker.estimatedNonStandaloneMb} MB &middot; measured {docker.measuredAt}
+          </p>
         </div>
       </div>
 
@@ -139,7 +141,7 @@ export default function PerformanceDashboard() {
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 // In the "before" branch, three.js was eagerly loaded in layout.tsx:
-import EagerThreeInit from "@/components/EagerThreeInit"  // +99 KB every route
+import EagerThreeInit from "@/components/EagerThreeInit"  // +508.8 KB every route
 `}</code></pre>
         <p className="text-xs text-yellow-700 mt-2 dark:text-yellow-500">
           Compare branches: <code>git diff perf/before-optimization..HEAD</code>
