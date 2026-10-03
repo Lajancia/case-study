@@ -107,7 +107,9 @@ export default function PerformanceDashboard() {
           <p className="text-xs text-gray-400 mt-1">
             {docker.reductionPercent}% smaller vs non-standalone
           </p>
-          <p className="text-xs text-gray-400">vs ~{docker.estimatedNonStandaloneMb} MB</p>
+          <p className="text-xs text-gray-400">
+            vs ~{docker.estimatedNonStandaloneMb} MB &middot; measured {docker.measuredAt}
+          </p>
         </div>
       </div>
 

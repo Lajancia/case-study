@@ -31,6 +31,7 @@ export interface SiteMetrics {
     standaloneMb: number
     estimatedNonStandaloneMb: number
     reductionPercent: number
+    measuredAt: string
   }
 }
 
@@ -83,5 +84,7 @@ export const siteMetrics: SiteMetrics = {
     standaloneMb: 110,
     estimatedNonStandaloneMb: 492,
     reductionPercent: 78,
+    /** Docker image sizes were measured on this date; not re-measured since. */
+    measuredAt: '2026-08-30',
   },
 }
