@@ -1,0 +1,40 @@
+name: Build & Deploy (GitOps)
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: g3941813-svg
+          password: ${{ secrets.GHCR_GITOPS_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          build-args: NEXT_PUBLIC_SITE_URL=https://soominlab.com
+          push: true
+          tags: |
+            ghcr.io/g3941813-svg/case-study:${{ github.sha }}
+            ghcr.io/g3941813-svg/case-study:${GITHUB_SHA::7}
+            ghcr.io/g3941813-svg/case-study:latest
+      - name: Update GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: g3941813-svg/case-study-ops
+          token: ${{ secrets.GHCR_GITOPS_TOKEN }}
+          path: gitops
+      - name: Bump image tag
+        run: |
+          cd gitops
+          sed -i "s|image: ghcr.io/g3941813-svg/case-study:.*|image: ghcr.io/g3941813-svg/case-study:${GITHUB_SHA::7}|" case-study.yaml
+          git config user.name "GH Actions CI"
+          git config user.email "ci@soominlab.com"
+          git add case-study.yaml
+          git commit -m "chore: update case-study image tag to ${GITHUB_SHA::7}"
+          git push
