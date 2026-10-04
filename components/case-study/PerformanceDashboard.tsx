@@ -39,10 +39,14 @@ export default function PerformanceDashboard() {
 
   const { comparisons, currentSiteBundle, docker } = siteMetrics
 
-  const compLabels = comparisons.map((c) => c.label.split('(')[0].trim())
-  const beforeValues = comparisons.map((c) => c.beforeValue)
-  const afterValues = comparisons.map((c) => c.afterValue)
-  const compUnit = comparisons[0]?.unit || 'KB'
+  // Keep the bar chart on a single unit (KB). The Docker image comparison is
+  // measured in MB and would both dominate the KB axis and print "492 KB",
+  // so it is charted separately below.
+  const kbComparisons = comparisons.filter((c) => c.unit === 'KB')
+  const compLabels = kbComparisons.map((c) => c.label.split('(')[0].trim())
+  const beforeValues = kbComparisons.map((c) => c.beforeValue)
+  const afterValues = kbComparisons.map((c) => c.afterValue)
+  const compUnit = kbComparisons[0]?.unit || 'KB'
 
   const comparisonSeries = [
     { name: 'Before (unoptimized)', data: beforeValues },
@@ -80,7 +84,7 @@ export default function PerformanceDashboard() {
             },
             dataLabels: {
               enabled: true,
-              formatter: (val: number) => `${val}${compUnit === 'KB' ? ' KB' : ' MB'}`,
+              formatter: (val: number) => `${val} ${compUnit}`,
               style: { fontSize: '10px' },
             },
             legend: { position: 'top' },
@@ -100,6 +104,43 @@ export default function PerformanceDashboard() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Docker image comparison — its own chart on an MB axis */}
+      <div className="border border-gray-200 rounded-lg p-5 dark:border-gray-800">
+        <h4 className="text-sm font-semibold text-gray-700 mb-1 dark:text-gray-300">Docker production image (runner stage)</h4>
+        <p className="text-xs text-gray-400 mb-4 dark:text-gray-600">
+          Measured separately from the bundle metrics above — different unit (MB), so it has its own axis.
+          Image sizes were measured {docker.measuredAt}; bundle numbers reflect the {siteMetrics.measuredAt} re-measurement.
+        </p>
+        <Chart
+          type="bar"
+          options={{
+            chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
+            theme: { mode: isDark ? 'dark' : 'light' },
+            plotOptions: { bar: { horizontal: false, borderRadius: 4, barHeight: '50%' } },
+            colors: ['#EF4444', '#22c55e'],
+            xaxis: {
+              categories: ['Docker image (runner stage)'],
+              labels: { style: { fontSize: '11px' } },
+            },
+            yaxis: {
+              title: { text: 'MB' },
+            },
+            dataLabels: {
+              enabled: true,
+              formatter: (val: number) => `${val} MB`,
+              style: { fontSize: '10px' },
+            },
+            legend: { position: 'top' },
+            grid: { borderColor: isDark ? '#27272a' : '#e5e7eb' },
+          }}
+          series={[
+            { name: 'Before (unoptimized)', data: [docker.estimatedNonStandaloneMb] },
+            { name: 'After (optimized)', data: [docker.standaloneMb] },
+          ]}
+          height={220}
+        />
       </div>
 
       {/* KPI cards */}
