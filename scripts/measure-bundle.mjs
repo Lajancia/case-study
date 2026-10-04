@@ -19,7 +19,35 @@ if (!existsSync(manifestPath)) {
   process.exit(1)
 }
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'))
-const mainFiles = manifest.rootMainFiles || []
+const mainFiles = [...new Set(manifest.rootMainFiles || [])]
+
+// Turbopack may emit additional eagerly-loaded chunks (e.g. a layout's eager
+// import) that rootMainFiles misses. Detect them: chunks referenced by EVERY
+// prerendered route's HTML/RSC in .next/server/app are loaded on every page.
+const appDir = join(buildDir, 'server', 'app')
+const routeTexts = []
+function walk(dir) {
+  if (!existsSync(dir)) return
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const fp = join(dir, e.name)
+    if (e.isDirectory()) {
+      if (!e.name.startsWith('.') && !e.name.endsWith('.segments')) walk(fp)
+    } else if (/\.(html|rsc)$/.test(e.name) && !e.name.includes('.segment.') && !e.name.startsWith('_global-error'))
+      routeTexts.push(readFileSync(fp, 'utf-8'))
+  }
+}
+walk(appDir)
+if (routeTexts.length > 0) {
+  const allChunkNames = new Set()
+  for (const t of routeTexts) {
+    for (const m of t.matchAll(/static\/chunks\/[A-Za-z0-9._-]+\.js/g)) allChunkNames.add(m[0])
+  }
+  for (const c of allChunkNames) {
+    if (routeTexts.every((t) => t.includes(c)) && !mainFiles.includes(c)) {
+      mainFiles.push(c)
+    }
+  }
+}
 
 let mainTotal = 0
 console.log('=== Main Bundle Chunks (loaded on every page) ===')

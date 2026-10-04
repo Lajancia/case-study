@@ -36,7 +36,7 @@ export const metadata = {
 
 _Deploy hostnames, registry addresses, and repository paths are omitted. The pipeline structure and the numbers are as they are._
 
-A small platform team owned three codebases — the backend and frontend of [AD3](/en/work/scientific-platform-performance), plus the frontend of [ADC](/en/work/adc-visualization). Each ships through development, staging, and production. That is nine deployment paths before you count the E2E, static analysis, and security scan jobs hanging off them.
+A small platform team owned three codebases — the backend and frontend of Product A, plus the frontend of Product B. Each ships through development, staging, and production. That is nine deployment paths before you count the E2E, static analysis, and security scan jobs hanging off them.
 
 ## The problem
 
@@ -60,11 +60,11 @@ Every Jenkinsfile moved out of the product repositories into **one pipeline repo
 
 ```
 pipeline/
-├── ad3-backend/     daily · development · staging · production
-├── ad3-frontend/    development · staging · production
-│                    + playwright · sonarQube · zap · (cypress, legacy)
-└── adc-frontend/    development · staging · production
-                     + playwright · sonarQube
+├── backend/          daily · development · staging · production
+├── frontend-a/       development · staging · production
+│                     + playwright · sonarQube · zap · (cypress, legacy)
+└── frontend-b/       development · staging · production
+                      + playwright · sonarQube
 ```
 
 Nineteen pipeline definitions are versioned there today. Pipeline changes arrive as merge requests, get reviewed, and revert with `git revert`. Given that deployment procedure and product code change on different clocks, this separation fit the team better than a Jenkinsfile per product repo.
