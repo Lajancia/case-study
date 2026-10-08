@@ -1,0 +1,15 @@
+import { chromium } from '@playwright/test';
+import fs from 'fs';
+const b = await chromium.launch();
+const p = await (await b.newContext({ viewport: { width: 1280, height: 900 } })).newPage();
+await p.goto('http://localhost:3000/en', { waitUntil: 'networkidle' });
+const cdp = await p.context().newCDPSession(p);
+const frames = [];
+cdp.on('Page.screencastFrame', f => { frames.push([Date.now(), f.data]); cdp.send('Page.screencastFrameAck', { sessionId: f.sessionId }); });
+await cdp.send('Page.startScreencast', { format: 'png', everyNthFrame: 1 });
+await p.locator('button[aria-label*="dark" i]').first().click();
+await p.waitForTimeout(1200);
+await cdp.send('Page.stopScreencast');
+fs.writeFileSync('/tmp/frames.json', JSON.stringify(frames));
+console.log('frames:', frames.length);
+await b.close();
