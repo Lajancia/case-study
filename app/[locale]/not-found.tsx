@@ -15,7 +15,7 @@ export default async function LocaleNotFound() {
         <div className="mt-10 flex flex-wrap justify-center gap-3">
           <Link
             href="/"
-            className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300"
+            className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400"
           >
             {t('backHome')}
           </Link>

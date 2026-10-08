@@ -135,10 +135,10 @@ export default function MolstarViewer({ pdbId, height = 480 }: MolstarViewerProp
             type="button"
             disabled={!ready}
             onClick={() => selectPreset(i)}
-            className={`text-xs font-medium px-2.5 py-1 rounded-full border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+            className={`text-xs font-medium px-2.5 py-1 rounded-[2px] border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
               activePreset === i
                 ? 'bg-blue-600 border-blue-600 text-white dark:bg-blue-500 dark:border-blue-500'
-                : 'border-gray-300 text-gray-600 hover:border-gray-400 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-500'
+                : 'border-gray-300 text-gray-600 hover:border-gray-400 dark:border-gray-700 dark:text-gray-500 dark:hover:border-gray-500'
             }`}
           >
             {p.label}
@@ -151,7 +151,7 @@ export default function MolstarViewer({ pdbId, height = 480 }: MolstarViewerProp
         style={{ height }}
       />
       {!ready && !error && (
-        <p className="text-xs text-gray-400 mt-2 dark:text-gray-600">Loading Mol* ({pdbId})…</p>
+        <p className="text-xs text-gray-500 mt-2 dark:text-gray-500">Loading Mol* ({pdbId})…</p>
       )}
       {error && <p className="text-xs text-red-500 mt-2 dark:text-red-400">{error}</p>}
     </div>

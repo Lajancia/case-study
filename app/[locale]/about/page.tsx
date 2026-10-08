@@ -30,7 +30,7 @@ export default async function AboutPage({
 
 	return (
 		<div className="mx-auto max-w-3xl px-6 py-16">
-			<h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-[#38bdf8]">
+			<h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-[#ffb3ae]">
 				{t('title')}
 			</h1>
 			<p className="text-lg text-gray-600 max-w-xl mb-4 dark:text-gray-400">
@@ -52,14 +52,14 @@ export default async function AboutPage({
 							className="border-l-2 border-gray-200 pl-5 dark:border-gray-800"
 						>
 							<div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-1">
-								<h3 className="font-semibold text-gray-900 dark:text-gray-100">
+								<h3 className="font-semibold text-gray-900 dark:text-gray-700">
 									{role.company}
 								</h3>
 								<span className="text-sm text-gray-500 dark:text-gray-500">
 									— {role.title}
 								</span>
 							</div>
-							<p className="text-xs text-gray-400 mb-3 dark:text-gray-600">
+							<p className="text-xs text-gray-500 mb-3 dark:text-gray-500">
 								{role.period}
 							</p>
 							<ul className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400">
@@ -73,7 +73,7 @@ export default async function AboutPage({
 								))}
 							</ul>
 							{role.hasNote && (
-								<p className="text-xs text-gray-400 mt-2 italic dark:text-gray-600">
+								<p className="text-xs text-gray-500 mt-2 italic dark:text-gray-500">
 									{t('leftNote')}
 								</p>
 							)}
@@ -88,7 +88,7 @@ export default async function AboutPage({
 					{content.skills.map((item) => (
 						<span
 							key={item}
-							className="text-sm bg-[#00224D] text-[#F5EBDD] dark:bg-[#0284c7] dark:text-white px-3 py-1 rounded-full font-medium"
+							className="text-sm border border-gray-200 bg-gray-100 text-gray-700 px-3 py-1 rounded-[2px] font-mono font-medium dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400"
 						>
 							{item}
 						</span>
@@ -119,7 +119,7 @@ export default async function AboutPage({
 			<section className="mb-16">
 				<h2 className="text-xl font-bold mb-6">{t('education')}</h2>
 				<div className="border-l-2 border-gray-200 pl-5 dark:border-gray-800">
-					<h3 className="font-semibold text-gray-900 dark:text-gray-100">
+					<h3 className="font-semibold text-gray-900 dark:text-gray-700">
 						{content.educationSchool}
 					</h3>
 					<p className="text-sm text-gray-500 dark:text-gray-500">
@@ -140,7 +140,7 @@ export default async function AboutPage({
 				<div className="flex justify-center gap-4">
 					<a
 						href={mailtoUrl('Hello from your about page')}
-						className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-500 dark:hover:bg-blue-600"
+						className="inline-flex items-center border border-blue-600 bg-blue-600 px-6 py-2.5 font-mono text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-blue-700 dark:border-blue-700 dark:bg-blue-700 dark:text-[#f8f9fa] dark:hover:bg-[#991b1b]"
 					>
 						{t('emailSoomin')}
 					</a>

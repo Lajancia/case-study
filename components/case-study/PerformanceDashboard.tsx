@@ -55,8 +55,8 @@ export default function PerformanceDashboard() {
 
   return (
     <div className="not-prose my-10 space-y-8">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">This site&rsquo;s live metrics</h3>
-      <p className="text-sm text-gray-500 dark:text-gray-500">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-700">This site&rsquo;s live metrics</h3>
+      <p className="text-sm text-gray-600 dark:text-gray-500">
         Measured from the production build of <em>this</em> case study site.
         ApexCharts itself is loaded route-scoped — the library adds zero bytes to any other page.
       </p>
@@ -64,7 +64,7 @@ export default function PerformanceDashboard() {
       {/* Before/After comparison chart */}
       <div className="border border-gray-200 rounded-lg p-5 dark:border-gray-800">
         <h4 className="text-sm font-semibold text-gray-700 mb-1 dark:text-gray-300">Before &amp; After: same techniques on this site</h4>
-        <p className="text-xs text-gray-400 mb-4 dark:text-gray-600">
+        <p className="text-xs text-gray-600 mb-4 dark:text-gray-500">
           The &ldquo;before&rdquo; state recreates the AD3 anti-pattern: an eager 3D library import on every route
           plus a non-standalone Docker build. Measured from the <code>perf/before-optimization</code> branch.
         </p>
@@ -96,7 +96,7 @@ export default function PerformanceDashboard() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
           {comparisons.map((c) => (
             <div key={c.label} className="text-xs">
-              <span className="text-gray-500 dark:text-gray-500">{c.label.split('(')[0].trim()}</span>
+              <span className="text-gray-600 dark:text-gray-500">{c.label.split('(')[0].trim()}</span>
               <div className="flex gap-2 mt-0.5">
                 <span className="text-red-600 line-through dark:text-red-400">{c.before}</span>
                 <span className="text-green-700 font-semibold dark:text-green-400">{c.after}</span>
@@ -109,7 +109,7 @@ export default function PerformanceDashboard() {
       {/* Docker image comparison — its own chart on an MB axis */}
       <div className="border border-gray-200 rounded-lg p-5 dark:border-gray-800">
         <h4 className="text-sm font-semibold text-gray-700 mb-1 dark:text-gray-300">Docker production image (runner stage)</h4>
-        <p className="text-xs text-gray-400 mb-4 dark:text-gray-600">
+        <p className="text-xs text-gray-600 mb-4 dark:text-gray-500">
           Measured separately from the bundle metrics above — different unit (MB), so it has its own axis.
           Image sizes were measured {docker.measuredAt}; bundle numbers reflect the {siteMetrics.measuredAt} re-measurement.
         </p>
@@ -147,24 +147,24 @@ export default function PerformanceDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="border border-gray-200 rounded-lg p-5 dark:border-gray-800">
           <h4 className="text-sm font-medium text-gray-700 mb-3 dark:text-gray-300">Main bundle</h4>
-          <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <div className="text-3xl font-bold text-gray-900 dark:text-gray-700">
             {currentSiteBundle.gzippedKb}
-            <span className="text-lg text-gray-500 dark:text-gray-500"> KB</span>
+            <span className="text-lg text-gray-600 dark:text-gray-500"> KB</span>
           </div>
-          <p className="text-xs text-gray-400 mt-1 dark:text-gray-600">gzipped &middot; {currentSiteBundle.chunkCount} chunks</p>
-          <p className="text-xs text-gray-400 dark:text-gray-600">{currentSiteBundle.totalKb} KB uncompressed</p>
+          <p className="text-xs text-gray-600 mt-1 dark:text-gray-500">gzipped &middot; {currentSiteBundle.chunkCount} chunks</p>
+          <p className="text-xs text-gray-600 dark:text-gray-500">{currentSiteBundle.totalKb} KB uncompressed</p>
         </div>
 
         <div className="border border-gray-200 rounded-lg p-5 dark:border-gray-800">
           <h4 className="text-sm font-medium text-gray-700 mb-3 dark:text-gray-300">Docker image (runner stage)</h4>
-          <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <div className="text-3xl font-bold text-gray-900 dark:text-gray-700">
             {docker.standaloneMb}
-            <span className="text-lg text-gray-500 dark:text-gray-500"> MB</span>
+            <span className="text-lg text-gray-600 dark:text-gray-500"> MB</span>
           </div>
-          <p className="text-xs text-gray-400 mt-1 dark:text-gray-600">
+          <p className="text-xs text-gray-600 mt-1 dark:text-gray-500">
             {docker.reductionPercent}% smaller vs non-standalone
           </p>
-          <p className="text-xs text-gray-400 dark:text-gray-600">
+          <p className="text-xs text-gray-600 dark:text-gray-500">
             vs ~{docker.estimatedNonStandaloneMb} MB &middot; measured {docker.measuredAt}
           </p>
         </div>

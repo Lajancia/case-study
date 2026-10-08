@@ -144,8 +144,8 @@ export default function RdkitEmbed() {
           (MolecularViewer.tsx), so it can't observe the parent's theme
           anyway — deliberately staying theme-independent throughout rather
           than half-syncing. */}
-      <div className="px-5 pt-3 pb-2 border-b border-[#ece0cd] bg-[#f5ebdd]">
-        <span className="text-xs font-semibold text-[#1b4273] uppercase tracking-wide">
+      <div className="px-5 pt-3 pb-2 border-b border-[#e2e8f0] bg-[#f8fafc]">
+        <span className="text-xs font-semibold text-[#334155] uppercase tracking-wide">
           RDKit.js &mdash; 2D Molecule Structure
         </span>
         <span className="text-xs text-[#7b8ea6] ml-2">Aspirin (C₉H₈O₄)</span>

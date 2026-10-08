@@ -19,14 +19,14 @@ export async function CaseStudyCTA({ locale }: { locale: Locale }) {
             href={siteConfig.calendlyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center w-full sm:w-auto justify-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-500 dark:hover:bg-blue-600"
+            className="inline-flex items-center w-full sm:w-auto justify-center bg-blue-600 px-6 py-2.5 font-mono text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:text-[#f8f9fa] dark:hover:bg-[#991b1b]"
           >
             {t("bookACall")}
           </a>
         )}
         <a
           href={mailtoUrl("Frontend performance audit inquiry")}
-          className="inline-flex items-center w-full sm:w-auto justify-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-500 dark:hover:bg-blue-600"
+          className="inline-flex items-center w-full sm:w-auto justify-center bg-blue-600 px-6 py-2.5 font-mono text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:text-[#f8f9fa] dark:hover:bg-[#991b1b]"
         >
           {t("emailSoomin")}
         </a>
@@ -37,7 +37,7 @@ export async function CaseStudyCTA({ locale }: { locale: Locale }) {
             filled button — revisit which one stays solid at that point. */}
         <Link
           href="/work"
-          className="inline-flex items-center w-full sm:w-auto justify-center rounded-full border border-blue-600 px-6 py-2.5 text-blue-600 font-medium hover:bg-blue-100 active:scale-[0.98] hover:scale-[1.02] transition dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950/60"
+          className="inline-flex items-center w-full sm:w-auto justify-center border border-blue-600 px-6 py-2.5 font-mono text-sm font-medium tracking-wider text-blue-700 transition-colors hover:bg-blue-50 dark:border-blue-400 dark:text-[#ffb3ae] dark:hover:bg-blue-950/60"
         >
           {t("viewProjects")}
         </Link>

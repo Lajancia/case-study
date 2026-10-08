@@ -27,7 +27,7 @@ export function MobileNav({ links, resumeUrl, resumeLabel, openLabel, closeLabel
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? closeLabel : openLabel}
-        className="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 active:scale-90 transition dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+        className="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 active:scale-90 transition dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-700"
       >
         {open ? (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
@@ -51,7 +51,7 @@ export function MobileNav({ links, resumeUrl, resumeLabel, openLabel, closeLabel
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setOpen(false)}
-                  className="hover:text-gray-900 transition-colors dark:hover:text-gray-100"
+                  className="hover:text-gray-900 transition-colors dark:hover:text-gray-700"
                 >
                   {link.label}
                 </a>
@@ -60,7 +60,7 @@ export function MobileNav({ links, resumeUrl, resumeLabel, openLabel, closeLabel
                   key={link.label}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="hover:text-gray-900 transition-colors dark:hover:text-gray-100"
+                  className="hover:text-gray-900 transition-colors dark:hover:text-gray-700"
                 >
                   {link.label}
                 </Link>
@@ -71,7 +71,7 @@ export function MobileNav({ links, resumeUrl, resumeLabel, openLabel, closeLabel
                 href={resumeUrl}
                 download
                 onClick={() => setOpen(false)}
-                className="inline-flex items-center gap-1.5 hover:text-gray-900 transition-colors dark:hover:text-gray-100"
+                className="inline-flex items-center gap-1.5 hover:text-gray-900 transition-colors dark:hover:text-gray-700"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />

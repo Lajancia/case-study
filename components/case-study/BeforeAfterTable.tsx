@@ -27,9 +27,9 @@ export function BeforeAfterTable({ entries, caption }: BeforeAfterTableProps) {
           {entries.map((entry) => (
             <tr key={entry.label}>
               <td className="border border-gray-200 px-4 py-2 text-sm font-medium dark:border-gray-800">{entry.label}</td>
-              <td className="border border-gray-200 px-4 py-2 text-sm text-gray-400 line-through tabular-nums dark:border-gray-800 dark:text-gray-600">{entry.before}</td>
+              <td className="border border-gray-200 px-4 py-2 text-sm text-gray-500 line-through tabular-nums dark:border-gray-800 dark:text-gray-500">{entry.before}</td>
               <td className="border border-gray-200 px-4 py-2 text-sm font-semibold text-green-700 tabular-nums dark:border-gray-800 dark:text-green-400">{entry.after}</td>
-              <td className="border border-gray-200 px-4 py-2 text-sm font-medium text-green-600 dark:border-gray-800 dark:text-green-500">{entry.change}</td>
+              <td className="border border-gray-200 px-4 py-2 text-sm font-medium text-green-700 dark:border-gray-800 dark:text-green-400">{entry.change}</td>
             </tr>
           ))}
         </tbody>
