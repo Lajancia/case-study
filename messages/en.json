@@ -72,7 +72,14 @@
       "yura": "Yura Corp.",
       "common-srl": "commON srl",
       "personal": "Personal Case Studies"
-    }
+    },
+    "dossier": "ENGINEERING DOSSIER",
+    "heroTitle": "Engineered for Scale, Latency & Reliability",
+    "heroSubtitle": "Production engineering case studies: frontend performance, WebGL/WASM visualization, and delivery pipelines — each documented with evidence you can reproduce.",
+    "ctaLabel": "DIRECT ENGINEERING CONTACT",
+    "ctaTitle": "Ready to discuss platform engineering challenges?",
+    "ctaBody": "Available for technical leadership, frontend performance remediation, and WebGL scientific visualization work.",
+    "ctaButton": "Email Soomin"
   },
   "hire": {
     "seeAllWork": "See all {capability} case studies ({count})",
