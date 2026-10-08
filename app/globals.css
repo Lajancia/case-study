@@ -31,7 +31,7 @@
   --color-blue-800: var(--color-blue-800);
   --color-blue-950: var(--color-blue-950);
 
-  --color-background: var(--color-background);
+  --color-background: var(--page-bg);
   --color-foreground: var(--color-foreground);
   --color-accent: var(--color-accent);
   --color-accent-hover: var(--color-accent-hover);
@@ -71,7 +71,7 @@
   --color-blue-800: #991b1b;
   --color-blue-950: #450a0a;
 
-  --color-background: #ffffff;
+  --page-bg: #ffffff;
   --color-foreground: #0f172a;
   --color-accent: #dc2626;
   --color-accent-hover: #b91c1c;
@@ -108,7 +108,7 @@
   --color-blue-800: #ffb3ae;
   --color-blue-950: #20090a;
 
-  --color-background: #0b0d11;
+  --page-bg: #0b0d11;
   --color-foreground: #f8f9fa;
   --color-accent: #d9383a;
   --color-accent-hover: #ffb3ae;
@@ -120,9 +120,19 @@
   --scrollbar-thumb-hover: #d9383a;
 }
 
+/* The theme flip swaps --color-background on <html>. Dependent longhands
+   (html/body background) jump instantly unless the custom property itself is
+   transitionable — register it as a <color> and transition it here. Children
+   inherit the animated value, so the whole page background fades. */
+@property --page-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+
 html {
   background-color: var(--color-background);
-  transition: background-color 0.5s ease;
+  transition: --page-bg 0.5s ease;
 }
 
 body {
@@ -131,7 +141,6 @@ body {
   font-family: var(--font-sans, Arial, Helvetica, sans-serif);
   line-height: 1.75;
   word-break: keep-all;
-  transition: background-color 0.5s ease;
 }
 
 .prose {
