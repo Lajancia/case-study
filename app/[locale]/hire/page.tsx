@@ -75,7 +75,7 @@ export default async function HirePage({
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-gray-900 dark:text-[#38bdf8]">
+      <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-gray-900 dark:text-[#ffb3ae]">
         {t("title")}
       </h1>
       <p className="text-lg text-gray-600 mb-6 dark:text-gray-400">
@@ -109,7 +109,7 @@ export default async function HirePage({
                     pathname: "/work",
                     query: { do: service.capability },
                   }}
-                  className="text-sm text-gray-500 underline underline-offset-4 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:text-gray-100"
+                  className="text-sm text-gray-500 underline underline-offset-4 hover:text-gray-900 transition-colors dark:text-gray-500 dark:hover:text-gray-700"
                 >
                   {t("seeAllWork", {
                     capability: tWork(`capabilities.${service.capability}`),
@@ -143,10 +143,10 @@ export default async function HirePage({
               className="border-l-2 border-gray-200 pl-5 dark:border-gray-800"
             >
               <div className="flex flex-wrap items-baseline gap-x-2 mb-1">
-                <span className="text-xs font-semibold text-gray-400 dark:text-gray-600">
+                <span className="text-xs font-semibold text-gray-500 dark:text-gray-500">
                   {i + 1}
                 </span>
-                <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                <h3 className="font-semibold text-gray-900 dark:text-gray-700">
                   {step.title}
                 </h3>
                 <span className="text-xs text-gray-500 dark:text-gray-500">
@@ -172,7 +172,7 @@ export default async function HirePage({
               key={item.title}
               className="border-l-2 border-gray-200 pl-5 dark:border-gray-800"
             >
-              <h3 className="font-semibold text-gray-900 mb-1 dark:text-gray-100">
+              <h3 className="font-semibold text-gray-900 mb-1 dark:text-gray-700">
                 {item.title}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -190,7 +190,7 @@ export default async function HirePage({
         </p>
         <a
           href={mailtoUrl("Project inquiry")}
-          className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-500 dark:hover:bg-blue-600"
+          className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-700 dark:hover:bg-[#991b1b]"
         >
           {t("ctaButton")}
         </a>

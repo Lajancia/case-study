@@ -48,81 +48,76 @@
 }
 
 :root {
-  /* Light theme: white page, warm cream surfaces, deep navy ink.
-     The page stays white so cards, code blocks and the accent red keep
-     their contrast; the cream carries the brand warmth on surfaces. */
-  --color-gray-50: #f5ebdd;
-  --color-gray-100: #ece0cd;  /* hover surface — must stay between 50 and 200 */
-  --color-gray-200: #c9b497;
-  --color-gray-300: #bfa888;
-  --color-gray-400: #7b8ea6;
-  --color-gray-500: #556c88;
-  --color-gray-600: #315b8c;
-  --color-gray-700: #1b4273;
-  --color-gray-800: #0d305c;
-  --color-gray-900: #00224d;
-  --color-gray-950: #001736;
+  /* Light theme: white page, slate surfaces, red telemetry accent
+     (Figma "Main Home - Desktop light" palette). */
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;  /* hover surface — must stay between 50 and 200 */
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #5b6673;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
+  --color-gray-950: #020617;
 
-  --color-blue-50: #f5ebdd;  /* CTA panel — same cream surface, one tone only */
-  --color-blue-100: #d8c4a6;
-  --color-blue-400: #ff5c7d;
-  --color-blue-500: #ff204e;
-  --color-blue-600: #ff204e;
-  --color-blue-700: #d8143d;
-  --color-blue-800: #315b8c;
-  --color-blue-950: #001f45;
+  --color-blue-50: #fef2f2;  /* CTA panel tint */
+  --color-blue-100: #fee2e2;
+  --color-blue-400: #f87171;
+  --color-blue-500: #dc2626;
+  --color-blue-600: #dc2626;
+  --color-blue-700: #b91c1c;
+  --color-blue-800: #991b1b;
+  --color-blue-950: #450a0a;
 
   --color-background: #ffffff;
-  --color-foreground: #00224d;
-  --color-accent: #ff204e;
-  --color-accent-hover: #315b8c;
-  --color-muted: #556c88;
-  --color-border: #c9b497;
-  --color-surface: #f5ebdd;
+  --color-foreground: #0f172a;
+  --color-accent: #dc2626;
+  --color-accent-hover: #b91c1c;
+  --color-muted: #475569;
+  --color-border: #e2e8f0;
+  --color-surface: #f1f5f9;
 
-  --scrollbar-thumb: #c9b497;
-  --scrollbar-thumb-hover: #315b8c;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #dc2626;
 }
 
 .dark {
-  /*
-    High-contrast, clean Dark Mode:
-    Background: Deep Slate-Navy (#0b1329)
-    Surfaces & Cards: Elevated Charcoal-Navy (#131f3d)
-    Text: High contrast crisp white (#ffffff) and clear slate-200 (#e2e8f0)
-    Accents: Crisp blue palette (#38bdf8 / #0284c7)
-  */
-  --color-gray-50: #131f3d;      /* Card/Box surface */
-  --color-gray-100: #38bdf8;     /* Bright accent blue for heading highlights */
-  --color-gray-200: #233765;     /* Card border / divider */
-  --color-gray-300: #7dd3fc;     /* Secondary strong light-blue/cyan text */
-  --color-gray-400: #cbd5e1;     /* Main descriptions & body */
-  --color-gray-500: #94a3b8;     /* Metadata / labels */
-  --color-gray-600: #64748b;     /* Tertiary / disabled */
-  --color-gray-700: #f8fafc;     /* Emphasis text */
-  --color-gray-800: #1a2a50;     /* Dark component backings */
-  --color-gray-900: #131f3d;     /* Panel surface: only reached via dark:bg-gray-900 */
-  --color-gray-950: #050b18;     /* Darkest base */
+  /* Fixed telemetry-dossier dark (Figma "Case study / Main Home - Desktop"):
+     page #0b0d11, panels #12151c, cards #181c26, border #222734,
+     red accent #d9383a (soft: #ffb3ae), green #10b981 via text-green-*. */
+  --color-gray-50: #12151c;      /* panel surface */
+  --color-gray-100: #181c26;     /* card surface */
+  --color-gray-200: #222734;     /* border / divider */
+  --color-gray-300: #94a3b8;     /* secondary text */
+  --color-gray-400: #94a3b8;     /* body text */
+  --color-gray-500: #7d8ba1;     /* metadata / labels (AA on 12151c) */
+  --color-gray-600: #6b7a90;     /* tertiary — large text / non-text only */
+  --color-gray-700: #f8fafc;     /* emphasis text */
+  --color-gray-800: #1a222d;     /* component backings */
+  --color-gray-900: #12151c;     /* panel surface */
+  --color-gray-950: #050b18;     /* darkest base */
 
-  --color-blue-50: #172554;
-  --color-blue-100: #1e3a8a;
-  --color-blue-400: #38bdf8;
-  --color-blue-500: #0ea5e9;
-  --color-blue-600: #0284c7;
-  --color-blue-700: #0369a1;
-  --color-blue-800: #7dd3fc;
-  --color-blue-950: #082f49;
+  --color-blue-50: #2a1215;
+  --color-blue-100: #3a1a1c;
+  --color-blue-400: #ffb3ae;     /* soft red accent (links, kickers) */
+  --color-blue-500: #d9383a;
+  --color-blue-600: #d9383a;
+  --color-blue-700: #b12a2c;
+  --color-blue-800: #ffb3ae;
+  --color-blue-950: #20090a;
 
-  --color-background: #0b1329;
-  --color-foreground: #ffffff;
-  --color-accent: #38bdf8;
-  --color-accent-hover: #7dd3fc;
-  --color-muted: #cbd5e1;
-  --color-border: #233765;
-  --color-surface: #131f3d;
+  --color-background: #0b0d11;
+  --color-foreground: #f8f9fa;
+  --color-accent: #d9383a;
+  --color-accent-hover: #ffb3ae;
+  --color-muted: #94a3b8;
+  --color-border: #222734;
+  --color-surface: #12151c;
 
-  --scrollbar-thumb: #233765;
-  --scrollbar-thumb-hover: #38bdf8;
+  --scrollbar-thumb: #222734;
+  --scrollbar-thumb-hover: #d9383a;
 }
 
 html {
@@ -195,6 +190,10 @@ body {
 }
 .prose a:hover {
   color: var(--color-accent-hover);
+}
+
+.dark .prose a {
+  color: var(--color-blue-400);
 }
 .prose code {
   font-family: var(--font-mono, monospace);

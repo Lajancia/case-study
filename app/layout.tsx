@@ -22,7 +22,7 @@ export default function RootLayout({
     // element before React hydrates, so the server's markup is expected to
     // differ here and only here.
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
+      <body className="min-h-screen flex flex-col bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-700">
         {/* attribute="class" to match the `dark` variant globals.css declares.
             The stylesheet has no .light rule — light is the :root default — so
             the class next-themes adds for it is simply inert. Under this

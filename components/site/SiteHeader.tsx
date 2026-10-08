@@ -25,20 +25,20 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
 			<div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between">
 				<Link
 					href="/"
-					className="text-lg font-semibold tracking-tight text-gray-900 hover:text-blue-600 transition-colors dark:text-white dark:hover:text-gray-100"
+					className="text-lg font-semibold tracking-tight text-gray-900 hover:text-blue-600 transition-colors dark:text-white dark:hover:text-gray-700"
 				>
 					{siteConfig.name}
 				</Link>
 				<nav className="hidden sm:flex items-center gap-6 text-sm font-medium text-gray-600 dark:text-gray-400">
 					<Link
 						href="/about"
-						className="hover:text-gray-900 transition-colors dark:hover:text-gray-100"
+						className="hover:text-gray-900 transition-colors dark:hover:text-gray-700"
 					>
 						{t('about')}
 					</Link>
 					<Link
 						href="/work"
-						className="hover:text-gray-900 transition-colors dark:hover:text-gray-100"
+						className="hover:text-gray-900 transition-colors dark:hover:text-gray-700"
 					>
 						{t('work')}
 					</Link>
@@ -46,7 +46,7 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
 						href={siteConfig.social.medium}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="hover:text-gray-900 transition-colors dark:hover:text-gray-100"
+						className="hover:text-gray-900 transition-colors dark:hover:text-gray-700"
 					>
 						{t('technicalWriting')}
 					</a>

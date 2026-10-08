@@ -18,7 +18,7 @@ export default function RootNotFound() {
         </p>
         <Link
           href={`/${routing.defaultLocale}`}
-          className="mt-10 inline-block rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300"
+          className="mt-10 inline-block rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400"
         >
           Back to home
         </Link>

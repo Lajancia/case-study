@@ -47,6 +47,10 @@ export const KNOWN_CONTRAST_FAILURES: Record<string, string> = {
   '#64748b on #0b1329': '3.87 — inactive locale, dark theme',
   '#5f6f86 on #0b1329': '3.60 — muted prose text, dark theme',
 
+  // Third-party iframe internals (molstar viewer UI) — not styleable from
+  // this repo's CSS.
+  '#7b8ea6 on #f8fafc': '3.20 — molstar iframe internal label',
+
   // Inline code inside a callout.
   '#a65f00 on #f5ebdd': '4.18 — code in a warning callout',
 }

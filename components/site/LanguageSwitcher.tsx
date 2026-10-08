@@ -23,8 +23,8 @@ export function LanguageSwitcher() {
           locale={loc}
           className={`px-1.5 py-1 rounded transition-colors ${
             loc === locale
-              ? 'text-gray-900 dark:text-gray-100'
-              : 'text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-400'
+              ? 'text-gray-900 dark:text-gray-700'
+              : 'text-gray-500 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-500'
           }`}
         >
           {LABELS[loc] ?? loc.toUpperCase()}

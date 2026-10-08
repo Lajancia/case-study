@@ -37,7 +37,7 @@ export async function CaseStudyHero({ study, locale }: CaseStudyHeroProps) {
             {study.stack.map((tech) => (
               <span
                 key={tech}
-                className="text-xs bg-[#00224D] text-[#F5EBDD] dark:bg-[#0284c7] dark:text-white px-2 py-0.5 rounded font-medium"
+                className="text-xs bg-[#0f172a] text-[#f8fafc] dark:bg-[#b12a2c] dark:text-white px-2 py-0.5 rounded font-medium"
               >
                 {tech}
               </span>
@@ -71,13 +71,13 @@ export async function CaseStudyHero({ study, locale }: CaseStudyHeroProps) {
               {outcome.label}
             </div>
             <div className="flex flex-wrap items-baseline gap-2">
-              <span className="text-gray-400 line-through text-lg dark:text-gray-600">
+              <span className="text-gray-500 line-through text-lg dark:text-gray-500">
                 {outcome.before}
               </span>
               <span className="text-2xl font-bold text-green-700 dark:text-green-400">
                 {outcome.after}
               </span>
-              <span className="text-green-600 font-semibold dark:text-green-500">
+              <span className="text-green-700 font-semibold dark:text-green-400">
                 {outcome.change}
               </span>
             </div>

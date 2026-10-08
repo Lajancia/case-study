@@ -29,7 +29,7 @@ export default function MolecularViewer() {
 
   return (
     <div className="not-prose my-10 space-y-8">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-700">
         Live demo: Molecular Viewer
       </h3>
       <p className="text-sm text-gray-500 dark:text-gray-500">
@@ -43,12 +43,12 @@ export default function MolecularViewer() {
           <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide dark:text-gray-300">
             Molstar &mdash; 3D Protein Structure
           </span>
-          <span className="text-xs text-gray-400 ml-2 dark:text-gray-600">{DEMO_PDB} (crambin)</span>
+          <span className="text-xs text-gray-500 ml-2 dark:text-gray-500">{DEMO_PDB} (crambin)</span>
         </div>
         <div className="p-4">
           <Suspense
             fallback={
-              <div className="flex items-center justify-center text-gray-400 text-sm animate-pulse dark:text-gray-600" style={{ height: 480 }}>
+              <div className="flex items-center justify-center text-gray-500 text-sm animate-pulse dark:text-gray-500" style={{ height: 480 }}>
                 Loading Mol* (npm package, ~few MB, route-scoped)...
               </div>
             }
@@ -94,7 +94,7 @@ export default function MolecularViewer() {
         />
       </div>
 
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 dark:text-gray-600">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-500">
         <span>PDB data: <a href={`https://files.rcsb.org/download/${DEMO_PDB}.pdb`} target="_blank" rel="noopener noreferrer" className="underline">RCSB</a></span>
         <span>&middot;</span>
         <span>RDKit.js: v2025.3.4, self-hosted, loaded on-demand</span>
