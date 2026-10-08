@@ -190,7 +190,7 @@ export default async function HirePage({
         </p>
         <a
           href={mailtoUrl("Project inquiry")}
-          className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-700 dark:hover:bg-[#991b1b]"
+          className="inline-flex items-center bg-blue-600 px-6 py-2.5 font-mono text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:text-[#f8f9fa] dark:hover:bg-[#991b1b]"
         >
           {t("ctaButton")}
         </a>

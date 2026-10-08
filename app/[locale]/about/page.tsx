@@ -88,7 +88,7 @@ export default async function AboutPage({
 					{content.skills.map((item) => (
 						<span
 							key={item}
-							className="text-sm border border-gray-200 bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-medium dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400"
+							className="text-sm border border-gray-200 bg-gray-100 text-gray-700 px-3 py-1 rounded-[2px] font-mono font-medium dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400"
 						>
 							{item}
 						</span>
@@ -140,7 +140,7 @@ export default async function AboutPage({
 				<div className="flex justify-center gap-4">
 					<a
 						href={mailtoUrl('Hello from your about page')}
-						className="inline-flex items-center rounded-full bg-blue-600 px-6 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.98] hover:scale-[1.02] transition dark:bg-blue-500 dark:hover:bg-blue-600"
+						className="inline-flex items-center border border-blue-600 bg-blue-600 px-6 py-2.5 font-mono text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-blue-700 dark:border-blue-700 dark:bg-blue-700 dark:text-[#f8f9fa] dark:hover:bg-[#991b1b]"
 					>
 						{t('emailSoomin')}
 					</a>
