@@ -37,7 +37,7 @@ export async function CaseStudyHero({ study, locale }: CaseStudyHeroProps) {
             {study.stack.map((tech) => (
               <span
                 key={tech}
-                className="text-xs bg-[#0f172a] text-[#f8fafc] dark:bg-[#b12a2c] dark:text-white px-2 py-0.5 rounded font-medium"
+                className="text-xs bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-400 px-2 py-0.5 rounded font-medium"
               >
                 {tech}
               </span>
@@ -53,7 +53,7 @@ export async function CaseStudyHero({ study, locale }: CaseStudyHeroProps) {
               href={study.disclosure.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-blue-400 dark:hover:text-blue-300"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors dark:text-[#ffb3ae] dark:hover:text-[#d9383a]"
             >
               {study.disclosure.label} →
             </a>

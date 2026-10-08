@@ -28,8 +28,8 @@ export async function generateMetadata({
 
 /**
  * Work index, restyled after the Figma "Case study - Desktop" frame
- * (telemetry-dossier dark design). The palette is fixed dark on purpose —
- * this section is independent of the site's light/dark theme.
+ * (telemetry-dossier design). Theme-responsive via tokens: dark mode is the
+ * Figma dark palette, light mode its light variant.
  *
  * Behaviour carried over unchanged: `?do=` capability filtering stays
  * server-rendered and shareable; drafts stay visible, full-contrast, and
@@ -68,9 +68,9 @@ export default async function WorkPage({
 	const chipBase =
 		'inline-flex items-center gap-2 border px-3 py-1.5 font-mono text-xs transition-colors whitespace-nowrap';
 	const chipOn =
-		'border-[#d9383a] bg-[#12151c] text-[#ffb3ae] font-medium';
+		'border-blue-600 bg-gray-50 text-blue-700 font-medium dark:border-[#d9383a] dark:bg-gray-900 dark:text-[#ffb3ae]';
 	const chipOff =
-		'border-[#222734] bg-[#12151c] text-[#94a3b8] hover:border-[#d9383a]/60 hover:text-[#f8f9fa]';
+		'border-gray-200 bg-gray-50 text-gray-600 hover:border-blue-400 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:border-[#d9383a]/60 dark:hover:text-[#f8f9fa]';
 
 	const renderCard = (study: (typeof visible)[number], index: number) => (
 		<WorkCard key={study.slug} study={study} locale={locale} index={index} />
@@ -85,22 +85,20 @@ export default async function WorkPage({
 		orderIndex.get(study.slug) ?? 0;
 
 	return (
-		<div className="min-h-full bg-[#0b0d11] text-[#f8f9fa]">
+		<div className="min-h-full bg-background text-foreground">
 			{/* System telemetry status bar */}
-			<div className="border-b border-[#222734]">
-				<div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-6 py-2 font-mono text-[11px] uppercase tracking-wider text-[#94a3b8]">
+			<div className="border-b border-gray-200 dark:border-gray-800">
+				<div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-6 py-2 font-mono text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-500">
 					<div className="flex flex-wrap items-center gap-x-2">
 						<span>{statusBarLabel}</span>
 						<span aria-hidden>/</span>
 						<span>ROOT &gt; WORK</span>
 						<span aria-hidden>/</span>
-						<span className="text-[#94a3b8]">
-							FILTER: {filterLabel}
-						</span>
+						<span>FILTER: {filterLabel}</span>
 					</div>
 					<div className="flex items-center gap-2 tabular-nums">
 						<span>TOTAL_AUDITS:</span>
-						<span className="font-semibold text-[#f8f9fa]">
+						<span className="font-semibold text-gray-900 dark:text-[#f8f9fa]">
 							{visible.length}
 						</span>
 					</div>
@@ -108,21 +106,21 @@ export default async function WorkPage({
 			</div>
 
 			{/* Hero & filter module */}
-			<header className="relative overflow-hidden border-b border-[#222734]">
+			<header className="relative overflow-hidden border-b border-gray-200 dark:border-gray-800">
 				<div
 					aria-hidden
-					className="pointer-events-none absolute -top-40 left-1/2 h-[384px] w-[384px] -translate-x-1/2 bg-[#d9383a]/[0.05] blur-3xl"
+					className="pointer-events-none absolute -top-40 left-1/2 h-[384px] w-[384px] -translate-x-1/2 bg-blue-600/[0.04] blur-3xl dark:bg-[#d9383a]/[0.05]"
 				/>
 				<div className="relative mx-auto max-w-6xl px-6 py-16">
 					<div className="mb-6 flex flex-wrap items-center gap-3">
-						<span className="border border-[#222734] bg-[#181c26] px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[#ffb3ae]">
+						<span className="border border-gray-200 bg-gray-50 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-blue-600 dark:border-gray-800 dark:bg-gray-900 dark:text-[#ffb3ae]">
 							{t('dossier')}
 						</span>
 					</div>
 					<h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
 						{t('heroTitle')}
 					</h1>
-					<p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#94a3b8]">
+					<p className="mt-5 max-w-2xl text-lg leading-relaxed text-gray-600 dark:text-[#94a3b8]">
 						{t('heroSubtitle')}
 					</p>
 
@@ -138,11 +136,11 @@ export default async function WorkPage({
 							{active ? null : (
 								<span
 									aria-hidden
-									className="h-1.5 w-1.5 rounded-full bg-[#d9383a]"
+									className="h-1.5 w-1.5 rounded-full bg-blue-600 dark:bg-[#d9383a]"
 								/>
 							)}
 							{t('capabilities.all')}
-							<span className="border border-[#222734] bg-[#181c26] px-1.5 py-0.5 text-[10px] tabular-nums text-[#94a3b8]">
+							<span className="border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-[10px] tabular-nums text-gray-500 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400">
 								{caseStudies.length}
 							</span>
 						</Link>
@@ -162,11 +160,11 @@ export default async function WorkPage({
 								{active === capability && (
 									<span
 										aria-hidden
-										className="h-1.5 w-1.5 rounded-full bg-[#d9383a]"
+										className="h-1.5 w-1.5 rounded-full bg-blue-600 dark:bg-[#d9383a]"
 									/>
 								)}
 								{t(`capabilities.${capability}`)}
-								<span className="border border-[#222734] bg-[#181c26] px-1.5 py-0.5 text-[10px] tabular-nums text-[#94a3b8]">
+								<span className="border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-[10px] tabular-nums text-gray-500 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400">
 									{counts[capability]}
 								</span>
 							</Link>
@@ -179,7 +177,7 @@ export default async function WorkPage({
 			<div className="mx-auto max-w-6xl px-6 py-16">
 				{filtered ? (
 					<div>
-						<p className="mb-6 font-mono text-xs uppercase tracking-wider text-[#94a3b8]">
+						<p className="mb-6 font-mono text-xs uppercase tracking-wider text-gray-500 dark:text-gray-500">
 							{t('resultCount', { count: filtered.length })}
 						</p>
 						<div className="grid gap-6">
@@ -187,7 +185,7 @@ export default async function WorkPage({
 						</div>
 						<Link
 							href="/work"
-							className="mt-8 inline-block font-mono text-xs uppercase tracking-wider text-[#94a3b8] underline underline-offset-4 transition-colors hover:text-[#f8f9fa]"
+							className="mt-8 inline-block font-mono text-xs uppercase tracking-wider text-gray-500 underline underline-offset-4 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-[#f8f9fa]"
 						>
 							{t('clearFilter')}
 						</Link>
@@ -203,16 +201,16 @@ export default async function WorkPage({
 									if (studies.length === 0) return null;
 									return (
 										<section key={company}>
-											<div className="mb-6 flex flex-wrap items-end justify-between gap-2 border-b border-[#222734] pb-4">
+											<div className="mb-6 flex flex-wrap items-end justify-between gap-2 border-b border-gray-200 pb-4 dark:border-gray-800">
 												<div>
 													<h2 className="text-3xl font-bold tracking-tight">
 														{t(`groups.${company}`)}
 													</h2>
-													<p className="mt-1 text-[13px] text-[#94a3b8]">
+													<p className="mt-1 text-[13px] text-gray-600 dark:text-[#94a3b8]">
 														{studies[0].industry}
 													</p>
 												</div>
-												<span className="font-mono text-[11px] uppercase tracking-wider text-[#94a3b8]">
+												<span className="font-mono text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-500">
 													[ENV:{' '}
 													{company.replace(/-/g, '_').toUpperCase()}] ·{' '}
 													{studies.length} AUDITS
@@ -229,7 +227,7 @@ export default async function WorkPage({
 						{drafts.length > 0 && (
 							<div className="mt-16">
 								{published.length > 0 && (
-									<h2 className="mb-4 border-b border-[#222734] pb-4 text-3xl font-bold tracking-tight text-[#94a3b8]">
+									<h2 className="mb-4 border-b border-gray-200 pb-4 text-3xl font-bold tracking-tight text-gray-500 dark:border-gray-800 dark:text-gray-400">
 										{t('comingSoon')}
 									</h2>
 								)}
@@ -243,34 +241,34 @@ export default async function WorkPage({
 			</div>
 
 			{/* Direct engineering contact */}
-			<section className="border-t border-[#222734]">
+			<section className="border-t border-gray-200 dark:border-gray-800">
 				<div className="mx-auto max-w-6xl px-6 py-16">
-					<div className="mb-4 flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[#ffb3ae]">
-						<span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#d9383a]" />
+					<div className="mb-4 flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-blue-600 dark:text-[#ffb3ae]">
+						<span aria-hidden className="h-1.5 w-1.5 rounded-full bg-blue-600 dark:bg-[#d9383a]" />
 						{t('ctaLabel')}
 					</div>
 					<h2 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight">
 						{t('ctaTitle')}
 					</h2>
-					<p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[#94a3b8]">
+					<p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-gray-600 dark:text-[#94a3b8]">
 						{t('ctaBody')}
 					</p>
 					<div className="mt-8 flex flex-wrap items-center gap-4">
 						<a
 							href={mailtoUrl('Platform engineering inquiry')}
-							className="inline-flex items-center gap-2 border border-[#d9383a] bg-[#181c26] px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-[#ffb3ae] transition-colors hover:bg-[#d9383a]/10"
+							className="inline-flex items-center gap-2 border border-blue-600 bg-gray-50 px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-blue-700 transition-colors hover:bg-blue-50 dark:border-[#d9383a] dark:bg-gray-900 dark:text-[#ffb3ae] dark:hover:bg-[#d9383a]/10"
 						>
 							{t('ctaButton')}
 						</a>
 						<a
 							href={siteConfig.social.linkedin}
-							className="border border-[#222734] bg-[#12151c] px-3 py-1.5 font-mono text-xs text-[#94a3b8] transition-colors hover:border-[#d9383a]/60 hover:text-[#f8f9fa]"
+							className="border border-gray-200 bg-gray-50 px-3 py-1.5 font-mono text-xs text-gray-600 transition-colors hover:border-blue-400 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:border-[#d9383a]/60 dark:hover:text-[#f8f9fa]"
 						>
 							LinkedIn
 						</a>
 						<a
 							href={siteConfig.social.github}
-							className="border border-[#222734] bg-[#12151c] px-3 py-1.5 font-mono text-xs text-[#94a3b8] transition-colors hover:border-[#d9383a]/60 hover:text-[#f8f9fa]"
+							className="border border-gray-200 bg-gray-50 px-3 py-1.5 font-mono text-xs text-gray-600 transition-colors hover:border-blue-400 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:border-[#d9383a]/60 dark:hover:text-[#f8f9fa]"
 						>
 							GitHub
 						</a>

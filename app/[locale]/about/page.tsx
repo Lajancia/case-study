@@ -88,7 +88,7 @@ export default async function AboutPage({
 					{content.skills.map((item) => (
 						<span
 							key={item}
-							className="text-sm bg-[#0f172a] text-[#f8fafc] dark:bg-[#b12a2c] dark:text-white px-3 py-1 rounded-full font-medium"
+							className="text-sm border border-gray-200 bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-medium dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400"
 						>
 							{item}
 						</span>
