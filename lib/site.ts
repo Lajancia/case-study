@@ -5,7 +5,8 @@ export const siteConfig = {
 	url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
 	email: 'kie6974@gmail.com',
 	social: {
-		linkedin: 'https://linkedin.com/in/lajancia',
+		linkedin:
+			'https://www.linkedin.com/in/%EC%88%98%EB%AF%BC-%ED%99%A9-929aa3221/',
 		github: 'https://github.com/Lajancia',
 		medium: 'https://medium.com/@lajancia',
 	},
